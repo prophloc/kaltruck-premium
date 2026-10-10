@@ -4,7 +4,7 @@ const routes = ['/', '/transport-hds/', '/wynajem-hds/', '/transport-kontenerow/
 
 for (const route of routes) {
   test(`${route} passes launch smoke audit`, async ({ page }) => {
-    const response = await page.goto(route);
+    const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
     expect(response?.status()).toBe(200);
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
@@ -18,7 +18,7 @@ for (const route of routes) {
 }
 
 test('keyboard focus remains visible and reduced motion has a global fallback', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await page.keyboard.press('Tab');
   const focused = page.locator(':focus-visible');
   await expect(focused).toHaveCount(1);
@@ -29,7 +29,7 @@ test('keyboard focus remains visible and reduced motion has a global fallback', 
 });
 
 test('launch routes do not contain broken internal links', async ({ page, request }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   const hrefs = await page.locator('a[href^="/"]').evaluateAll((nodes) => [...new Set(nodes.map((node) => (node as HTMLAnchorElement).getAttribute('href')).filter(Boolean))] as string[]);
   for (const href of hrefs) {
     const response = await request.get(href);
