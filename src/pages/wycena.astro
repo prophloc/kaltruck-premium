@@ -1,0 +1,8 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+---
+<BaseLayout title="Wycena transportu HDS | KALTRUCK" description="Wyślij dane ładunku i trasy, aby otrzymać wycenę transportu, załadunku, rozładunku lub montażu HDS." canonicalPath="/wycena/">
+<section class="quote-page section"><div class="container"><p class="eyebrow">Szybka wycena</p><h1>Co przewozimy<br/>i gdzie ma stanąć?</h1><p class="lead">Podaj podstawowe informacje. Im dokładniej znamy ładunek i warunki na miejscu, tym szybciej możemy ocenić realizację.</p><div class="form-wrap"><QuoteForm /></div></div></section>
+</BaseLayout>
+<style>.quote-page{padding-top:calc(var(--header-height) + 100px)}.quote-page h1{font-size:clamp(3.5rem,8vw,8.4rem);line-height:.88;letter-spacing:-.055em;margin:18px 0 30px}.form-wrap{margin-top:70px}</style>
