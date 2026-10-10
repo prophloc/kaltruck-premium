@@ -1,0 +1,89 @@
+---
+import { siteConfig } from '../config/site';
+import MobileMenu from './MobileMenu.astro';
+const nav = [
+  ['Usługi', '/transport-hds/'],
+  ['Realizacje', '/realizacje/'],
+  ['Sprzęt', '/sprzet/'],
+  ['O nas', '/o-nas/'],
+  ['Kontakt', '/kontakt/'],
+] as const;
+---
+<header class="site-header" data-header>
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="KALTRUCK — strona główna">
+      <span class="brand-mark">K</span>
+      <span><strong>KALTRUCK</strong><small>TRANSPORT HDS</small></span>
+    </a>
+    <nav class="desktop-nav" aria-label="Nawigacja główna">
+      {nav.map(([label, href]) => <a href={href}>{label}</a>)}
+    </nav>
+    <div class="header-actions">
+      <a class="phone-link" href={`tel:${siteConfig.phone}`}>514 948 373</a>
+      <a class="btn btn-primary quote-link" href="/wycena/">Wyceń transport</a>
+      <button class="menu-button" type="button" aria-label="Otwórz menu" aria-controls="mobile-menu" aria-expanded="false" data-menu-open>
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+<MobileMenu />
+<noscript>
+  <nav class="nojs-nav" aria-label="Nawigacja bez JavaScript">
+    <a href="/transport-hds/">Usługi</a>
+    <a href="/realizacje/">Realizacje</a>
+    <a href="/sprzet/">Sprzęt</a>
+    <a href="/o-nas/">O nas</a>
+    <a href="/kontakt/">Kontakt</a>
+    <a href="/wycena/">Wyceń transport</a>
+    <a href={`tel:${siteConfig.phone}`}>Zadzwoń</a>
+  </nav>
+  <style>
+    @media (max-width: 1080px) {
+      .nojs-nav { position: fixed; z-index: 59; top: var(--header-height); left: 0; right: 0; display: flex; gap: 16px; overflow-x: auto; padding: 12px 20px; background: #0a0b0c; border-bottom: 1px solid var(--line); white-space: nowrap; }
+      .menu-button { display: none !important; }
+    }
+    @media (min-width: 1081px) { .nojs-nav { display: none; } }
+  </style>
+</noscript>
+
+<script is:inline>
+  (() => {
+    const header = document.querySelector('[data-header]');
+    const menu = document.querySelector('[data-mobile-menu]');
+    const open = document.querySelector('[data-menu-open]');
+    const close = document.querySelector('[data-menu-close]');
+    const setOpen = (value) => {
+      if (!menu || !open) return;
+      menu.dataset.open = value ? 'true' : 'false';
+      open.setAttribute('aria-expanded', String(value));
+      document.documentElement.style.overflow = value ? 'hidden' : '';
+    };
+    open?.addEventListener('click', () => setOpen(true));
+    close?.addEventListener('click', () => setOpen(false));
+    menu?.addEventListener('click', (event) => { if (event.target === menu) setOpen(false); });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') setOpen(false); });
+    const updateHeader = () => header?.classList.toggle('is-scrolled', window.scrollY > 24);
+    updateHeader();
+    addEventListener('scroll', updateHeader, { passive: true });
+  })();
+</script>
+
+<style>
+  .site-header { position: fixed; top: 0; inset-inline: 0; z-index: 60; height: var(--header-height); display: flex; align-items: center; border-bottom: 1px solid transparent; transition: background .25s ease, border-color .25s ease, backdrop-filter .25s ease; }
+  .site-header.is-scrolled { background: rgba(10,11,12,.82); border-color: var(--line); backdrop-filter: blur(18px); }
+  .header-inner { display: flex; align-items: center; gap: 28px; width: 100%; }
+  .brand { display: inline-flex; align-items: center; gap: 11px; min-width: max-content; }
+  .brand-mark { width: 38px; height: 38px; border: 1px solid var(--accent); color: var(--accent); display: grid; place-items: center; border-radius: 50%; font-weight: 900; }
+  .brand strong, .brand small { display: block; line-height: 1; }
+  .brand strong { letter-spacing: .07em; font-size: .95rem; }
+  .brand small { color: var(--muted); letter-spacing: .17em; font-size: .52rem; margin-top: 5px; }
+  .desktop-nav { margin-left: auto; display: flex; align-items: center; gap: 26px; }
+  .desktop-nav a { color: #e9e7e1; font-size: .9rem; }
+  .header-actions { display: flex; align-items: center; gap: 14px; }
+  .phone-link { font-weight: 720; font-size: .88rem; }
+  .menu-button { display: none; width: 48px; height: 48px; border: 1px solid var(--line); border-radius: 50%; background: rgba(0,0,0,.2); padding: 0 13px; }
+  .menu-button span { display: block; height: 1px; background: var(--text); margin: 6px 0; }
+  @media (max-width: 1080px) { .desktop-nav, .phone-link { display: none; } .header-actions { margin-left: auto; } .menu-button { display: block; } }
+  @media (max-width: 620px) { .quote-link { display: none; } }
+</style>
