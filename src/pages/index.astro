@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import CapabilityStrip from '../components/CapabilityStrip.astro';
+import ServiceStory from '../components/ServiceStory.astro';
+import EquipmentSection from '../components/EquipmentSection.astro';
+import ProcessSteps from '../components/ProcessSteps.astro';
+import CTASection from '../components/CTASection.astro';
+import FAQ from '../components/FAQ.astro';
+const faqItems=[
+  {question:'Czy realizujecie transport HDS poza Płockiem?',answer:'Tak. Bazujemy w rejonie Płocka i realizujemy zlecenia na terenie całej Polski.'},
+  {question:'Czy HDS może od razu ustawić ładunek w miejscu docelowym?',answer:'Tak, jeżeli warunki dojazdu, podłoże, masa ładunku i wymagany promień pracy pozwalają na bezpieczne wykonanie operacji.'},
+  {question:'Jakie informacje są potrzebne do wyceny?',answer:'Najbardziej pomagają rodzaj ładunku, przybliżona masa i wymiary, miejsce odbioru i rozładunku oraz zdjęcia warunków dojazdu i ustawienia.'}
+];
+---
+<BaseLayout title="Transport HDS KALTRUCK | Płock, Mazowsze i Polska" description="KALTRUCK – transport HDS, załadunek, rozładunek i montaż kontenerów, prefabrykatów, maszyn i ładunków specjalistycznych." canonicalPath="/">
+  <Hero />
+  <CapabilityStrip />
+  <section class="section intro"><div class="container"><p class="eyebrow">KALTRUCK / Kalwasińscy</p><h2 class="section-title">Ciężkie rzeczy<br />zostaw nam.</h2><p class="lead">Łączymy transport i pracę żurawia HDS w jednej realizacji. Przyjeżdżamy, podnosimy, przewozimy i ustawiamy ładunek tam, gdzie ma finalnie stanąć.</p></div></section>
+  <ServiceStory eyebrow="01 / Kontenery" title="Kontenery. Od odbioru po precyzyjne ustawienie." text="Transport kontenerów mieszkalnych, biurowych i magazynowych z wykorzystaniem HDS — bez organizowania osobnego dźwigu na miejscu." href="/transport-kontenerow/" image="https://hdsplock.pl/zdj/realizacje/transport-kontenerow-07.jpg" alt="Transport kontenera samochodem z HDS" />
+  <ServiceStory reverse eyebrow="02 / Prefabrykaty" title="Prefabrykaty i konstrukcje bez zbędnych przeładunków." text="Elementy betonowe i stalowe przewozimy oraz rozładowujemy jednym zestawem, ograniczając liczbę operacji na placu." href="/transport-prefabrykatow/" image="https://hdsplock.pl/zdj/realizacje/prefabrykaty-betonowe-05.jpg" alt="Prefabrykat betonowy podnoszony przez HDS" width={486} height={1080} />
+  <ServiceStory eyebrow="03 / Maszyny" title="Maszyny i urządzenia — transport z kontrolą każdego ruchu." text="Obsługujemy maszyny, urządzenia techniczne i nietypowe ładunki wymagające podniesienia oraz ustawienia." href="/transport-maszyn/" image="https://hdsplock.pl/zdj/realizacje/suwnice-przemys-owe-04.jpg" alt="Realizacja HDS przy ciężkim urządzeniu" width={810} height={1080} />
+  <ServiceStory reverse eyebrow="04 / Precyzyjne ustawienie" title="Nie tylko dowozimy. Ustawiamy tam, gdzie trzeba." text="Rozładunek HDS sprawdza się tam, gdzie liczy się zasięg, precyzja i możliwość pracy bez dodatkowego sprzętu dźwigowego." href="/rozladunek-hds/" image="https://hdsplock.pl/zdj/realizacje/stacje-transformatorowe-07.jpg" alt="Precyzyjne ustawianie ciężkiego elementu za pomocą HDS" width={1435} height={1080} />
+  <ServiceStory eyebrow="05 / Transport specjalistyczny" title="Nietypowy ładunek nie oznacza przypadkowego planu." text="Realizujemy transport przemysłowy i specjalistyczny w Płocku, na Mazowszu i na terenie całej Polski." href="/transport-hds/" image="https://hdsplock.pl/zdj/realizacje/transport-przemys-owy-03.jpg" alt="Specjalistyczny transport przemysłowy KALTRUCK" width={1435} height={1080} />
+  <EquipmentSection />
+  <ProcessSteps />
+  <FAQ items={faqItems} title="Zanim zamówisz HDS" />
+  <CTASection />
+</BaseLayout>
+<style>.intro{background:#0a0b0c}.intro .lead{margin-top:32px;margin-left:auto}</style>

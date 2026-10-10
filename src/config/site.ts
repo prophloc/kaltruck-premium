@@ -8,7 +8,7 @@ export const siteConfig = {
   secondaryPhone: '+48784430022',
   email: 'hds.plock@gmail.com',
   serviceArea: ['Płock', 'Mazowieckie', 'Polska'],
-  socialImage: '/images/og-kaltruck.jpg',
+  socialImage: 'https://hdsplock.pl/og-image-v02.jpg',
   facebook: 'https://www.facebook.com/kaldrewplock',
   allegro: 'https://allegro.pl/uzytkownik/kaldreww',
 } as const;

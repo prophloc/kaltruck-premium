@@ -1,0 +1,5 @@
+---
+const steps=[['01','Kontakt / zapytanie'],['02','Ocena ładunku i warunków'],['03','Wycena i termin'],['04','Transport i ustawienie']];
+---
+<section class="section process"><div class="container"><p class="eyebrow">Prosty proces</p><h2 class="section-title">Od telefonu do ustawienia ładunku.</h2><div class="steps">{steps.map(([n,t])=><div class="step"><span>{n}</span><h3>{t}</h3></div>)}</div></div></section>
+<style>.steps{display:grid;grid-template-columns:repeat(4,1fr);margin-top:64px;border-top:1px solid var(--line)}.step{padding:28px 20px 20px 0;border-right:1px solid var(--line);min-height:190px}.step+ .step{padding-left:20px}.step span{color:var(--accent);font-size:.75rem}.step h3{font-size:clamp(1.25rem,2vw,2rem);line-height:1.1;margin-top:50px}@media(max-width:760px){.steps{grid-template-columns:1fr 1fr}.step{min-height:150px}.step h3{margin-top:24px}}</style>
