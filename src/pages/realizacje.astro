@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectGallery from '../components/ProjectGallery.astro';
+import CTASection from '../components/CTASection.astro';
+const projects = await getCollection('realizations');
+---
+<BaseLayout title="Realizacje HDS | KALTRUCK Kalwasińscy" description="Zobacz autentyczne realizacje KALTRUCK: kontenery, prefabrykaty, urządzenia przemysłowe, konstrukcje i nietypowe ładunki obsługiwane HDS." canonicalPath="/realizacje/">
+<section class="page-head section"><div class="container"><p class="eyebrow">Realizacje</p><h1>Robota mówi<br />więcej niż obietnice.</h1><p class="lead">Wybrane realizacje z prawdziwych zleceń Transport HDS Kalwasińscy.</p></div></section>
+<section class="section gallery-section"><div class="container"><ProjectGallery projects={projects} /></div></section><CTASection />
+</BaseLayout>
+<style>.page-head{padding-top:calc(var(--header-height) + 90px);padding-bottom:60px}.page-head h1{font-size:clamp(3.8rem,9vw,9rem);line-height:.86;letter-spacing:-.06em;margin:18px 0 30px}.gallery-section{padding-top:20px}</style>

@@ -1,0 +1,17 @@
+---
+interface Project { data: { title:string; category:string; image:string; alt:string; width:number; height:number; summary?:string } }
+const { projects } = Astro.props as { projects: Project[] };
+---
+<div class="project-gallery" data-project-gallery>
+  {projects.map((project, index) => (
+    <article class:list={['project', index % 5 === 0 && 'project--wide']}>
+      <div class="project-media">
+        <img src={project.data.image} alt={project.data.alt} width={project.data.width} height={project.data.height} loading={index < 2 ? 'eager' : 'lazy'} />
+      </div>
+      <div class="project-meta"><span>{project.data.category}</span><h2>{project.data.title}</h2></div>
+    </article>
+  ))}
+</div>
+<style>
+.project-gallery{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}.project{grid-column:span 5;margin-bottom:42px}.project:nth-child(2n){grid-column:7/span 6;margin-top:80px}.project--wide{grid-column:span 7}.project-media{overflow:hidden;background:#151719;border-radius:var(--radius-md)}.project-media img{width:100%;aspect-ratio:4/3;object-fit:cover;transition:transform .5s ease}.project:hover img{transform:scale(1.02)}.project-meta{padding-top:16px}.project-meta span{color:var(--accent);font-size:.72rem;text-transform:uppercase;letter-spacing:.14em}.project-meta h2{font-size:clamp(1.4rem,2.5vw,2.4rem);line-height:1.05;letter-spacing:-.03em;margin:8px 0 0}@media(max-width:760px){.project-gallery{display:block}.project,.project:nth-child(2n),.project--wide{margin:0 0 42px}.project-meta h2{font-size:1.7rem}}
+</style>
