@@ -1,0 +1,18 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import CTASection from '../components/CTASection.astro';
+import { breadcrumbSchema, serviceSchema } from '../lib/seo';
+interface Props { title:string; metaDescription:string; h1:string; intro:string; canonicalPath:string; serviceType:string; heroImage?:string; }
+const { title,metaDescription,h1,intro,canonicalPath,serviceType,heroImage='https://hdsplock.pl/zdj/realizacje/transport-przemys-owy-03.jpg' }=Astro.props;
+const jsonLd=[serviceSchema({ name:serviceType, description:metaDescription, path:canonicalPath }), breadcrumbSchema([{name:'Start',path:'/'},{name:serviceType,path:canonicalPath}])];
+---
+<BaseLayout title={title} description={metaDescription} canonicalPath={canonicalPath} image={heroImage} jsonLd={jsonLd}>
+  <section class="service-hero">
+    <img src={heroImage} alt="" width="1440" height="1080" />
+    <div class="shade"></div>
+    <div class="container service-copy"><p class="eyebrow">{serviceType}</p><h1>{h1}</h1><p>{intro}</p><a class="btn btn-primary" href="/wycena/">Zapytaj o realizację</a></div>
+  </section>
+  <section class="service-body section"><div class="container body-grid"><aside><span>Usługa</span><strong>{serviceType}</strong><a href="/realizacje/">Zobacz realizacje ↗</a></aside><article><slot /></article></div></section>
+  <CTASection />
+</BaseLayout>
+<style>.service-hero{min-height:76svh;position:relative;display:flex;align-items:flex-end;overflow:hidden}.service-hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,8,.22),rgba(6,7,8,.94)),linear-gradient(90deg,rgba(6,7,8,.65),transparent)}.service-copy{position:relative;z-index:2;padding-bottom:80px;padding-top:140px}.service-copy h1{font-size:clamp(3.2rem,7.2vw,8.2rem);max-width:11ch;line-height:.9;letter-spacing:-.055em;margin:18px 0 24px}.service-copy>p:not(.eyebrow){max-width:55ch;font-size:1.18rem;color:#ddd9d0}.body-grid{display:grid;grid-template-columns:260px minmax(0,720px);gap:clamp(48px,9vw,140px);justify-content:center}.body-grid aside{display:flex;flex-direction:column;gap:8px;position:sticky;top:120px;height:max-content}.body-grid aside span{font-size:.72rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted)}.body-grid aside a{color:var(--accent);margin-top:20px}.body-grid article :global(h2){font-size:clamp(2rem,4vw,3.6rem);line-height:1;letter-spacing:-.035em;margin:0 0 24px}.body-grid article :global(p){color:var(--muted);font-size:1.1rem;margin:0 0 28px}.body-grid article :global(h2:not(:first-child)){margin-top:72px}@media(max-width:760px){.body-grid{grid-template-columns:1fr}.body-grid aside{position:static}}</style>
