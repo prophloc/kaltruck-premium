@@ -13,7 +13,7 @@ export default defineConfig({
     { name: 'mobile-chromium', use: { ...devices['Pixel 7'] } },
   ],
   webServer: {
-    command: 'npm run dev -- --host 127.0.0.1',
+    command: 'npm run preview -- --host 127.0.0.1',
     url: 'http://127.0.0.1:4321',
     reuseExistingServer: true,
     timeout: 120_000,
