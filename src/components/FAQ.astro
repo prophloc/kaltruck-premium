@@ -5,11 +5,23 @@ const schema = faqSchema(items);
 ---
 <section class="section faq-section">
   <div class="container faq-grid">
-    <div><p class="eyebrow">FAQ</p><h2 class="section-title">{title}</h2></div>
+    <div class="faq-heading"><p class="eyebrow">FAQ</p><h2 class="section-title">{title}</h2></div>
     <div class="faq-list">
       {items.map((item) => <details><summary>{item.question}<span>+</span></summary><p>{item.answer}</p></details>)}
     </div>
   </div>
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 </section>
-<style>.faq-section{background:#0d0f11;border-top:1px solid var(--line)}.faq-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px}.faq-list{border-top:1px solid var(--line)}details{border-bottom:1px solid var(--line)}summary{list-style:none;display:flex;justify-content:space-between;gap:20px;padding:24px 0;cursor:pointer;font-size:1.08rem;font-weight:720}summary::-webkit-details-marker{display:none}summary span{color:var(--accent);font-size:1.4rem}details p{color:var(--muted);margin:0 0 24px;max-width:62ch}@media(max-width:800px){.faq-grid{grid-template-columns:1fr}}</style>
+<style>
+  .faq-section{background:#0d0f11;border-top:1px solid var(--line)}
+  .faq-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:start}
+  .faq-heading{grid-column:1 / span 5;position:sticky;top:calc(var(--header-height) + 32px)}
+  .faq-heading .section-title{margin-top:18px;max-width:8ch}
+  .faq-list{grid-column:7 / -1;border-top:1px solid var(--line)}
+  details{border-bottom:1px solid var(--line)}
+  summary{list-style:none;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding:26px 0;cursor:pointer;font-size:clamp(1rem,1.25vw,1.16rem);font-weight:720}
+  summary::-webkit-details-marker{display:none}
+  summary span{color:var(--accent);font-size:1.4rem;line-height:1}
+  details p{color:var(--muted);margin:0 0 26px;max-width:58ch}
+  @media(max-width:800px){.faq-grid{grid-template-columns:1fr;gap:34px}.faq-heading,.faq-list{grid-column:auto}.faq-heading{position:static}.faq-heading .section-title{max-width:11ch}}
+</style>

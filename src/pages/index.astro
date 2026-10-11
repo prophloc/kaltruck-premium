@@ -16,7 +16,15 @@ const faqItems=[
 <BaseLayout title="Transport HDS KALTRUCK | Płock, Mazowsze i Polska" description="KALTRUCK – transport HDS, załadunek, rozładunek i montaż kontenerów, prefabrykatów, maszyn i ładunków specjalistycznych." canonicalPath="/">
   <Hero />
   <CapabilityStrip />
-  <section class="section intro"><div class="container"><p class="eyebrow">KALTRUCK / Kalwasińscy</p><h2 class="section-title">Ciężkie rzeczy<br />zostaw nam.</h2><p class="lead">Łączymy transport i pracę żurawia HDS w jednej realizacji. Przyjeżdżamy, podnosimy, przewozimy i ustawiamy ładunek tam, gdzie ma finalnie stanąć.</p></div></section>
+  <section class="section intro">
+    <div class="container intro-grid">
+      <div class="intro-heading">
+        <p class="eyebrow">KALTRUCK / Kalwasińscy</p>
+        <h2 class="section-title">Ciężkie rzeczy<br />zostaw nam.</h2>
+      </div>
+      <p class="lead intro-lead">Łączymy transport i pracę żurawia HDS w jednej realizacji. Przyjeżdżamy, podnosimy, przewozimy i ustawiamy ładunek tam, gdzie ma finalnie stanąć.</p>
+    </div>
+  </section>
   <ServiceStory eyebrow="01 / Kontenery" title="Kontenery. Od odbioru po precyzyjne ustawienie." text="Transport kontenerów mieszkalnych, biurowych i magazynowych z wykorzystaniem HDS — bez organizowania osobnego dźwigu na miejscu." href="/transport-kontenerow/" image="https://hdsplock.pl/zdj/realizacje/transport-kontenerow-07.jpg" alt="Transport kontenera samochodem z HDS" />
   <ServiceStory reverse eyebrow="02 / Prefabrykaty" title="Prefabrykaty i konstrukcje bez zbędnych przeładunków." text="Elementy betonowe i stalowe przewozimy oraz rozładowujemy jednym zestawem, ograniczając liczbę operacji na placu." href="/transport-prefabrykatow/" image="https://hdsplock.pl/zdj/realizacje/prefabrykaty-betonowe-05.jpg" alt="Prefabrykat betonowy podnoszony przez HDS" width={486} height={1080} />
   <ServiceStory eyebrow="03 / Maszyny" title="Maszyny i urządzenia — transport z kontrolą każdego ruchu." text="Obsługujemy maszyny, urządzenia techniczne i nietypowe ładunki wymagające podniesienia oraz ustawienia." href="/transport-maszyn/" image="https://hdsplock.pl/zdj/realizacje/suwnice-przemys-owe-04.jpg" alt="Realizacja HDS przy ciężkim urządzeniu" width={810} height={1080} />
@@ -27,4 +35,12 @@ const faqItems=[
   <FAQ items={faqItems} title="Zanim zamówisz HDS" />
   <CTASection />
 </BaseLayout>
-<style>.intro{background:#0a0b0c}.intro .lead{margin-top:32px;margin-left:auto}</style>
+<style>
+  .intro{background:#0a0b0c;border-bottom:1px solid var(--line)}
+  .intro-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:end}
+  .intro-heading{grid-column:1 / span 7}
+  .intro-lead{grid-column:9 / -1;margin:0 0 .3rem;max-width:32rem}
+  .intro .section-title{margin-top:18px}
+  @media(max-width:980px){.intro-heading{grid-column:1 / span 8}.intro-lead{grid-column:9 / -1}}
+  @media(max-width:780px){.intro-grid{grid-template-columns:1fr;gap:30px}.intro-heading,.intro-lead{grid-column:auto}.intro-lead{max-width:42rem}}
+</style>

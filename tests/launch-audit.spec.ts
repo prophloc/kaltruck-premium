@@ -45,6 +45,20 @@ for (const width of [1920, 1440, 1366, 1024, 390]) {
   });
 }
 
+test('homepage keeps the editorial service structure intact', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.locator('.intro-grid')).toHaveCount(1);
+  await expect(page.locator('.story')).toHaveCount(5);
+  await expect(page.locator('.story .story-media img')).toHaveCount(5);
+  const fits = await page.locator('.story-inner').evaluateAll((nodes) => nodes.every((node) => {
+    const rect = node.getBoundingClientRect();
+    return rect.left >= 0 && rect.right <= document.documentElement.clientWidth;
+  }));
+  expect(fits).toBeTruthy();
+});
+
 test('keyboard focus remains visible and reduced motion has a global fallback', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await page.keyboard.press('Tab');
