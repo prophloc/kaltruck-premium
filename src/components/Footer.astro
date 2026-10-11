@@ -1,0 +1,30 @@
+---
+import { siteConfig } from '../config/site';
+---
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <p class="eyebrow">KALTRUCK</p>
+      <h2>Ciężki ładunek.<br />Precyzyjna robota.</h2>
+    </div>
+    <div class="footer-links">
+      <a href="/transport-hds/">Usługi</a><a href="/realizacje/">Realizacje</a><a href="/sprzet/">Sprzęt</a><a href="/o-nas/">O nas</a><a href="/kontakt/">Kontakt</a>
+    </div>
+    <div class="footer-contact">
+      <a href={`tel:${siteConfig.phone}`}>+48 514 948 373</a>
+      <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+      <span>Płock • Mazowsze • Polska</span>
+    </div>
+  </div>
+  <div class="container footer-bottom"><span>© {new Date().getFullYear()} {siteConfig.legalName}</span><span>Transport HDS</span></div>
+</footer>
+<style>
+  .site-footer { border-top: 1px solid var(--line); background: #070809; padding: 72px 0 28px; }
+  .footer-grid { display: grid; grid-template-columns: 1.4fr .6fr 1fr; gap: 48px; }
+  h2 { font-size: clamp(2.4rem, 5vw, 5.2rem); line-height: .95; letter-spacing: -.045em; margin: 18px 0 0; }
+  .footer-links, .footer-contact { display: grid; align-content: start; gap: 12px; }
+  .footer-contact { color: var(--muted); }
+  .footer-contact a:first-child { color: var(--text); font-size: 1.4rem; font-weight: 760; }
+  .footer-bottom { border-top: 1px solid var(--line); margin-top: 64px; padding-top: 24px; display: flex; justify-content: space-between; color: #888; font-size: .82rem; }
+  @media(max-width: 800px){ .footer-grid { grid-template-columns: 1fr; } .footer-bottom { gap: 12px; flex-direction: column; } }
+</style>

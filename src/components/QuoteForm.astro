@@ -1,0 +1,38 @@
+---
+import { formConfig } from '../lib/form-config';
+import { siteConfig } from '../config/site';
+---
+<div class="quote-shell">
+  <form data-quote-form method={formConfig.method} action={formConfig.endpoint || undefined}>
+    <div class="field-grid two">
+      <label><span>Imię / firma</span><input name="name" autocomplete="name" /></label>
+      <label><span>Telefon</span><input name="phone" type="tel" autocomplete="tel" required /></label>
+    </div>
+    <div class="field-grid two">
+      <label><span>E-mail</span><input name="email" type="email" autocomplete="email" /></label>
+      <label><span>Co przewozimy?</span><input name="cargo" required /></label>
+    </div>
+    <div class="field-grid two">
+      <label><span>Skąd</span><input name="origin" required /></label>
+      <label><span>Dokąd</span><input name="destination" required /></label>
+    </div>
+    <div class="field-grid two">
+      <label><span>Wymiary / waga</span><input name="dimensions_weight" placeholder="np. 6 × 2,5 m, ok. 4 t" /></label>
+      <label><span>Preferowany termin</span><input name="preferred_date" type="date" /></label>
+    </div>
+    <label><span>Wiadomość</span><textarea name="message" rows="5" placeholder="Dojazd, miejsce ustawienia, dodatkowe informacje..."></textarea></label>
+    <div class="form-bottom">
+      <button class="btn btn-primary" type="submit" disabled={!formConfig.canSubmit}>Wyślij zapytanie</button>
+      <p>Wysyłając zapytanie, podajesz dane wyłącznie w celu kontaktu w sprawie wyceny.</p>
+    </div>
+  </form>
+  {!formConfig.canSubmit && (
+    <aside class="fallback" role="status">
+      <strong>Formularz nie jest jeszcze połączony z serwerem wysyłkowym.</strong>
+      <p>Żeby zapytanie nie zginęło, zadzwoń pod <a href={`tel:${siteConfig.phone}`}>+48 514 948 373</a> lub napisz na <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.</p>
+    </aside>
+  )}
+</div>
+<style>
+.quote-shell{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:32px;align-items:start}form{display:grid;gap:20px}.field-grid{display:grid;gap:20px}.field-grid.two{grid-template-columns:1fr 1fr}label{display:grid;gap:8px}label span{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:700}input,textarea{width:100%;border:1px solid var(--line);background:#111315;color:var(--text);border-radius:12px;padding:16px 16px;min-height:54px}textarea{resize:vertical}.form-bottom{display:flex;align-items:center;gap:20px;flex-wrap:wrap}.form-bottom p{max-width:52ch;font-size:.78rem;color:#818181}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}.fallback{border:1px solid var(--line);border-radius:var(--radius-md);padding:24px;background:#111315;position:sticky;top:120px}.fallback strong{display:block;margin-bottom:10px}.fallback p{color:var(--muted)}.fallback a{color:var(--accent);font-weight:750}@media(max-width:880px){.quote-shell{grid-template-columns:1fr}.fallback{position:static}}@media(max-width:620px){.field-grid.two{grid-template-columns:1fr}}
+</style>

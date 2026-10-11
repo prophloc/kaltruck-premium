@@ -1,0 +1,15 @@
+---
+import { faqSchema, type FAQItem } from '../lib/seo';
+const { items, title = 'Najczęstsze pytania' } = Astro.props as { items: FAQItem[]; title?: string };
+const schema = faqSchema(items);
+---
+<section class="section faq-section">
+  <div class="container faq-grid">
+    <div><p class="eyebrow">FAQ</p><h2 class="section-title">{title}</h2></div>
+    <div class="faq-list">
+      {items.map((item) => <details><summary>{item.question}<span>+</span></summary><p>{item.answer}</p></details>)}
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</section>
+<style>.faq-section{background:#0d0f11;border-top:1px solid var(--line)}.faq-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px}.faq-list{border-top:1px solid var(--line)}details{border-bottom:1px solid var(--line)}summary{list-style:none;display:flex;justify-content:space-between;gap:20px;padding:24px 0;cursor:pointer;font-size:1.08rem;font-weight:720}summary::-webkit-details-marker{display:none}summary span{color:var(--accent);font-size:1.4rem}details p{color:var(--muted);margin:0 0 24px;max-width:62ch}@media(max-width:800px){.faq-grid{grid-template-columns:1fr}}</style>

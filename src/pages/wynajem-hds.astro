@@ -1,0 +1,8 @@
+---
+import { getEntry, render } from 'astro:content';
+import ServiceLayout from '../layouts/ServiceLayout.astro';
+const entry = await getEntry('services', 'wynajem-hds');
+if (!entry) throw new Error('Missing service content: wynajem-hds');
+const { Content } = await render(entry);
+---
+<ServiceLayout {...entry.data} canonicalPath="/wynajem-hds/"><Content /></ServiceLayout>

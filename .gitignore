@@ -1,7 +1,10 @@
-.worktrees/
-.superpowers/
 node_modules/
 dist/
 .astro/
+.env
+.env.*
+!.env.example
 playwright-report/
 test-results/
+.superpowers/
+.DS_Store
