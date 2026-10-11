@@ -23,6 +23,22 @@ test('header uses source brand artwork and readable sales navigation', async ({ 
   expect(quoteBox?.height ?? 0).toBeGreaterThanOrEqual(52);
 });
 
+test('header uses a deep top gradient instead of a blurred menu backdrop', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+  const gradient = await page.locator('[data-header]').evaluate((node) => {
+    const style = getComputedStyle(node, '::before');
+    return {
+      backgroundImage: style.backgroundImage,
+      height: parseFloat(style.height),
+    };
+  });
+
+  expect(gradient.backgroundImage).toContain('linear-gradient');
+  expect(gradient.height).toBeGreaterThanOrEqual(170);
+});
+
 test('hero keeps the sales message vertically centered and CTAs prominent', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
@@ -43,4 +59,47 @@ test('hero keeps the sales message vertically centered and CTAs prominent', asyn
     return { height: rect.height, fontSize: parseFloat(style.fontSize), fontWeight: parseInt(style.fontWeight, 10) || 0 };
   }));
   expect(metrics.every((item) => item.height >= 58 && item.fontSize >= 15 && item.fontWeight >= 700)).toBeTruthy();
+});
+
+test('hero centers the cinematic composition as one group while preserving internal offsets', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+  const stageBox = await page.locator('.hero-stage').boundingBox();
+  expect(stageBox).not.toBeNull();
+  const stageCenter = stageBox!.x + stageBox!.width / 2;
+  expect(Math.abs(stageCenter - 800)).toBeLessThanOrEqual(24);
+
+  const lineTwo = await page.locator('.hero-title-line--two').boundingBox();
+  const lineThree = await page.locator('.hero-title-line--three').boundingBox();
+  expect(lineTwo).not.toBeNull();
+  expect(lineThree).not.toBeNull();
+  expect(lineThree!.x - lineTwo!.x).toBeGreaterThanOrEqual(120);
+
+  const lead = await page.locator('.hero-lead').boundingBox();
+  const actions = await page.locator('.hero-actions').boundingBox();
+  expect(lead).not.toBeNull();
+  expect(actions).not.toBeNull();
+  expect(actions!.x).toBeGreaterThan(lead!.x + 160);
+});
+
+test('hero kicker is a compact glass pill', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+  const metrics = await page.locator('.hero-kicker').evaluate((node) => {
+    const style = getComputedStyle(node);
+    const rect = node.getBoundingClientRect();
+    return {
+      width: rect.width,
+      borderRadius: parseFloat(style.borderRadius),
+      backdropFilter: style.backdropFilter,
+      backgroundColor: style.backgroundColor,
+    };
+  });
+
+  expect(metrics.width).toBeLessThan(390);
+  expect(metrics.borderRadius).toBeGreaterThanOrEqual(20);
+  expect(metrics.backdropFilter).toContain('blur');
+  expect(metrics.backgroundColor).not.toBe('rgba(0, 0, 0, 0)');
 });
