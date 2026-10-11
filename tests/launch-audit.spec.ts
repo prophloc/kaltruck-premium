@@ -18,7 +18,7 @@ for (const route of routes) {
   });
 }
 
-for (const width of [1920, 1440, 1366, 1024, 390]) {
+for (const width of [1920, 1440, 1366, 1024, 768, 390]) {
   test(`homepage stays inside viewport at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
@@ -47,7 +47,7 @@ for (const width of [1920, 1440, 1366, 1024, 390]) {
 }
 
 for (const route of supportingRoutes) {
-  for (const width of [1440, 1024, 390]) {
+  for (const width of [1440, 1024, 768, 390]) {
     test(`${route} stays inside viewport at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(route, { waitUntil: 'domcontentloaded' });
