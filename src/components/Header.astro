@@ -14,16 +14,18 @@ const nav = [
     <a class="brand" href="/" aria-label="KALTRUCK Transport HDS — strona główna">
       <img data-brand-logo class="brand-logo" src="/brand/kaltruck-logo.svg" width="2548" height="1305" alt="KALTRUCK Transport HDS" />
     </a>
-    <nav class="desktop-nav" aria-label="Nawigacja główna">
-      {nav.map(([label, href]) => <a href={href}>{label}</a>)}
-    </nav>
+
     <div class="header-actions">
       <a class="phone-link" href={`tel:${siteConfig.phone}`}>514 948 373</a>
-      <a class="btn btn-primary quote-link" href="/wycena/">Wyceń transport</a>
+      <a class="quote-link" href="/wycena/">Wyceń transport</a>
       <button class="menu-button" type="button" aria-label="Otwórz menu" aria-controls="mobile-menu" aria-expanded="false" data-menu-open>
         <span></span><span></span>
       </button>
     </div>
+
+    <nav class="desktop-nav" aria-label="Nawigacja główna">
+      {nav.map(([label, href]) => <a href={href}>{label}</a>)}
+    </nav>
   </div>
 </header>
 <MobileMenu />
@@ -114,8 +116,11 @@ const nav = [
     z-index: 1;
     display: flex;
     align-items: center;
-    gap: clamp(20px, 2vw, 34px);
+    gap: clamp(18px, 1.5vw, 24px);
     width: 100%;
+    max-width: none;
+    margin-inline: 0;
+    padding-inline: clamp(40px, 3.35vw, 64px);
   }
   .brand { display: inline-flex; align-items: center; flex: 0 0 auto; min-width: 0; }
   .brand-logo {
@@ -125,7 +130,57 @@ const nav = [
     max-height: 80px;
     filter: invert(1) drop-shadow(0 8px 24px rgba(0,0,0,.3));
   }
-  .desktop-nav { margin-left: auto; display: flex; align-items: center; gap: clamp(18px, 1.6vw, 27px); }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+  }
+  .phone-link,
+  .quote-link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    white-space: nowrap;
+    font-size: .86rem;
+    font-weight: 760;
+    line-height: 1;
+    transition: border-color .2s ease, background .2s ease, color .2s ease, transform .2s ease;
+  }
+  .phone-link {
+    padding-inline: 15px;
+    border: 1px solid rgba(255,255,255,.24);
+    background: rgba(8,10,12,.18);
+    color: #fff;
+    text-shadow: 0 2px 14px rgba(0,0,0,.45);
+  }
+  .quote-link {
+    padding-inline: 17px;
+    border: 1px solid rgba(215,180,106,.62);
+    background: rgba(215,180,106,.10);
+    color: #f0c977;
+  }
+  .phone-link:hover,
+  .quote-link:hover {
+    transform: translateY(-1px);
+  }
+  .phone-link:hover {
+    border-color: rgba(255,255,255,.42);
+    background: rgba(8,10,12,.34);
+  }
+  .quote-link:hover {
+    border-color: var(--accent);
+    background: rgba(215,180,106,.17);
+    color: #f7d995;
+  }
+  .desktop-nav {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: clamp(18px, 1.6vw, 27px);
+  }
   .desktop-nav a {
     color: #fff;
     font-size: .98rem;
@@ -136,44 +191,34 @@ const nav = [
     transition: color .2s ease, opacity .2s ease;
   }
   .desktop-nav a:hover { color: var(--accent-strong); }
-  .header-actions { display: flex; align-items: center; gap: 12px; }
-  .phone-link {
-    min-height: 52px;
-    display: inline-flex;
-    align-items: center;
-    padding-inline: 18px;
-    border: 1px solid rgba(255,255,255,.28);
-    border-radius: 999px;
-    background: rgba(0,0,0,.3);
-    color: #fff;
-    font-weight: 800;
-    font-size: .98rem;
-    white-space: nowrap;
-    text-shadow: 0 2px 14px rgba(0,0,0,.55);
-  }
-  .quote-link { min-height: 56px; padding-inline: 26px; font-size: .96rem; font-weight: 800; white-space: nowrap; }
-  .menu-button { display: none; width: 52px; height: 52px; flex: 0 0 auto; border: 1px solid rgba(255,255,255,.3); border-radius: 50%; background: rgba(0,0,0,.38); padding: 0 14px; color: var(--text); }
+  .menu-button { display: none; width: 46px; height: 46px; flex: 0 0 auto; border: 1px solid rgba(255,255,255,.26); border-radius: 50%; background: rgba(0,0,0,.24); padding: 0 12px; color: var(--text); }
   .menu-button span { display: block; height: 1px; background: currentColor; margin: 6px 0; }
 
   @media (max-width: 1320px) and (min-width: 1181px) {
-    .brand-logo { width: 168px; }
-    .header-inner { gap: 16px; }
-    .desktop-nav { gap: 16px; }
-    .desktop-nav a { font-size: .92rem; }
-    .phone-link { min-height: 48px; padding-inline: 15px; font-size: .92rem; }
-    .quote-link { min-height: 50px; padding-inline: 19px; font-size: .91rem; }
+    .header-inner { gap: 14px; padding-inline: 40px; }
+    .brand-logo { width: 158px; }
+    .header-actions { gap: 6px; }
+    .phone-link,
+    .quote-link { min-height: 42px; font-size: .81rem; }
+    .phone-link { padding-inline: 12px; }
+    .quote-link { padding-inline: 14px; }
+    .desktop-nav { gap: 15px; }
+    .desktop-nav a { font-size: .91rem; }
   }
   @media (max-width: 1180px) and (min-width: 1081px) {
-    .brand-logo { width: 152px; }
-    .header-inner { gap: 16px; }
+    .header-inner { padding-inline: 34px; }
+    .brand-logo { width: 150px; }
+    .header-actions { gap: 6px; }
+    .phone-link { display: none; }
+    .quote-link { min-height: 42px; padding-inline: 14px; font-size: .82rem; }
     .desktop-nav { gap: 15px; }
     .desktop-nav a { font-size: .9rem; }
-    .phone-link { display: none; }
-    .quote-link { min-height: 50px; padding-inline: 19px; }
   }
   @media (max-width: 1080px) {
+    .header-inner { padding-inline: var(--page-gutter); }
     .desktop-nav, .phone-link { display: none; }
     .header-actions { margin-left: auto; }
+    .quote-link { min-height: 44px; padding-inline: 16px; }
     .menu-button { display: block; }
     .brand-logo { width: 142px; max-height: 70px; }
     .site-header::before { height: 185px; }
