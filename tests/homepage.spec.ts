@@ -16,12 +16,17 @@ test('homepage communicates the premium HDS offer without invented data', async 
   }
 });
 
-test('homepage hero uses the supplied local HDS artwork', async ({ page }) => {
+test('homepage hero uses the supplied local HDS artwork', async ({ page, request }) => {
   await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
   const heroImage = page.locator('.hero-bg');
   await expect(heroImage).toHaveAttribute('src', '/images/home/hero-hds-kaltruck.webp');
+
+  const assetResponse = await request.get('/images/home/hero-hds-kaltruck.webp');
+  expect(assetResponse.ok()).toBeTruthy();
+  const assetBytes = await assetResponse.body();
+  expect(assetBytes.byteLength).toBeGreaterThan(80_000);
 
   const decoded = await heroImage.evaluate((img: HTMLImageElement) => {
     const canvas = document.createElement('canvas');
