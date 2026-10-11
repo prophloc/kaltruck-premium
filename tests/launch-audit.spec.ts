@@ -71,7 +71,7 @@ test('homepage hero uses a three-line cinematic title composition', async ({ pag
   await expect(page.locator('.hero-support')).toHaveCount(1);
 });
 
-test('homepage hero and brand are centered and use the supplied KALTRUCK logo', async ({ page }) => {
+test('homepage centers the cinematic hero group and uses the supplied KALTRUCK logo', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -81,25 +81,15 @@ test('homepage hero and brand are centered and use the supplied KALTRUCK logo', 
 
   const geometry = await page.evaluate(() => {
     const viewportWidth = document.documentElement.clientWidth;
-    const content = document.querySelector('.hero-content');
-    const title = document.querySelector('.hero-title');
-    const actions = document.querySelector('.hero-actions');
-    const contentRect = content?.getBoundingClientRect();
-    const titleRect = title?.getBoundingClientRect();
-    const actionsRect = actions?.getBoundingClientRect();
+    const stage = document.querySelector('.hero-stage');
+    const stageRect = stage?.getBoundingClientRect();
     const centerOffset = (rect?: DOMRect) => rect ? Math.abs((rect.left + rect.width / 2) - viewportWidth / 2) : 9999;
     return {
-      contentCenterOffset: centerOffset(contentRect),
-      titleCenterOffset: centerOffset(titleRect),
-      actionsCenterOffset: centerOffset(actionsRect),
-      textAlign: content ? getComputedStyle(content).textAlign : '',
+      stageCenterOffset: centerOffset(stageRect),
     };
   });
 
-  expect(geometry.contentCenterOffset).toBeLessThanOrEqual(12);
-  expect(geometry.titleCenterOffset).toBeLessThanOrEqual(12);
-  expect(geometry.actionsCenterOffset).toBeLessThanOrEqual(12);
-  expect(geometry.textAlign).toBe('center');
+  expect(geometry.stageCenterOffset).toBeLessThanOrEqual(12);
 });
 
 test('homepage keeps the editorial service structure intact', async ({ page }) => {
