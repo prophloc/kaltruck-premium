@@ -1,11 +1,56 @@
-<section class="section equipment"><div class="container equipment-grid"><div class="equipment-heading"><p class="eyebrow">Sprzęt i możliwości</p><h2 class="section-title">Dobieramy HDS do zadania.</h2></div><div class="equipment-copy"><p class="lead">Dysponujemy sprzętem o różnych kategoriach udźwigu. Zweryfikowane parametry floty obejmują udźwig do 12 ton i zasięg ramienia do 14 metrów.</p><a class="btn btn-secondary" href="/sprzet/">Poznaj sprzęt</a></div></div></section>
+<section class="equipment">
+  <div class="container">
+    <div class="equipment-panel">
+      <div class="equipment-heading">
+        <p class="eyebrow">Sprzęt i możliwości</p>
+        <h2>Dobieramy HDS do zadania.</h2>
+      </div>
+      <div class="equipment-copy">
+        <p>Dysponujemy sprzętem o różnych kategoriach udźwigu. Zweryfikowane parametry floty obejmują udźwig do 12 ton i zasięg ramienia do 14 metrów.</p>
+        <a class="btn btn-secondary" href="/sprzet/">Poznaj sprzęt</a>
+      </div>
+      <div class="equipment-stats" aria-label="Parametry sprzętu">
+        <div><strong>12 t</strong><span>maks. udźwig</span></div>
+        <div><strong>14 m</strong><span>zasięg ramienia</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 <style>
-  .equipment{background:radial-gradient(circle at 80% 10%,rgba(215,180,106,.09),transparent 32%),var(--bg-elevated);border-bottom:1px solid var(--line)}
-  .equipment-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:end}
-  .equipment-heading{grid-column:1 / span 7}
-  .equipment-copy{grid-column:9 / -1;max-width:34rem}
-  .equipment-copy .lead{margin:0}
-  .equipment-copy .btn{margin-top:28px}
-  @media(max-width:900px){.equipment-heading{grid-column:1 / span 7}.equipment-copy{grid-column:8 / -1}}
-  @media(max-width:760px){.equipment-grid{grid-template-columns:1fr;gap:30px}.equipment-heading,.equipment-copy{grid-column:auto}.equipment-copy{max-width:42rem}}
+  .equipment{padding:clamp(70px,7vw,96px) 0;background:#080a0b;border-bottom:1px solid var(--line)}
+  .equipment-panel{
+    display:grid;
+    grid-template-columns:repeat(12,minmax(0,1fr));
+    gap:var(--grid-gap);
+    align-items:center;
+    padding:clamp(44px,4.8vw,68px);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+    background:
+      radial-gradient(circle at 86% 18%,rgba(215,180,106,.12),transparent 34%),
+      linear-gradient(135deg,#131719 0%,#0c0e10 72%);
+    box-shadow:0 28px 80px rgba(0,0,0,.18);
+  }
+  .equipment-heading{grid-column:1 / span 6}
+  .equipment-heading .eyebrow{margin:0 0 16px}
+  .equipment-heading h2{font-size:clamp(2.7rem,4.2vw,4.8rem);line-height:.96;letter-spacing:-.05em;margin:0;max-width:9ch;text-wrap:balance}
+  .equipment-copy{grid-column:8 / -1;max-width:31rem;align-self:center}
+  .equipment-copy p{margin:0;color:#c5c0b8;font-size:clamp(1.02rem,1.18vw,1.18rem);line-height:1.7;max-width:42ch}
+  .equipment-copy .btn{margin-top:26px}
+  .equipment-stats{grid-column:1 / -1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin-top:clamp(30px,3.5vw,46px);border-top:1px solid rgba(255,255,255,.09)}
+  .equipment-stats div{display:flex;align-items:baseline;gap:16px;padding-top:24px}
+  .equipment-stats div + div{padding-left:32px;border-left:1px solid rgba(255,255,255,.09)}
+  .equipment-stats strong{font-size:clamp(2.2rem,3.2vw,3.8rem);line-height:1;color:var(--accent);letter-spacing:-.045em}
+  .equipment-stats span{color:#9c9891;font-size:.86rem;text-transform:uppercase;letter-spacing:.09em}
+  @media(max-width:900px){.equipment-panel{padding:40px}.equipment-heading{grid-column:1 / span 6}.equipment-copy{grid-column:7 / -1}}
+  @media(max-width:760px){
+    .equipment{padding:48px 0}
+    .equipment-panel{grid-template-columns:1fr;gap:28px;padding:30px;border-radius:12px}
+    .equipment-heading,.equipment-copy,.equipment-stats{grid-column:auto}
+    .equipment-heading h2{font-size:clamp(2.5rem,11vw,4rem);max-width:10ch}
+    .equipment-copy{max-width:100%}
+    .equipment-stats{margin-top:4px}
+    .equipment-stats div{display:grid;gap:6px;padding-top:20px}
+    .equipment-stats div + div{padding-left:20px}
+  }
 </style>
