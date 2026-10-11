@@ -17,6 +17,34 @@ for (const route of routes) {
   });
 }
 
+for (const width of [1920, 1440, 1366, 1024, 390]) {
+  test(`homepage stays inside viewport at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    const geometry = await page.evaluate(() => {
+      const root = document.documentElement;
+      const container = document.querySelector('.container');
+      const rect = container?.getBoundingClientRect();
+      return {
+        scrollWidth: root.scrollWidth,
+        clientWidth: root.clientWidth,
+        leftGutter: rect?.left ?? 0,
+        rightGutter: rect ? root.clientWidth - rect.right : 0,
+      };
+    });
+
+    expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth);
+    if (width >= 1024) {
+      expect(geometry.leftGutter).toBeGreaterThanOrEqual(28);
+      expect(geometry.rightGutter).toBeGreaterThanOrEqual(28);
+    } else {
+      expect(geometry.leftGutter).toBeGreaterThanOrEqual(18);
+      expect(geometry.rightGutter).toBeGreaterThanOrEqual(18);
+    }
+  });
+}
+
 test('keyboard focus remains visible and reduced motion has a global fallback', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await page.keyboard.press('Tab');
