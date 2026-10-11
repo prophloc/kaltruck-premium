@@ -84,9 +84,7 @@ test('homepage centers the cinematic hero group and uses the supplied KALTRUCK l
     const stage = document.querySelector('.hero-stage');
     const stageRect = stage?.getBoundingClientRect();
     const centerOffset = (rect?: DOMRect) => rect ? Math.abs((rect.left + rect.width / 2) - viewportWidth / 2) : 9999;
-    return {
-      stageCenterOffset: centerOffset(stageRect),
-    };
+    return { stageCenterOffset: centerOffset(stageRect) };
   });
 
   expect(geometry.stageCenterOffset).toBeLessThanOrEqual(12);
@@ -104,6 +102,56 @@ test('homepage keeps the editorial service structure intact', async ({ page }) =
     return rect.left >= 0 && rect.right <= document.documentElement.clientWidth;
   }));
   expect(fits).toBeTruthy();
+});
+
+test('homepage service stories use balanced media proportions and optical alignment', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+  const metrics = await page.locator('.story-inner').evaluateAll((nodes) => nodes.map((node) => {
+    const media = node.querySelector('.story-media')?.getBoundingClientRect();
+    const copy = node.querySelector('.story-copy')?.getBoundingClientRect();
+    const rect = node.getBoundingClientRect();
+    return {
+      sectionHeight: rect.height,
+      mediaRatio: media ? media.width / media.height : 0,
+      centerDelta: media && copy ? Math.abs((media.top + media.height / 2) - (copy.top + copy.height / 2)) : 9999,
+    };
+  }));
+
+  expect(metrics).toHaveLength(5);
+  expect(metrics.every((item) => item.sectionHeight <= 650)).toBeTruthy();
+  expect(metrics.every((item) => item.mediaRatio >= 1.35 && item.mediaRatio <= 1.75)).toBeTruthy();
+  expect(metrics.every((item) => item.centerDelta <= 90)).toBeTruthy();
+});
+
+test('homepage utility sections keep a compact premium rhythm', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+  const metrics = await page.evaluate(() => {
+    const box = (selector: string) => document.querySelector(selector)?.getBoundingClientRect();
+    const equipment = box('.equipment');
+    const equipmentHeading = box('.equipment-heading');
+    const equipmentCopy = box('.equipment-copy');
+    const process = box('.process');
+    const cta = box('.cta');
+    const footer = box('.site-footer');
+    const centerY = (rect?: DOMRect) => rect ? rect.top + rect.height / 2 : 0;
+    return {
+      equipmentHeight: equipment?.height ?? 9999,
+      equipmentCenterDelta: Math.abs(centerY(equipmentHeading) - centerY(equipmentCopy)),
+      processHeight: process?.height ?? 9999,
+      ctaHeight: cta?.height ?? 9999,
+      footerHeight: footer?.height ?? 9999,
+    };
+  });
+
+  expect(metrics.equipmentHeight).toBeLessThanOrEqual(620);
+  expect(metrics.equipmentCenterDelta).toBeLessThanOrEqual(80);
+  expect(metrics.processHeight).toBeLessThanOrEqual(700);
+  expect(metrics.ctaHeight).toBeLessThanOrEqual(620);
+  expect(metrics.footerHeight).toBeLessThanOrEqual(560);
 });
 
 test('realization gallery uses a controlled modular rhythm', async ({ page }) => {
