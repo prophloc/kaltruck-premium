@@ -9,10 +9,9 @@ import { siteConfig } from '../config/site';
     <div class="hero-stage">
       <p class="eyebrow hero-kicker">Transport HDS • Płock • Polska</p>
 
-      <h1 class="hero-title" aria-label="Transport, który podnosi więcej.">
-        <span class="hero-title-line hero-title-line--one">TRANSPORT, KTÓRY</span>
-        <span class="hero-title-line hero-title-line--two">PODNOSI</span>
-        <span class="hero-title-line hero-title-line--three">WIĘCEJ.</span>
+      <h1 class="hero-title" aria-label="Ciężki ładunek? Zostaw to nam!">
+        <span class="hero-title-line hero-title-line--one">CIĘŻKI ŁADUNEK?</span>
+        <span class="hero-title-line hero-title-line--two">ZOSTAW TO NAM!</span>
       </h1>
 
       <div class="hero-support">
@@ -82,7 +81,7 @@ import { siteConfig } from '../config/site';
   display:inline-flex;
   align-items:center;
   min-height:36px;
-  margin:0 0 clamp(16px,2vh,24px);
+  margin:0 0 clamp(18px,2.3vh,28px);
   padding:8px 15px;
   border:1px solid rgba(255,255,255,.16);
   border-radius:999px;
@@ -100,8 +99,6 @@ import { siteConfig } from '../config/site';
   column-gap:var(--grid-gap);
   width:100%;
   margin:0;
-  line-height:.84;
-  letter-spacing:-.058em;
   text-transform:uppercase;
 }
 .hero-title-line{
@@ -112,23 +109,17 @@ import { siteConfig } from '../config/site';
   text-shadow:0 18px 55px rgba(0,0,0,.34);
 }
 .hero-title-line--one{
-  grid-column:2 / span 8;
-  font-size:clamp(3rem,4.65vw,5.2rem);
-  line-height:.92;
-  letter-spacing:-.05em;
+  grid-column:2 / span 9;
+  font-size:clamp(3.7rem,5.8vw,6.4rem);
+  line-height:.9;
+  letter-spacing:-.052em;
 }
 .hero-title-line--two{
-  grid-column:2 / span 8;
-  margin-top:clamp(7px,1vh,12px);
-  font-size:clamp(5rem,8.55vw,9.2rem);
-  line-height:.82;
-  color:var(--accent);
-}
-.hero-title-line--three{
-  grid-column:5 / span 7;
-  margin-top:clamp(7px,1vh,13px);
-  font-size:clamp(4.5rem,7.3vw,8rem);
-  line-height:.84;
+  grid-column:4 / span 8;
+  margin-top:clamp(10px,1.3vh,16px);
+  font-size:clamp(4.8rem,7.9vw,8.7rem);
+  line-height:.83;
+  letter-spacing:-.058em;
   color:var(--accent);
 }
 .hero-support{
@@ -137,10 +128,10 @@ import { siteConfig } from '../config/site';
   grid-template-columns:repeat(12,minmax(0,1fr));
   column-gap:var(--grid-gap);
   align-items:center;
-  margin-top:clamp(24px,3vh,34px);
+  margin-top:clamp(28px,3.8vh,42px);
 }
 .hero-actions{
-  grid-column:6 / span 6;
+  grid-column:7 / span 5;
   display:flex;
   justify-content:flex-start;
   align-items:center;
@@ -204,9 +195,8 @@ import { siteConfig } from '../config/site';
   .hero-bg{object-position:58% 50%}
   .hero-stage{width:min(100%,980px)}
   .hero-kicker{grid-column:1 / span 5}
-  .hero-title-line--one{grid-column:1 / span 9;font-size:clamp(2.8rem,5.4vw,4.8rem)}
-  .hero-title-line--two{grid-column:1 / span 9;font-size:clamp(4.8rem,9.5vw,8rem)}
-  .hero-title-line--three{grid-column:4 / span 9;font-size:clamp(4.3rem,8.4vw,7.1rem)}
+  .hero-title-line--one{grid-column:1 / span 10;font-size:clamp(3.2rem,6.4vw,5.4rem)}
+  .hero-title-line--two{grid-column:3 / -1;font-size:clamp(4.5rem,9.4vw,7.8rem)}
   .hero-actions{grid-column:6 / -1}
 }
 
@@ -215,10 +205,9 @@ import { siteConfig } from '../config/site';
   .hero-content{min-height:100svh;padding-top:calc(var(--header-height) + 42px);padding-bottom:154px}
   .hero-stage{width:min(100%,780px)}
   .hero-kicker{grid-column:1 / span 7}
-  .hero-title-line--one{grid-column:1 / -1;font-size:clamp(2.55rem,7.5vw,4.2rem)}
-  .hero-title-line--two{grid-column:1 / -1;font-size:clamp(4.4rem,13.2vw,7rem)}
-  .hero-title-line--three{grid-column:3 / -1;font-size:clamp(4rem,11.8vw,6.4rem)}
-  .hero-support{margin-top:28px}
+  .hero-title-line--one{grid-column:1 / -1;font-size:clamp(3rem,8.2vw,4.8rem)}
+  .hero-title-line--two{grid-column:2 / -1;font-size:clamp(4.2rem,12.8vw,6.8rem)}
+  .hero-support{margin-top:30px}
   .hero-actions{grid-column:1 / span 10;display:flex;justify-content:flex-start}
   .hero-bottom-copy{min-height:112px}
   .hero-bottom-copy-inner{padding:22px var(--page-gutter) 24px}
@@ -238,10 +227,9 @@ import { siteConfig } from '../config/site';
   .hero-kicker{margin-bottom:16px;padding:7px 12px;min-height:34px}
   .hero-title{display:block}
   .hero-title-line{white-space:normal;width:auto}
-  .hero-title-line--one{font-size:clamp(2.05rem,10.4vw,3rem);line-height:.95}
-  .hero-title-line--two{margin-top:7px;font-size:clamp(3.9rem,18vw,5.4rem);line-height:.82}
-  .hero-title-line--three{margin-top:5px;margin-left:clamp(20px,7vw,38px);font-size:clamp(3.5rem,16vw,4.8rem);line-height:.84}
-  .hero-support{display:block;margin-top:22px}
+  .hero-title-line--one{font-size:clamp(2.7rem,12.6vw,3.7rem);line-height:.92}
+  .hero-title-line--two{margin-top:9px;margin-left:clamp(18px,6vw,34px);font-size:clamp(3.5rem,15.5vw,4.8rem);line-height:.84}
+  .hero-support{display:block;margin-top:24px}
   .hero-actions{display:grid;gap:10px}
   .hero-actions .btn{width:100%;min-height:58px;font-size:.98rem}
   .hero-bottom-copy{min-height:142px}
