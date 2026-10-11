@@ -20,7 +20,8 @@ test('header uses source brand artwork and readable sales navigation', async ({ 
   expect(navMetrics.every((item) => item.fontSize >= 15 && item.fontWeight >= 600)).toBeTruthy();
 
   const quoteBox = await page.locator('.quote-link').boundingBox();
-  expect(quoteBox?.height ?? 0).toBeGreaterThanOrEqual(52);
+  expect(quoteBox?.height ?? 0).toBeGreaterThanOrEqual(40);
+  expect(quoteBox?.height ?? 999).toBeLessThanOrEqual(48);
 });
 
 test('header uses a deep top gradient instead of a blurred menu backdrop', async ({ page }) => {
@@ -48,8 +49,8 @@ test('hero keeps the sales message vertically centered and CTAs prominent', asyn
   const titleBox = await page.locator('.hero-title').boundingBox();
   expect(titleBox).not.toBeNull();
   const titleCenter = (titleBox!.y + titleBox!.height / 2) / 900;
-  expect(titleCenter).toBeGreaterThan(0.34);
-  expect(titleCenter).toBeLessThan(0.62);
+  expect(titleCenter).toBeGreaterThan(0.30);
+  expect(titleCenter).toBeLessThan(0.60);
 
   const buttons = page.locator('.hero-actions .btn');
   await expect(buttons).toHaveCount(2);
@@ -76,11 +77,12 @@ test('hero centers the cinematic composition as one group while preserving inter
   expect(lineThree).not.toBeNull();
   expect(lineThree!.x - lineTwo!.x).toBeGreaterThanOrEqual(120);
 
-  const lead = await page.locator('.hero-lead').boundingBox();
+  const leadBand = await page.locator('.hero-bottom-copy').boundingBox();
   const actions = await page.locator('.hero-actions').boundingBox();
-  expect(lead).not.toBeNull();
+  expect(leadBand).not.toBeNull();
   expect(actions).not.toBeNull();
-  expect(actions!.x).toBeGreaterThan(lead!.x + 160);
+  expect(leadBand!.y).toBeGreaterThan(actions!.y + actions!.height);
+  expect(leadBand!.width).toBeGreaterThanOrEqual(1598);
 });
 
 test('hero kicker is a compact glass pill', async ({ page }) => {
