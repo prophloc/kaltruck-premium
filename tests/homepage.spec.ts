@@ -2,7 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test('homepage communicates the premium HDS offer without invented data', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('TRANSPORT, KTÓRY');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('CIĘŻKI ŁADUNEK?');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('ZOSTAW TO NAM!');
   await expect(page.getByRole('link', { name: /Wyceń transport/i }).first()).toBeVisible();
   await expect(page.locator('a[href^="tel:"]').first()).toBeVisible();
 
