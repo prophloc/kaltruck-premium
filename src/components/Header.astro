@@ -11,9 +11,8 @@ const nav = [
 ---
 <header class="site-header" data-header>
   <div class="container header-inner">
-    <a class="brand" href="/" aria-label="KALTRUCK — strona główna">
-      <span class="brand-mark">K</span>
-      <span><strong>KALTRUCK</strong><small>TRANSPORT HDS</small></span>
+    <a class="brand" href="/" aria-label="KALTRUCK Transport HDS — strona główna">
+      <img data-brand-logo class="brand-logo" src="/brand/kaltruck-logo.jpg" width="410" height="140" alt="KALTRUCK Transport HDS" />
     </a>
     <nav class="desktop-nav" aria-label="Nawigacja główna">
       {nav.map(([label, href]) => <a href={href}>{label}</a>)}
@@ -70,22 +69,74 @@ const nav = [
 </script>
 
 <style>
-  .site-header { position: fixed; top: 0; inset-inline: 0; z-index: 60; height: var(--header-height); display: flex; align-items: center; border-bottom: 1px solid transparent; transition: background .25s ease, border-color .25s ease, backdrop-filter .25s ease; }
-  .site-header.is-scrolled { background: rgba(10,11,12,.88); border-color: var(--line); backdrop-filter: blur(18px); }
-  .header-inner { display: flex; align-items: center; gap: clamp(18px, 2vw, 32px); }
-  .brand { display: inline-flex; align-items: center; gap: 11px; min-width: max-content; }
-  .brand-mark { width: 38px; height: 38px; border: 1px solid var(--accent); color: var(--accent); display: grid; place-items: center; border-radius: 50%; font-weight: 900; }
-  .brand strong, .brand small { display: block; line-height: 1; }
-  .brand strong { letter-spacing: .07em; font-size: .95rem; }
-  .brand small { color: var(--muted); letter-spacing: .17em; font-size: .52rem; margin-top: 5px; }
-  .desktop-nav { margin-left: auto; display: flex; align-items: center; gap: clamp(18px, 1.7vw, 28px); }
-  .desktop-nav a { color: #e9e7e1; font-size: .88rem; white-space: nowrap; }
+  .site-header {
+    position: fixed;
+    top: 0;
+    inset-inline: 0;
+    z-index: 60;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background: linear-gradient(180deg, rgba(5,6,7,.64) 0%, rgba(5,6,7,.26) 72%, rgba(5,6,7,.02) 100%);
+    transition: background .25s ease, border-color .25s ease, backdrop-filter .25s ease;
+  }
+  .site-header.is-scrolled { background: rgba(10,11,12,.94); border-color: var(--line); backdrop-filter: blur(18px); }
+  .header-inner { display: flex; align-items: center; gap: clamp(22px, 2.2vw, 36px); }
+  .brand { display: inline-flex; align-items: center; flex: 0 0 auto; }
+  .brand-logo {
+    width: clamp(170px, 12vw, 192px);
+    height: auto;
+    border-radius: 7px;
+    box-shadow: 0 10px 32px rgba(0,0,0,.22);
+  }
+  .desktop-nav { margin-left: auto; display: flex; align-items: center; gap: clamp(20px, 1.8vw, 30px); }
+  .desktop-nav a {
+    color: #fff;
+    font-size: .97rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    text-shadow: 0 2px 16px rgba(0,0,0,.75);
+    transition: color .2s ease, opacity .2s ease;
+  }
+  .desktop-nav a:hover { color: var(--accent-strong); }
   .header-actions { display: flex; align-items: center; gap: 12px; }
-  .phone-link { font-weight: 720; font-size: .86rem; white-space: nowrap; }
-  .quote-link { min-height: 48px; padding-inline: 22px; white-space: nowrap; }
-  .menu-button { display: none; width: 48px; height: 48px; flex: 0 0 auto; border: 1px solid var(--line); border-radius: 50%; background: rgba(0,0,0,.22); padding: 0 13px; color: var(--text); }
+  .phone-link {
+    min-height: 52px;
+    display: inline-flex;
+    align-items: center;
+    padding-inline: 18px;
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: 999px;
+    background: rgba(0,0,0,.28);
+    color: #fff;
+    font-weight: 800;
+    font-size: .98rem;
+    white-space: nowrap;
+    text-shadow: 0 2px 14px rgba(0,0,0,.55);
+    backdrop-filter: blur(10px);
+  }
+  .quote-link { min-height: 56px; padding-inline: 26px; font-size: .96rem; font-weight: 800; white-space: nowrap; }
+  .menu-button { display: none; width: 52px; height: 52px; flex: 0 0 auto; border: 1px solid rgba(255,255,255,.3); border-radius: 50%; background: rgba(0,0,0,.36); padding: 0 14px; color: var(--text); }
   .menu-button span { display: block; height: 1px; background: currentColor; margin: 6px 0; }
-  @media (max-width: 1180px) and (min-width: 1081px) { .phone-link { display: none; } .desktop-nav { gap: 16px; } .header-inner { gap: 18px; } }
-  @media (max-width: 1080px) { .desktop-nav, .phone-link { display: none; } .header-actions { margin-left: auto; } .menu-button { display: block; } }
-  @media (max-width: 620px) { .quote-link { display: none; } .brand strong { font-size: .88rem; } }
+
+  @media (max-width: 1320px) and (min-width: 1081px) {
+    .brand-logo { width: 166px; }
+    .header-inner { gap: 18px; }
+    .desktop-nav { gap: 17px; }
+    .desktop-nav a { font-size: .92rem; }
+    .phone-link { display: none; }
+    .quote-link { min-height: 52px; padding-inline: 21px; }
+  }
+  @media (max-width: 1080px) {
+    .desktop-nav, .phone-link { display: none; }
+    .header-actions { margin-left: auto; }
+    .menu-button { display: block; }
+    .brand-logo { width: 164px; }
+  }
+  @media (max-width: 620px) {
+    .quote-link { display: none; }
+    .brand-logo { width: 148px; }
+  }
 </style>

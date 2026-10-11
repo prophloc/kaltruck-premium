@@ -16,5 +16,5 @@
   --section-space: clamp(84px, 8vw, 136px);
   --section-space-compact: clamp(64px, 6vw, 96px);
   --grid-gap: clamp(20px, 2.2vw, 36px);
-  --header-height: 78px;
+  --header-height: 88px;
 }
