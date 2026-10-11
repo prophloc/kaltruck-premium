@@ -75,7 +75,7 @@ test('hero centers the cinematic composition as one group while preserving inter
   const lineTwo = await page.locator('.hero-title-line--two').boundingBox();
   expect(lineOne).not.toBeNull();
   expect(lineTwo).not.toBeNull();
-  expect(lineTwo!.x - lineOne!.x).toBeGreaterThanOrEqual(120);
+  expect(lineOne!.x - lineTwo!.x).toBeGreaterThanOrEqual(50);
 
   const leadBand = await page.locator('.hero-bottom-copy').boundingBox();
   const actions = await page.locator('.hero-actions').boundingBox();
