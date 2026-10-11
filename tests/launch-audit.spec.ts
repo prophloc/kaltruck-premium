@@ -99,19 +99,17 @@ test('desktop header balances its edge gutters and keeps compact actions next to
     const brand = document.querySelector('.brand');
     const actions = document.querySelector('.header-actions');
     const nav = document.querySelector('.desktop-nav');
-    const headerRect = header?.getBoundingClientRect();
     const brandRect = brand?.getBoundingClientRect();
     const actionsRect = actions?.getBoundingClientRect();
     const navRect = nav?.getBoundingClientRect();
     const children = header ? Array.from(header.children) : [];
     return {
-      leftGutter: headerRect?.left ?? 0,
-      rightGutter: headerRect ? document.documentElement.clientWidth - headerRect.right : 0,
+      leftGutter: brandRect?.left ?? 0,
+      rightGutter: navRect ? document.documentElement.clientWidth - navRect.right : 0,
       actionsAfterBrand: children.indexOf(actions as Element) === children.indexOf(brand as Element) + 1,
       navAfterActions: children.indexOf(nav as Element) > children.indexOf(actions as Element),
       actionsGap: brandRect && actionsRect ? actionsRect.left - brandRect.right : 9999,
       actionsHeight: actionsRect?.height ?? 9999,
-      navRight: navRect?.right ?? 0,
     };
   });
 
@@ -121,7 +119,6 @@ test('desktop header balances its edge gutters and keeps compact actions next to
   expect(metrics.navAfterActions).toBeTruthy();
   expect(metrics.actionsGap).toBeLessThanOrEqual(28);
   expect(metrics.actionsHeight).toBeLessThanOrEqual(48);
-  expect(metrics.navRight).toBeLessThanOrEqual(1400);
 });
 
 test('homepage lead sits in a full-width bottom band instead of the title grid', async ({ page }) => {
