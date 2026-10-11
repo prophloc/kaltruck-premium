@@ -3,7 +3,7 @@ import { siteConfig } from '../config/site';
 ---
 <footer class="site-footer">
   <div class="container footer-grid">
-    <div>
+    <div class="footer-brand">
       <p class="eyebrow">KALTRUCK</p>
       <h2>Ciężki ładunek.<br />Precyzyjna robota.</h2>
     </div>
@@ -19,12 +19,5 @@ import { siteConfig } from '../config/site';
   <div class="container footer-bottom"><span>© {new Date().getFullYear()} {siteConfig.legalName}</span><span>Transport HDS</span></div>
 </footer>
 <style>
-  .site-footer { border-top: 1px solid var(--line); background: #070809; padding: 72px 0 28px; }
-  .footer-grid { display: grid; grid-template-columns: 1.4fr .6fr 1fr; gap: 48px; }
-  h2 { font-size: clamp(2.4rem, 5vw, 5.2rem); line-height: .95; letter-spacing: -.045em; margin: 18px 0 0; }
-  .footer-links, .footer-contact { display: grid; align-content: start; gap: 12px; }
-  .footer-contact { color: var(--muted); }
-  .footer-contact a:first-child { color: var(--text); font-size: 1.4rem; font-weight: 760; }
-  .footer-bottom { border-top: 1px solid var(--line); margin-top: 64px; padding-top: 24px; display: flex; justify-content: space-between; color: #888; font-size: .82rem; }
-  @media(max-width: 800px){ .footer-grid { grid-template-columns: 1fr; } .footer-bottom { gap: 12px; flex-direction: column; } }
+.site-footer{border-top:1px solid var(--line);background:#070809;padding:clamp(68px,7vw,96px) 0 28px}.footer-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:start}.footer-brand{grid-column:1/span 6}.footer-links{grid-column:8/span 2}.footer-contact{grid-column:10/span 3}.footer-brand h2{font-size:clamp(2.5rem,4.6vw,4.9rem);line-height:.95;letter-spacing:-.045em;margin:18px 0 0;max-width:9ch}.footer-links,.footer-contact{display:grid;align-content:start;gap:12px}.footer-links a{width:max-content}.footer-contact{color:var(--muted)}.footer-contact a{overflow-wrap:anywhere}.footer-contact a:first-child{color:var(--text);font-size:clamp(1.15rem,1.8vw,1.45rem);font-weight:760}.footer-bottom{border-top:1px solid var(--line);margin-top:clamp(48px,6vw,72px);padding-top:24px;display:flex;justify-content:space-between;gap:20px;color:#888;font-size:.82rem}@media(max-width:900px){.footer-brand{grid-column:1/span 7}.footer-links{grid-column:8/span 2}.footer-contact{grid-column:10/span 3}}@media(max-width:760px){.footer-grid{grid-template-columns:1fr;gap:42px}.footer-brand,.footer-links,.footer-contact{grid-column:1}.footer-brand h2{max-width:10ch}.footer-bottom{flex-direction:column;gap:10px}}
 </style>

@@ -6,7 +6,7 @@ import CTASection from '../components/CTASection.astro';
 const projects = await getCollection('realizations');
 ---
 <BaseLayout title="Realizacje HDS | KALTRUCK Kalwasińscy" description="Zobacz autentyczne realizacje KALTRUCK: kontenery, prefabrykaty, urządzenia przemysłowe, konstrukcje i nietypowe ładunki obsługiwane HDS." canonicalPath="/realizacje/">
-<section class="page-head section"><div class="container"><p class="eyebrow">Realizacje</p><h1>Robota mówi<br />więcej niż obietnice.</h1><p class="lead">Wybrane realizacje z prawdziwych zleceń Transport HDS Kalwasińscy.</p></div></section>
+<section class="page-head section"><div class="container page-head-grid"><div><p class="eyebrow">Realizacje</p><h1>Robota mówi<br />więcej niż obietnice.</h1></div><p class="lead">Wybrane realizacje z prawdziwych zleceń Transport HDS Kalwasińscy.</p></div></section>
 <section class="section gallery-section"><div class="container"><ProjectGallery projects={projects} /></div></section><CTASection />
 </BaseLayout>
-<style>.page-head{padding-top:calc(var(--header-height) + 90px);padding-bottom:60px}.page-head h1{font-size:clamp(3.8rem,9vw,9rem);line-height:.86;letter-spacing:-.06em;margin:18px 0 30px}.gallery-section{padding-top:20px}</style>
+<style>.page-head{padding-top:calc(var(--header-height) + clamp(74px,8vw,118px));padding-bottom:clamp(52px,6vw,82px)}.page-head-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:end}.page-head-grid>div{grid-column:1/span 8}.page-head-grid>.lead{grid-column:9/span 4;margin:0 0 10px}.page-head h1{font-size:clamp(3.7rem,7.6vw,7.8rem);line-height:.88;letter-spacing:-.058em;margin:18px 0 0;max-width:9.5ch}.gallery-section{padding-top:12px}@media(max-width:800px){.page-head-grid{grid-template-columns:1fr;gap:28px}.page-head-grid>div,.page-head-grid>.lead{grid-column:1}.page-head h1{font-size:clamp(3.3rem,13vw,5.4rem);max-width:10ch}}</style>
