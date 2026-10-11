@@ -24,7 +24,7 @@ for (const width of [1920, 1440, 1366, 1024, 390]) {
 
     const geometry = await page.evaluate(() => {
       const root = document.documentElement;
-      const container = document.querySelector('.container');
+      const container = document.querySelector('.hero .container') ?? document.querySelector('main .container');
       const rect = container?.getBoundingClientRect();
       return {
         scrollWidth: root.scrollWidth,

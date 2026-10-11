@@ -11,6 +11,10 @@
   --radius-sm: 10px;
   --radius-md: 18px;
   --radius-lg: 28px;
-  --container: 1240px;
+  --container: 1440px;
+  --page-gutter: clamp(20px, 3vw, 56px);
+  --section-space: clamp(84px, 8vw, 136px);
+  --section-space-compact: clamp(64px, 6vw, 96px);
+  --grid-gap: clamp(20px, 2.2vw, 36px);
   --header-height: 78px;
 }
