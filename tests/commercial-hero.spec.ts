@@ -85,6 +85,29 @@ test('hero centers the cinematic composition as one group while preserving inter
   expect(leadBand!.width).toBeGreaterThanOrEqual(1598);
 });
 
+test('desktop slogan follows the crane and sits the closing line on the container', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+  const lineOne = await page.locator('.hero-title-line--one').boundingBox();
+  const lineTwo = await page.locator('.hero-title-line--two').boundingBox();
+  expect(lineOne).not.toBeNull();
+  expect(lineTwo).not.toBeNull();
+
+  // The crane boom occupies the upper-middle band of this approved hero crop.
+  expect(lineOne!.y).toBeGreaterThanOrEqual(330);
+  expect(lineOne!.y).toBeLessThanOrEqual(410);
+  expect(lineOne!.x).toBeGreaterThanOrEqual(390);
+  expect(lineOne!.x).toBeLessThanOrEqual(500);
+
+  // The yellow container occupies roughly x=260..700 and y=500..700 at 1600x900.
+  expect(lineTwo!.x).toBeGreaterThanOrEqual(280);
+  expect(lineTwo!.x).toBeLessThanOrEqual(360);
+  expect(lineTwo!.y).toBeGreaterThanOrEqual(515);
+  expect(lineTwo!.y).toBeLessThanOrEqual(610);
+  expect(lineTwo!.width).toBeLessThanOrEqual(620);
+});
+
 test('hero kicker is a compact glass pill', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
