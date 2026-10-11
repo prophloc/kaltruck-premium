@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const routes = ['/', '/transport-hds/', '/wynajem-hds/', '/transport-kontenerow/', '/transport-prefabrykatow/', '/transport-maszyn/', '/rozladunek-hds/', '/sprzet/', '/realizacje/', '/o-nas/', '/kontakt/', '/wycena/'];
+const supportingRoutes = ['/realizacje/', '/sprzet/', '/o-nas/', '/kontakt/', '/wycena/', '/transport-hds/'];
 
 for (const route of routes) {
   test(`${route} passes launch smoke audit`, async ({ page }) => {
@@ -45,6 +46,20 @@ for (const width of [1920, 1440, 1366, 1024, 390]) {
   });
 }
 
+for (const route of supportingRoutes) {
+  for (const width of [1440, 1024, 390]) {
+    test(`${route} stays inside viewport at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(route, { waitUntil: 'domcontentloaded' });
+      const geometry = await page.evaluate(() => ({
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+      }));
+      expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth);
+    });
+  }
+}
+
 test('homepage keeps the editorial service structure intact', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
@@ -57,6 +72,18 @@ test('homepage keeps the editorial service structure intact', async ({ page }) =
     return rect.left >= 0 && rect.right <= document.documentElement.clientWidth;
   }));
   expect(fits).toBeTruthy();
+});
+
+test('realization gallery uses a controlled modular rhythm', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
+  const cards = page.locator('[data-project-gallery] .project');
+  await expect(cards).toHaveCount(8);
+  const topDifference = await cards.evaluateAll((nodes) => {
+    if (nodes.length < 2) return 0;
+    return Math.abs(nodes[0].getBoundingClientRect().top - nodes[1].getBoundingClientRect().top);
+  });
+  expect(topDifference).toBeLessThanOrEqual(40);
 });
 
 test('keyboard focus remains visible and reduced motion has a global fallback', async ({ page }) => {
