@@ -60,6 +60,17 @@ for (const route of supportingRoutes) {
   }
 }
 
+test('homepage hero uses a three-line cinematic title composition', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const lines = page.locator('.hero-title-line');
+  await expect(lines).toHaveCount(3);
+  await expect(lines.nth(0)).toHaveText('TRANSPORT, KTÓRY');
+  await expect(lines.nth(1)).toHaveText('PODNOSI');
+  await expect(lines.nth(2)).toHaveText('WIĘCEJ.');
+  await expect(page.locator('.hero-support')).toHaveCount(1);
+});
+
 test('homepage keeps the editorial service structure intact', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
