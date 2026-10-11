@@ -20,9 +20,14 @@ const faqItems=[
     <div class="container intro-grid">
       <div class="intro-heading">
         <p class="eyebrow">KALTRUCK / Kalwasińscy</p>
-        <h2 class="section-title">Ciężkie rzeczy<br />zostaw nam.</h2>
+        <h2 class="section-title">Ciężkie rzeczy zostaw nam.</h2>
       </div>
-      <p class="lead intro-lead">Łączymy transport i pracę żurawia HDS w jednej realizacji. Przyjeżdżamy, podnosimy, przewozimy i ustawiamy ładunek tam, gdzie ma finalnie stanąć.</p>
+      <div class="intro-copy">
+        <p class="lead intro-lead">Łączymy transport i pracę żurawia HDS w jednej realizacji. Przyjeżdżamy, podnosimy, przewozimy i ustawiamy ładunek tam, gdzie ma finalnie stanąć.</p>
+        <div class="intro-flow" aria-label="Zakres realizacji">
+          <span>Transport</span><i></i><span>Podnoszenie</span><i></i><span>Ustawienie</span>
+        </div>
+      </div>
     </div>
   </section>
   <ServiceStory eyebrow="01 / Kontenery" title="Kontenery. Od odbioru po precyzyjne ustawienie." text="Transport kontenerów mieszkalnych, biurowych i magazynowych z wykorzystaniem HDS — bez organizowania osobnego dźwigu na miejscu." href="/transport-kontenerow/" image="https://hdsplock.pl/zdj/realizacje/transport-kontenerow-07.jpg" alt="Transport kontenera samochodem z HDS" />
@@ -36,11 +41,46 @@ const faqItems=[
   <CTASection />
 </BaseLayout>
 <style>
-  .intro{background:#0a0b0c;border-bottom:1px solid var(--line)}
-  .intro-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:end}
-  .intro-heading{grid-column:1 / span 7}
-  .intro-lead{grid-column:9 / -1;margin:0 0 .3rem;max-width:32rem}
-  .intro .section-title{margin-top:18px}
-  @media(max-width:980px){.intro-heading{grid-column:1 / span 8}.intro-lead{grid-column:9 / -1}}
-  @media(max-width:780px){.intro-grid{grid-template-columns:1fr;gap:30px}.intro-heading,.intro-lead{grid-column:auto}.intro-lead{max-width:42rem}}
+  .intro{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(180deg,#0b0d0e 0%,#090a0b 100%);
+    border-bottom:1px solid var(--line);
+    padding-block:clamp(72px,7.5vw,108px);
+  }
+  .intro::after{
+    content:"";
+    position:absolute;
+    width:520px;
+    height:520px;
+    border-radius:50%;
+    left:-280px;
+    bottom:-360px;
+    background:radial-gradient(circle,rgba(215,180,106,.07),transparent 68%);
+    pointer-events:none;
+  }
+  .intro-grid{
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:repeat(12,minmax(0,1fr));
+    gap:var(--grid-gap);
+    align-items:center;
+  }
+  .intro-heading{grid-column:1 / span 6}
+  .intro-heading .eyebrow{margin:0 0 18px}
+  .intro .section-title{margin:0;max-width:8.5ch;font-size:clamp(3rem,5.1vw,5.8rem);line-height:.94}
+  .intro-copy{grid-column:8 / -1;max-width:34rem}
+  .intro-lead{margin:0;max-width:31rem;color:#d0ccc4;font-size:clamp(1.08rem,1.35vw,1.3rem);line-height:1.68}
+  .intro-flow{display:flex;align-items:center;gap:12px;margin-top:30px;color:#96928b;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+  .intro-flow i{display:block;width:26px;height:1px;background:rgba(215,180,106,.48)}
+  @media(max-width:980px){.intro-heading{grid-column:1 / span 7}.intro-copy{grid-column:8 / -1}.intro .section-title{font-size:clamp(2.8rem,6vw,4.8rem)}}
+  @media(max-width:780px){
+    .intro{padding-block:54px}
+    .intro-grid{grid-template-columns:1fr;gap:28px}
+    .intro-heading,.intro-copy{grid-column:auto}
+    .intro .section-title{max-width:10ch;font-size:clamp(2.7rem,12vw,4.4rem)}
+    .intro-lead{max-width:42rem}
+    .intro-flow{gap:9px;overflow:hidden;font-size:.7rem}.intro-flow i{width:18px}
+  }
 </style>
