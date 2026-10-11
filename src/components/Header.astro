@@ -12,7 +12,7 @@ const nav = [
 <header class="site-header" data-header>
   <div class="container header-inner">
     <a class="brand" href="/" aria-label="KALTRUCK Transport HDS — strona główna">
-      <img data-brand-logo class="brand-logo" src="/brand/kaltruck-logo.jpg" width="410" height="140" alt="KALTRUCK Transport HDS" />
+      <img class="brand-logo" src="/brand/kaltruck-logo.svg" width="2548" height="1305" alt="KALTRUCK Transport HDS" />
     </a>
     <nav class="desktop-nav" aria-label="Nawigacja główna">
       {nav.map(([label, href]) => <a href={href}>{label}</a>)}
@@ -78,26 +78,27 @@ const nav = [
     display: flex;
     align-items: center;
     border-bottom: 1px solid rgba(255,255,255,.08);
-    background: linear-gradient(180deg, rgba(5,6,7,.64) 0%, rgba(5,6,7,.26) 72%, rgba(5,6,7,.02) 100%);
+    background: linear-gradient(180deg, rgba(5,6,7,.7) 0%, rgba(5,6,7,.34) 70%, rgba(5,6,7,.06) 100%);
     transition: background .25s ease, border-color .25s ease, backdrop-filter .25s ease;
   }
   .site-header.is-scrolled { background: rgba(10,11,12,.94); border-color: var(--line); backdrop-filter: blur(18px); }
-  .header-inner { display: flex; align-items: center; gap: clamp(22px, 2.2vw, 36px); }
-  .brand { display: inline-flex; align-items: center; flex: 0 0 auto; }
+  .header-inner { display: flex; align-items: center; gap: clamp(20px, 2vw, 34px); width: 100%; }
+  .brand { display: inline-flex; align-items: center; flex: 0 0 auto; min-width: 0; }
   .brand-logo {
-    width: clamp(170px, 12vw, 192px);
+    display: block;
+    width: clamp(132px, 10vw, 158px);
     height: auto;
-    border-radius: 7px;
-    box-shadow: 0 10px 32px rgba(0,0,0,.22);
+    max-height: 72px;
+    filter: invert(1) drop-shadow(0 8px 24px rgba(0,0,0,.3));
   }
-  .desktop-nav { margin-left: auto; display: flex; align-items: center; gap: clamp(20px, 1.8vw, 30px); }
+  .desktop-nav { margin-left: auto; display: flex; align-items: center; gap: clamp(18px, 1.6vw, 27px); }
   .desktop-nav a {
     color: #fff;
-    font-size: .97rem;
-    font-weight: 700;
+    font-size: .98rem;
+    font-weight: 750;
     line-height: 1;
     white-space: nowrap;
-    text-shadow: 0 2px 16px rgba(0,0,0,.75);
+    text-shadow: 0 2px 16px rgba(0,0,0,.78);
     transition: color .2s ease, opacity .2s ease;
   }
   .desktop-nav a:hover { color: var(--accent-strong); }
@@ -121,22 +122,30 @@ const nav = [
   .menu-button { display: none; width: 52px; height: 52px; flex: 0 0 auto; border: 1px solid rgba(255,255,255,.3); border-radius: 50%; background: rgba(0,0,0,.36); padding: 0 14px; color: var(--text); }
   .menu-button span { display: block; height: 1px; background: currentColor; margin: 6px 0; }
 
-  @media (max-width: 1180px) and (min-width: 1081px) {
-    .brand-logo { width: 166px; }
-    .header-inner { gap: 18px; }
-    .desktop-nav { gap: 17px; }
+  @media (max-width: 1320px) and (min-width: 1181px) {
+    .brand-logo { width: 138px; }
+    .header-inner { gap: 16px; }
+    .desktop-nav { gap: 16px; }
     .desktop-nav a { font-size: .92rem; }
+    .phone-link { min-height: 48px; padding-inline: 15px; font-size: .92rem; }
+    .quote-link { min-height: 50px; padding-inline: 19px; font-size: .91rem; }
+  }
+  @media (max-width: 1180px) and (min-width: 1081px) {
+    .brand-logo { width: 134px; }
+    .header-inner { gap: 16px; }
+    .desktop-nav { gap: 15px; }
+    .desktop-nav a { font-size: .9rem; }
     .phone-link { display: none; }
-    .quote-link { min-height: 52px; padding-inline: 21px; }
+    .quote-link { min-height: 50px; padding-inline: 19px; }
   }
   @media (max-width: 1080px) {
     .desktop-nav, .phone-link { display: none; }
     .header-actions { margin-left: auto; }
     .menu-button { display: block; }
-    .brand-logo { width: 164px; }
+    .brand-logo { width: 134px; max-height: 68px; }
   }
   @media (max-width: 620px) {
     .quote-link { display: none; }
-    .brand-logo { width: 148px; }
+    .brand-logo { width: 124px; max-height: 64px; }
   }
 </style>
