@@ -4,28 +4,183 @@ import { siteConfig } from '../config/site';
 <section class="hero">
   <img class="hero-bg" src="https://hdsplock.pl/zdj/realizacje/transport-kontenerow-07.jpg" width="1440" height="1080" alt="Samochód KALTRUCK z żurawiem HDS podczas realizacji transportowej" fetchpriority="high" />
   <div class="hero-overlay"></div>
+
   <div class="container hero-content">
-    <p class="eyebrow">Transport HDS • Płock • Polska</p>
-    <h1>TRANSPORT, KTÓRY<br /><span>PODNOSI WIĘCEJ.</span></h1>
-    <p class="hero-lead">Transport HDS, załadunek, rozładunek i montaż. Od kontenerów po prefabrykaty, maszyny i ładunki specjalistyczne.</p>
-    <div class="hero-actions">
-      <a class="btn btn-primary" href="/wycena/">Wyceń transport</a>
-      <a class="btn btn-secondary" href={`tel:${siteConfig.phone}`}>Zadzwoń: 514 948 373</a>
+    <div class="hero-stage">
+      <p class="eyebrow hero-kicker">Transport HDS • Płock • Polska</p>
+
+      <h1 class="hero-title" aria-label="Transport, który podnosi więcej.">
+        <span class="hero-title-line hero-title-line--one">TRANSPORT, KTÓRY</span>
+        <span class="hero-title-line hero-title-line--two">PODNOSI</span>
+        <span class="hero-title-line hero-title-line--three">WIĘCEJ.</span>
+      </h1>
+
+      <div class="hero-support">
+        <p class="hero-lead">Transport HDS, załadunek, rozładunek i montaż. Od kontenerów po prefabrykaty, maszyny i ładunki specjalistyczne.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/wycena/">Wyceń transport</a>
+          <a class="btn btn-secondary" href={`tel:${siteConfig.phone}`}>Zadzwoń: 514 948 373</a>
+        </div>
+      </div>
     </div>
   </div>
+
   <div class="hero-scroll">PRZEWIŃ <span>↓</span></div>
 </section>
+
 <style>
-.hero{min-height:100svh;position:relative;display:flex;align-items:flex-end;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.06)}
-.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 52%}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,7,.12),rgba(5,6,7,.34) 42%,rgba(5,6,7,.92) 100%),linear-gradient(90deg,rgba(5,6,7,.75) 0%,rgba(5,6,7,.46) 42%,rgba(5,6,7,.08) 72%)}
-.hero-content{position:relative;z-index:2;padding-top:calc(var(--header-height) + clamp(70px,8vh,120px));padding-bottom:clamp(66px,8vh,108px)}
-.hero h1{font-size:clamp(4rem,8.15vw,8.8rem);line-height:.86;letter-spacing:-.062em;margin:18px 0 26px;max-width:9.8ch;text-wrap:balance}
-.hero h1 span{color:var(--accent)}
-.hero-lead{font-size:clamp(1.05rem,1.4vw,1.35rem);line-height:1.55;max-width:50ch;margin:0;color:#ddd9d0}
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
-.hero-scroll{position:absolute;z-index:2;right:max(var(--page-gutter),24px);bottom:34px;font-size:.68rem;letter-spacing:.18em;color:#b9b7b0;writing-mode:vertical-rl}
+.hero{
+  min-height:100svh;
+  position:relative;
+  display:flex;
+  align-items:flex-end;
+  overflow:hidden;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.hero-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 51%;
+}
+.hero-overlay{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg,rgba(5,6,7,.08) 0%,rgba(5,6,7,.18) 34%,rgba(5,6,7,.76) 76%,rgba(5,6,7,.96) 100%),
+    linear-gradient(90deg,rgba(5,6,7,.72) 0%,rgba(5,6,7,.38) 38%,rgba(5,6,7,.06) 72%);
+}
+.hero-content{
+  position:relative;
+  z-index:2;
+  padding-top:calc(var(--header-height) + clamp(70px,8vh,118px));
+  padding-bottom:clamp(46px,6.5vh,82px);
+}
+.hero-stage{
+  display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  column-gap:var(--grid-gap);
+  align-items:end;
+}
+.hero-kicker{
+  grid-column:1 / span 5;
+  margin-bottom:clamp(18px,2.4vh,30px);
+}
+.hero-title{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  column-gap:var(--grid-gap);
+  width:100%;
+  margin:0;
+  line-height:.8;
+  letter-spacing:-.065em;
+  text-transform:uppercase;
+}
+.hero-title-line{
+  display:block;
+  white-space:nowrap;
+  text-shadow:0 16px 50px rgba(0,0,0,.22);
+}
+.hero-title-line--one{
+  grid-column:1 / span 8;
+  font-size:clamp(2.8rem,5.45vw,6rem);
+  line-height:.9;
+  letter-spacing:-.055em;
+}
+.hero-title-line--two{
+  grid-column:2 / span 8;
+  margin-top:clamp(4px,1vh,12px);
+  font-size:clamp(5.3rem,10.9vw,11.7rem);
+  line-height:.78;
+  color:var(--accent);
+}
+.hero-title-line--three{
+  grid-column:5 / span 7;
+  margin-top:clamp(8px,1.3vh,18px);
+  font-size:clamp(4.9rem,9.6vw,10.3rem);
+  line-height:.8;
+  color:var(--accent);
+}
+.hero-support{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  column-gap:var(--grid-gap);
+  align-items:end;
+  margin-top:clamp(30px,4.2vh,52px);
+}
+.hero-lead{
+  grid-column:1 / span 4;
+  max-width:42ch;
+  margin:0;
+  font-size:clamp(1rem,1.18vw,1.2rem);
+  line-height:1.58;
+  color:#e2dfd7;
+}
+.hero-actions{
+  grid-column:8 / -1;
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.hero-scroll{
+  position:absolute;
+  z-index:2;
+  right:max(var(--page-gutter),24px);
+  bottom:34px;
+  font-size:.68rem;
+  letter-spacing:.18em;
+  color:#b9b7b0;
+  writing-mode:vertical-rl;
+}
 .hero-scroll span{font-size:1rem;margin-top:10px}
-@media(max-width:1180px){.hero h1{font-size:clamp(4rem,8.7vw,7.3rem);max-width:10.2ch}.hero-bg{object-position:58% 52%}}
-@media(max-width:760px){.hero{min-height:92svh}.hero-content{padding-top:calc(var(--header-height) + 70px);padding-bottom:58px}.hero h1{font-size:clamp(3rem,14.5vw,5rem);line-height:.88;max-width:9.5ch;margin-bottom:22px}.hero-lead{font-size:1.04rem;max-width:38ch}.hero-actions{margin-top:26px}.hero-actions .btn{width:100%}.hero-scroll{display:none}.hero-bg{object-position:62% center}.hero-overlay{background:linear-gradient(180deg,rgba(5,6,7,.2),rgba(5,6,7,.42) 38%,rgba(5,6,7,.96) 100%),linear-gradient(90deg,rgba(5,6,7,.72),rgba(5,6,7,.12) 88%)}}
+
+@media(max-width:1180px){
+  .hero-bg{object-position:58% 51%}
+  .hero-title-line--one{grid-column:1 / span 9;font-size:clamp(2.7rem,5.8vw,5rem)}
+  .hero-title-line--two{grid-column:1 / span 9;font-size:clamp(5rem,11.5vw,9.2rem)}
+  .hero-title-line--three{grid-column:4 / span 8;font-size:clamp(4.6rem,10.5vw,8.4rem)}
+  .hero-lead{grid-column:1 / span 5}
+  .hero-actions{grid-column:7 / -1}
+}
+
+@media(max-width:900px){
+  .hero{min-height:96svh}
+  .hero-content{padding-top:calc(var(--header-height) + 74px);padding-bottom:48px}
+  .hero-kicker{grid-column:1 / span 8}
+  .hero-title-line--one{grid-column:1 / -1;font-size:clamp(2.55rem,7.7vw,4.45rem)}
+  .hero-title-line--two{grid-column:1 / -1;font-size:clamp(4.6rem,14vw,7.5rem)}
+  .hero-title-line--three{grid-column:3 / -1;font-size:clamp(4.15rem,12.6vw,6.8rem)}
+  .hero-support{margin-top:34px;row-gap:26px}
+  .hero-lead{grid-column:1 / span 7;max-width:40ch}
+  .hero-actions{grid-column:8 / -1;display:grid;justify-content:stretch}
+  .hero-actions .btn{width:100%}
+  .hero-scroll{display:none}
+}
+
+@media(max-width:620px){
+  .hero{min-height:94svh}
+  .hero-bg{object-position:64% center}
+  .hero-overlay{
+    background:
+      linear-gradient(180deg,rgba(5,6,7,.18) 0%,rgba(5,6,7,.34) 40%,rgba(5,6,7,.9) 78%,rgba(5,6,7,.98) 100%),
+      linear-gradient(90deg,rgba(5,6,7,.68),rgba(5,6,7,.08) 92%);
+  }
+  .hero-content{padding-top:calc(var(--header-height) + 64px);padding-bottom:34px}
+  .hero-stage{display:block}
+  .hero-kicker{margin-bottom:18px}
+  .hero-title{display:block}
+  .hero-title-line{white-space:normal}
+  .hero-title-line--one{font-size:clamp(2.15rem,10.6vw,3.15rem);line-height:.94}
+  .hero-title-line--two{margin-top:8px;font-size:clamp(4.1rem,19vw,5.7rem);line-height:.8}
+  .hero-title-line--three{margin-top:6px;margin-left:clamp(26px,9vw,48px);font-size:clamp(3.75rem,17.2vw,5.1rem);line-height:.82}
+  .hero-support{display:block;margin-top:28px}
+  .hero-lead{max-width:34ch;font-size:1rem}
+  .hero-actions{display:grid;gap:10px;margin-top:24px}
+  .hero-actions .btn{width:100%}
+}
 </style>
