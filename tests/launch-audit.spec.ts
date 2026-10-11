@@ -71,6 +71,37 @@ test('homepage hero uses a three-line cinematic title composition', async ({ pag
   await expect(page.locator('.hero-support')).toHaveCount(1);
 });
 
+test('homepage hero and brand are centered and use the supplied KALTRUCK logo', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+  const logo = page.locator('.brand-logo');
+  await expect(logo).toHaveAttribute('src', '/brand/kaltruck-logo.svg');
+  await expect(logo).toBeVisible();
+
+  const geometry = await page.evaluate(() => {
+    const viewportWidth = document.documentElement.clientWidth;
+    const content = document.querySelector('.hero-content');
+    const title = document.querySelector('.hero-title');
+    const actions = document.querySelector('.hero-actions');
+    const contentRect = content?.getBoundingClientRect();
+    const titleRect = title?.getBoundingClientRect();
+    const actionsRect = actions?.getBoundingClientRect();
+    const centerOffset = (rect?: DOMRect) => rect ? Math.abs((rect.left + rect.width / 2) - viewportWidth / 2) : 9999;
+    return {
+      contentCenterOffset: centerOffset(contentRect),
+      titleCenterOffset: centerOffset(titleRect),
+      actionsCenterOffset: centerOffset(actionsRect),
+      textAlign: content ? getComputedStyle(content).textAlign : '',
+    };
+  });
+
+  expect(geometry.contentCenterOffset).toBeLessThanOrEqual(12);
+  expect(geometry.titleCenterOffset).toBeLessThanOrEqual(12);
+  expect(geometry.actionsCenterOffset).toBeLessThanOrEqual(12);
+  expect(geometry.textAlign).toBe('center');
+});
+
 test('homepage keeps the editorial service structure intact', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
