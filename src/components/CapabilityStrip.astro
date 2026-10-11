@@ -6,4 +6,12 @@
     <div><strong>Polska</strong><span>obszar realizacji</span></div>
   </div>
 </section>
-<style>.cap-strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#0d0f11}.caps{display:grid;grid-template-columns:repeat(4,1fr)}.caps div{padding:30px 24px;border-right:1px solid var(--line)}.caps div:first-child{padding-left:0}.caps div:last-child{border-right:0}.caps strong,.caps span{display:block}.caps strong{font-size:1.5rem}.caps span{font-size:.82rem;color:var(--muted);margin-top:4px}@media(max-width:760px){.caps{grid-template-columns:1fr 1fr}.caps div{border-bottom:1px solid var(--line)}.caps div:nth-child(2){border-right:0}.caps div:first-child{padding-left:24px}}</style>
+<style>
+.cap-strip{border-bottom:1px solid var(--line);background:#0d0f11}
+.caps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.caps div{position:relative;padding:clamp(26px,2.5vw,38px) clamp(18px,2.2vw,34px)}
+.caps div::after{content:"";position:absolute;right:0;top:22%;bottom:22%;width:1px;background:var(--line)}
+.caps div:first-child{padding-left:0}.caps div:last-child{padding-right:0}.caps div:last-child::after{display:none}
+.caps strong,.caps span{display:block}.caps strong{font-size:clamp(1.35rem,1.6vw,1.7rem);line-height:1.1}.caps span{font-size:.82rem;color:var(--muted);margin-top:7px}
+@media(max-width:760px){.caps{grid-template-columns:1fr 1fr}.caps div{padding:24px 18px;border-bottom:1px solid var(--line)}.caps div:first-child{padding-left:0}.caps div:nth-child(2){padding-right:0}.caps div:nth-child(2)::after,.caps div:last-child::after{display:none}.caps div:nth-child(3),.caps div:nth-child(4){border-bottom:0}.caps div:nth-child(3){padding-left:0}.caps div:last-child{padding-right:0}}
+</style>
