@@ -191,6 +191,24 @@ import { siteConfig } from '../config/site';
 }
 .hero-scroll span{font-size:1rem;margin-top:10px}
 
+@media(min-width:1181px){
+  .hero-kicker{
+    transform:translateY(-28px);
+  }
+  .hero-title-line--one{
+    transform:translate(86px,56px);
+  }
+  .hero-title-line--two{
+    font-size:clamp(3.35rem,4.15vw,4.25rem);
+    line-height:.9;
+    letter-spacing:-.045em;
+    transform:translate(-190px,150px);
+  }
+  .hero-actions{
+    transform:translate(105px,112px);
+  }
+}
+
 @media(max-width:1180px){
   .hero-bg{object-position:58% 50%}
   .hero-stage{width:min(100%,980px)}
