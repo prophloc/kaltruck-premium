@@ -60,14 +60,13 @@ for (const route of supportingRoutes) {
   }
 }
 
-test('homepage hero uses a three-line cinematic title composition', async ({ page }) => {
+test('homepage hero uses the two-line cinematic sales slogan', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   const lines = page.locator('.hero-title-line');
-  await expect(lines).toHaveCount(3);
-  await expect(lines.nth(0)).toHaveText('TRANSPORT, KTÓRY');
-  await expect(lines.nth(1)).toHaveText('PODNOSI');
-  await expect(lines.nth(2)).toHaveText('WIĘCEJ.');
+  await expect(lines).toHaveCount(2);
+  await expect(lines.nth(0)).toHaveText('CIĘŻKI ŁADUNEK?');
+  await expect(lines.nth(1)).toHaveText('ZOSTAW TO NAM!');
   await expect(page.locator('.hero-support')).toHaveCount(1);
 });
 
@@ -90,7 +89,7 @@ test('homepage centers the cinematic hero group and uses the supplied KALTRUCK l
   expect(geometry.stageCenterOffset).toBeLessThanOrEqual(12);
 });
 
-test('desktop header balances its edge gutters and keeps compact actions next to the logo', async ({ page }) => {
+test('desktop header balances its edge gutters and keeps a tight premium rhythm', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -99,9 +98,12 @@ test('desktop header balances its edge gutters and keeps compact actions next to
     const brand = document.querySelector('.brand');
     const actions = document.querySelector('.header-actions');
     const nav = document.querySelector('.desktop-nav');
+    const navLinks = Array.from(document.querySelectorAll('.desktop-nav a'));
     const brandRect = brand?.getBoundingClientRect();
     const actionsRect = actions?.getBoundingClientRect();
     const navRect = nav?.getBoundingClientRect();
+    const firstNav = navLinks[0]?.getBoundingClientRect();
+    const secondNav = navLinks[1]?.getBoundingClientRect();
     const children = header ? Array.from(header.children) : [];
     return {
       leftGutter: brandRect?.left ?? 0,
@@ -109,6 +111,7 @@ test('desktop header balances its edge gutters and keeps compact actions next to
       actionsAfterBrand: children.indexOf(actions as Element) === children.indexOf(brand as Element) + 1,
       navAfterActions: children.indexOf(nav as Element) > children.indexOf(actions as Element),
       actionsGap: brandRect && actionsRect ? actionsRect.left - brandRect.right : 9999,
+      navGap: firstNav && secondNav ? secondNav.left - firstNav.right : 9999,
       actionsHeight: actionsRect?.height ?? 9999,
     };
   });
@@ -117,7 +120,8 @@ test('desktop header balances its edge gutters and keeps compact actions next to
   expect(metrics.leftGutter).toBeGreaterThanOrEqual(40);
   expect(metrics.actionsAfterBrand).toBeTruthy();
   expect(metrics.navAfterActions).toBeTruthy();
-  expect(metrics.actionsGap).toBeLessThanOrEqual(28);
+  expect(metrics.actionsGap).toBeLessThanOrEqual(20);
+  expect(metrics.navGap).toBeLessThanOrEqual(20);
   expect(metrics.actionsHeight).toBeLessThanOrEqual(48);
 });
 
