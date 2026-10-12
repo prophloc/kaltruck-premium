@@ -20,7 +20,10 @@ const faqItems=[
     <div class="container intro-grid">
       <div class="intro-heading">
         <p class="eyebrow">KALTRUCK / Kalwasińscy</p>
-        <h2 class="section-title intro-location">Transport HDS • Płock • Polska</h2>
+        <h2 class="section-title intro-location">
+          <span class="intro-location-main">Transport HDS</span>
+          <span class="intro-location-sub">Płock Polska</span>
+        </h2>
       </div>
       <div class="intro-copy">
         <p class="lead intro-lead">Łączymy transport i pracę żurawia HDS w jednej realizacji. Przyjeżdżamy, podnosimy, przewozimy i ustawiamy ładunek tam, gdzie ma finalnie stanąć.</p>
@@ -67,30 +70,48 @@ const faqItems=[
     gap:var(--grid-gap);
     align-items:center;
   }
-  .intro-heading{grid-column:1 / span 6}
+  .intro-heading{
+    grid-column:1 / span 6;
+    align-self:center;
+  }
   .intro-heading .eyebrow{margin:0 0 16px}
   .intro .section-title{
     margin:0;
     max-width:none;
-    font-size:clamp(2.6rem,3.8vw,4.35rem);
+    font-size:clamp(2.35rem,calc(3.8vw - 10px),3.75rem);
     line-height:.94;
     letter-spacing:-.045em;
-    text-wrap:balance;
   }
-  .intro-copy{grid-column:8 / -1;max-width:34rem}
+  .intro-location{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .intro-location-main,
+  .intro-location-sub{
+    display:block;
+    white-space:nowrap;
+  }
+  .intro-location-sub{transform:translateY(5px)}
+  .intro-copy{
+    grid-column:8 / -1;
+    max-width:34rem;
+    align-self:center;
+  }
   .intro-lead{margin:0;max-width:31rem;color:#d0ccc4;font-size:clamp(1.08rem,1.35vw,1.3rem);line-height:1.68}
   .intro-flow{display:flex;align-items:center;gap:12px;margin-top:26px;color:#96928b;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
   .intro-flow i{display:block;width:26px;height:1px;background:rgba(215,180,106,.48)}
   @media(max-width:980px){
     .intro-heading{grid-column:1 / span 7}
     .intro-copy{grid-column:8 / -1}
-    .intro .section-title{font-size:clamp(2.45rem,5vw,4rem)}
+    .intro .section-title{font-size:clamp(2.3rem,calc(5vw - 10px),3.55rem)}
   }
   @media(max-width:780px){
     .intro{padding-block:50px}
     .intro-grid{grid-template-columns:1fr;gap:28px}
     .intro-heading,.intro-copy{grid-column:auto}
-    .intro .section-title{font-size:clamp(2.35rem,10vw,3.8rem)}
+    .intro .section-title{font-size:clamp(2.15rem,calc(10vw - 10px),3.35rem)}
+    .intro-location-main,.intro-location-sub{white-space:normal}
     .intro-lead{max-width:42rem}
     .intro-flow{gap:9px;overflow:hidden;font-size:.7rem}.intro-flow i{width:18px}
   }
