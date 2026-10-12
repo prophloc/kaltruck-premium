@@ -69,41 +69,40 @@ const categories = [
         data-state={index === 0 ? 'active' : 'idle'}
         aria-hidden={index === 0 ? 'false' : 'true'}
       >
-        <header class="service-document__header">
-          <span>Zakres usług HDS</span>
+        <div class="service-document__meta">
+          <span>Kategoria usług</span>
           <strong>{String(index + 1).padStart(2, '0')} / {String(categories.length).padStart(2, '0')}</strong>
-        </header>
+        </div>
         <h2>{category.title}</h2>
+        <div class="service-document__underline" aria-hidden="true"><span></span></div>
         <ul>
-          {category.services.map((service) => <li data-service-item>{service}</li>)}
+          {category.services.map((service, serviceIndex) => (
+            <li data-service-item style={`--service-index:${serviceIndex}`}>{service}</li>
+          ))}
         </ul>
       </article>
     ))}
   </div>
 
-  <div class="service-catalog__controls" aria-label="Wybierz kategorię usług">
-    <span class="service-catalog__control-label">Kategorie</span>
-    <div class="service-catalog__buttons">
-      {categories.map((category, index) => (
-        <button
-          type="button"
-          data-service-nav-index={String(index)}
-          aria-controls={`service-document-${index}`}
-          aria-pressed={index === 0 ? 'true' : 'false'}
-          aria-label={category.title}
-          title={category.title}
-        >
-          {String(index + 1).padStart(2, '0')}
-        </button>
-      ))}
-    </div>
-  </div>
+  <nav class="service-catalog__controls" aria-label="Wybierz kategorię usług">
+    {categories.map((category, index) => (
+      <button
+        type="button"
+        data-service-nav-index={String(index)}
+        aria-controls={`service-document-${index}`}
+        aria-pressed={index === 0 ? 'true' : 'false'}
+        aria-label={category.title}
+        title={category.title}
+      >
+        {String(index + 1).padStart(2, '0')}
+      </button>
+    ))}
+  </nav>
 </section>
 
 <script is:inline>
   (() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     document.querySelectorAll('[data-service-catalog]').forEach((catalog) => {
       const panels = Array.from(catalog.querySelectorAll('[data-service-panel]'));
       const buttons = Array.from(catalog.querySelectorAll('[data-service-nav-index]'));
@@ -120,14 +119,6 @@ const categories = [
         }
       };
 
-      const start = () => {
-        stop();
-        if (reducedMotion || document.hidden) return;
-        timer = window.setInterval(() => {
-          show((activeIndex + 1) % panels.length, false);
-        }, 5200);
-      };
-
       const show = (nextIndex, restartTimer = true) => {
         if (!Number.isInteger(nextIndex) || nextIndex < 0 || nextIndex >= panels.length || nextIndex === activeIndex) {
           if (restartTimer) start();
@@ -136,246 +127,49 @@ const categories = [
 
         const current = panels[activeIndex];
         const next = panels[nextIndex];
-
         if (transitionTimer !== null) window.clearTimeout(transitionTimer);
 
         current.setAttribute('data-active', 'false');
         current.setAttribute('data-state', reducedMotion ? 'idle' : 'leaving');
         current.setAttribute('aria-hidden', 'true');
-
         next.setAttribute('data-active', 'true');
         next.setAttribute('data-state', reducedMotion ? 'active' : 'entering');
         next.setAttribute('aria-hidden', 'false');
 
-        buttons.forEach((button, index) => {
-          button.setAttribute('aria-pressed', index === nextIndex ? 'true' : 'false');
-        });
-
+        buttons.forEach((button, index) => button.setAttribute('aria-pressed', index === nextIndex ? 'true' : 'false'));
         activeIndex = nextIndex;
 
         if (!reducedMotion) {
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => next.setAttribute('data-state', 'active'));
-          });
+          requestAnimationFrame(() => requestAnimationFrame(() => next.setAttribute('data-state', 'active')));
           transitionTimer = window.setTimeout(() => {
             if (current.getAttribute('data-active') === 'false') current.setAttribute('data-state', 'idle');
-          }, 560);
+          }, 520);
         }
-
         if (restartTimer) start();
       };
 
-      buttons.forEach((button) => {
-        button.addEventListener('click', () => {
-          const nextIndex = Number(button.getAttribute('data-service-nav-index'));
-          show(nextIndex, true);
-        });
-      });
+      const start = () => {
+        stop();
+        if (reducedMotion || document.hidden) return;
+        timer = window.setInterval(() => show((activeIndex + 1) % panels.length, false), 5200);
+      };
 
+      buttons.forEach((button) => button.addEventListener('click', () => show(Number(button.getAttribute('data-service-nav-index')), true)));
       catalog.addEventListener('mouseenter', stop);
       catalog.addEventListener('mouseleave', start);
       catalog.addEventListener('focusin', stop);
-      catalog.addEventListener('focusout', () => {
-        window.setTimeout(() => {
-          if (!catalog.contains(document.activeElement)) start();
-        }, 0);
-      });
+      catalog.addEventListener('focusout', () => window.setTimeout(() => { if (!catalog.contains(document.activeElement)) start(); }, 0));
       document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
-
       start();
     });
   })();
 </script>
 
 <style>
-  .service-catalog {
-    position: relative;
-    width: 100%;
-    min-width: 0;
-    padding: 12px 0 0;
-    isolation: isolate;
-  }
-  .service-catalog::before,
-  .service-catalog::after {
-    content: '';
-    position: absolute;
-    inset: 28px 18px 56px 18px;
-    z-index: -2;
-    border: 1px solid rgba(255,255,255,.07);
-    border-radius: 20px;
-    background: rgba(12,13,14,.38);
-    transform: translate(13px, 13px) rotate(.65deg);
-    box-shadow: 0 28px 70px rgba(0,0,0,.24);
-  }
-  .service-catalog::after {
-    z-index: -1;
-    transform: translate(7px, 7px) rotate(.3deg);
-    background: rgba(12,13,14,.55);
-  }
-  .service-catalog__stage {
-    position: relative;
-    min-height: clamp(430px, 34vw, 500px);
-  }
-  .service-document {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    padding: clamp(22px, 2.3vw, 32px);
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 18px;
-    background:
-      linear-gradient(145deg, rgba(22,23,24,.94), rgba(8,9,10,.90)),
-      radial-gradient(circle at 85% 5%, rgba(215,180,106,.12), transparent 34%);
-    box-shadow: 0 34px 90px rgba(0,0,0,.40), inset 0 1px 0 rgba(255,255,255,.03);
-    backdrop-filter: blur(16px);
-    opacity: 0;
-    visibility: hidden;
-    transform: translate3d(44px, 10px, 0) scale(.985) rotate(.45deg);
-    transform-origin: 70% 50%;
-    transition: opacity .42s ease, transform .52s cubic-bezier(.2,.7,.2,1), visibility .52s step-end;
-    pointer-events: none;
-  }
-  .service-document[data-state='entering'],
-  .service-document[data-state='active'],
-  .service-document[data-state='leaving'] {
-    visibility: visible;
-    transition: opacity .42s ease, transform .52s cubic-bezier(.2,.7,.2,1), visibility 0s;
-  }
-  .service-document[data-state='active'] {
-    z-index: 3;
-    opacity: 1;
-    transform: translate3d(0,0,0) scale(1) rotate(0);
-    pointer-events: auto;
-  }
-  .service-document[data-state='entering'] {
-    z-index: 4;
-    opacity: 0;
-    transform: translate3d(48px, 12px, 0) scale(.98) rotate(.55deg);
-  }
-  .service-document[data-state='leaving'] {
-    z-index: 2;
-    opacity: 0;
-    transform: translate3d(-46px, -5px, 0) scale(.985) rotate(-.45deg);
-  }
-  .service-document__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255,255,255,.10);
-    color: rgba(255,255,255,.50);
-    font-size: .67rem;
-    font-weight: 720;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-  }
-  .service-document__header strong {
-    color: var(--accent);
-    font-size: .69rem;
-    letter-spacing: .10em;
-  }
-  .service-document h2 {
-    max-width: 15ch;
-    margin: clamp(19px, 2vw, 26px) 0 18px;
-    color: #f4f1ea;
-    font-size: clamp(1.45rem, 2vw, 2rem);
-    line-height: 1.02;
-    letter-spacing: -.035em;
-  }
-  .service-document ul {
-    display: grid;
-    gap: 0;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    border-top: 1px solid rgba(255,255,255,.08);
-  }
-  .service-document li {
-    position: relative;
-    padding: 8px 4px 8px 16px;
-    border-bottom: 1px solid rgba(255,255,255,.07);
-    color: rgba(244,241,234,.73);
-    font-size: clamp(.76rem, .82vw, .86rem);
-    line-height: 1.28;
-  }
-  .service-document li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 13px;
-    width: 6px;
-    height: 1px;
-    background: var(--accent);
-    box-shadow: 0 0 10px rgba(215,180,106,.35);
-  }
-  .service-catalog__controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    padding: 14px 4px 0;
-  }
-  .service-catalog__control-label {
-    color: rgba(255,255,255,.42);
-    font-size: .62rem;
-    font-weight: 700;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-  }
-  .service-catalog__buttons {
-    display: flex;
-    gap: 6px;
-  }
-  .service-catalog__buttons button {
-    width: 36px;
-    height: 31px;
-    display: grid;
-    place-items: center;
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 999px;
-    background: rgba(255,255,255,.025);
-    color: rgba(255,255,255,.52);
-    font: inherit;
-    font-size: .65rem;
-    font-weight: 760;
-    letter-spacing: .05em;
-    cursor: pointer;
-    transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease;
-  }
-  .service-catalog__buttons button:hover {
-    color: #fff;
-    border-color: rgba(255,255,255,.30);
-    transform: translateY(-1px);
-  }
-  .service-catalog__buttons button[aria-pressed='true'] {
-    color: #f6d78e;
-    border-color: rgba(215,180,106,.60);
-    background: rgba(215,180,106,.11);
-  }
-  @media (max-width: 1180px) {
-    .service-catalog { width: min(100%, 760px); }
-    .service-catalog__stage { min-height: 500px; }
-  }
-  @media (max-width: 620px) {
-    .service-catalog { padding-top: 4px; }
-    .service-catalog::before,
-    .service-catalog::after { inset: 18px 8px 54px; transform: translate(7px,7px) rotate(.4deg); }
-    .service-catalog::after { transform: translate(4px,4px) rotate(.2deg); }
-    .service-catalog__stage { min-height: 530px; }
-    .service-document { padding: 20px 18px; border-radius: 16px; }
-    .service-document__header { font-size: .60rem; }
-    .service-document h2 { font-size: 1.5rem; margin-top: 18px; }
-    .service-document li { padding-top: 7px; padding-bottom: 7px; font-size: .75rem; }
-    .service-catalog__controls { align-items: flex-end; }
-    .service-catalog__control-label { display: none; }
-    .service-catalog__buttons { width: 100%; justify-content: space-between; }
-    .service-catalog__buttons button { width: 38px; height: 34px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .service-document,
-    .service-catalog__buttons button { transition: none; }
-  }
+.service-catalog{position:relative;width:100%;max-width:560px;min-width:0}.service-catalog__stage{position:relative;min-height:420px}.service-document{position:absolute;inset:0;display:flex;flex-direction:column;margin:0;padding:0;border:0;background:transparent;box-shadow:none;opacity:0;visibility:hidden;transform:translate3d(30px,10px,0);transition:opacity .34s ease,transform .48s cubic-bezier(.22,.7,.22,1),visibility .48s step-end;pointer-events:none}.service-document[data-state='entering'],.service-document[data-state='active'],.service-document[data-state='leaving']{visibility:visible;transition:opacity .34s ease,transform .48s cubic-bezier(.22,.7,.22,1),visibility 0s}.service-document[data-state='active']{z-index:3;opacity:1;transform:none;pointer-events:auto}.service-document[data-state='entering']{z-index:4;opacity:0;transform:translate3d(34px,12px,0)}.service-document[data-state='leaving']{z-index:2;opacity:0;transform:translate3d(-24px,-7px,0)}
+.service-document__meta{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:14px;color:rgba(255,255,255,.48);font-size:.68rem;font-weight:720;letter-spacing:.15em;text-transform:uppercase}.service-document__meta strong{color:var(--accent);font-size:.68rem;letter-spacing:.1em}.service-document h2{max-width:18ch;margin:0;color:#f7f5f0;font-size:clamp(1.8rem,2.35vw,2.75rem);line-height:1.02;letter-spacing:-.04em;text-wrap:balance}.service-document__underline{width:100%;height:1px;margin:18px 0 16px;background:rgba(255,255,255,.12);overflow:hidden}.service-document__underline span{display:block;width:clamp(72px,24%,138px);height:100%;background:var(--accent);transform-origin:left center;transition:transform .55s cubic-bezier(.2,.7,.2,1)}.service-document ul{display:grid;gap:2px;margin:0;padding:0;list-style:none}.service-document li{position:relative;padding:7px 0 7px 17px;color:rgba(247,245,240,.75);font-size:clamp(.82rem,.93vw,.96rem);line-height:1.36;opacity:0;transform:translateY(8px);transition:opacity .3s ease,transform .42s ease;transition-delay:calc(var(--service-index) * 28ms)}.service-document li::before{content:'';position:absolute;left:0;top:15px;width:7px;height:1px;background:rgba(215,180,106,.88)}.service-document[data-state='active'] li{opacity:1;transform:none}.service-document[data-state='entering'] .service-document__underline span{transform:scaleX(.18)}
+.service-catalog__controls{display:flex;align-items:center;gap:18px;margin-top:17px}.service-catalog__controls button{position:relative;min-width:26px;padding:5px 0 8px;border:0;background:transparent;color:rgba(255,255,255,.42);font:inherit;font-size:.68rem;font-weight:760;letter-spacing:.06em;cursor:pointer;transition:color .2s ease}.service-catalog__controls button::after{content:'';position:absolute;left:0;right:100%;bottom:2px;height:1px;background:var(--accent);transition:right .25s ease}.service-catalog__controls button:hover{color:#fff}.service-catalog__controls button[aria-pressed='true']{color:#f4d58b}.service-catalog__controls button[aria-pressed='true']::after{right:0}
+@media(max-width:1180px){.service-catalog{max-width:680px}.service-catalog__stage{min-height:430px}}
+@media(max-width:620px){.service-catalog__stage{min-height:510px}.service-document__meta{font-size:.61rem}.service-document__meta strong{font-size:.62rem}.service-document h2{font-size:clamp(1.65rem,8vw,2.15rem)}.service-document li{padding-top:6px;padding-bottom:6px;font-size:.78rem}.service-catalog__controls{justify-content:space-between;gap:10px}.service-catalog__controls button{min-width:32px}}
+@media(prefers-reduced-motion:reduce){.service-document,.service-document li,.service-document__underline span,.service-catalog__controls button::after{transition:none!important}.service-document[data-state='active'] li{opacity:1;transform:none}}
 </style>
