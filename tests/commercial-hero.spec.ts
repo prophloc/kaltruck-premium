@@ -75,7 +75,7 @@ test('hero centers the cinematic composition as one group while preserving inter
   const lineTwo = await page.locator('.hero-title-line--two').boundingBox();
   expect(lineOne).not.toBeNull();
   expect(lineTwo).not.toBeNull();
-  expect(lineOne!.x - lineTwo!.x).toBeGreaterThanOrEqual(50);
+  expect(lineOne!.x - lineTwo!.x).toBeGreaterThanOrEqual(20);
 
   const leadBand = await page.locator('.hero-bottom-copy').boundingBox();
   const actions = await page.locator('.hero-actions').boundingBox();
@@ -85,27 +85,38 @@ test('hero centers the cinematic composition as one group while preserving inter
   expect(leadBand!.width).toBeGreaterThanOrEqual(1598);
 });
 
-test('desktop slogan follows the crane and sits the closing line on the container', async ({ page }) => {
+test('desktop slogan stacks tightly, shares a right edge, and centers CTAs below the group', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
   const lineOne = await page.locator('.hero-title-line--one').boundingBox();
   const lineTwo = await page.locator('.hero-title-line--two').boundingBox();
+  const actions = await page.locator('.hero-actions').boundingBox();
   expect(lineOne).not.toBeNull();
   expect(lineTwo).not.toBeNull();
+  expect(actions).not.toBeNull();
 
-  // The crane boom occupies the upper-middle band of this approved hero crop.
+  // Keep the first line where it already sits against the crane boom.
   expect(lineOne!.y).toBeGreaterThanOrEqual(330);
   expect(lineOne!.y).toBeLessThanOrEqual(410);
   expect(lineOne!.x).toBeGreaterThanOrEqual(390);
   expect(lineOne!.x).toBeLessThanOrEqual(500);
 
-  // The yellow container occupies roughly x=260..700 and y=500..700 at 1600x900.
-  expect(lineTwo!.x).toBeGreaterThanOrEqual(280);
-  expect(lineTwo!.x).toBeLessThanOrEqual(360);
-  expect(lineTwo!.y).toBeGreaterThanOrEqual(515);
-  expect(lineTwo!.y).toBeLessThanOrEqual(610);
-  expect(lineTwo!.width).toBeLessThanOrEqual(620);
+  // The second line should sit directly below and finish on the same right axis.
+  const verticalGap = lineTwo!.y - (lineOne!.y + lineOne!.height);
+  expect(verticalGap).toBeGreaterThanOrEqual(4);
+  expect(verticalGap).toBeLessThanOrEqual(26);
+  const rightOne = lineOne!.x + lineOne!.width;
+  const rightTwo = lineTwo!.x + lineTwo!.width;
+  expect(Math.abs(rightOne - rightTwo)).toBeLessThanOrEqual(8);
+
+  // CTAs should be centered under the visual width of the two-line slogan group.
+  const groupLeft = Math.min(lineOne!.x, lineTwo!.x);
+  const groupRight = Math.max(rightOne, rightTwo);
+  const groupCenter = (groupLeft + groupRight) / 2;
+  const actionsCenter = actions!.x + actions!.width / 2;
+  expect(Math.abs(groupCenter - actionsCenter)).toBeLessThanOrEqual(12);
+  expect(actions!.y).toBeGreaterThan(lineTwo!.y + lineTwo!.height);
 });
 
 test('hero kicker is a compact glass pill', async ({ page }) => {
