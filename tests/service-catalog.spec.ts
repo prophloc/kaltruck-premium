@@ -42,6 +42,7 @@ test('desktop keeps the original left hero placement and centers a frameless cat
   const metrics = await page.evaluate(() => {
     const viewport = document.documentElement.clientWidth;
     const copy = document.querySelector('.service-copy')?.getBoundingClientRect();
+    const heading = document.querySelector('.service-copy h1')?.getBoundingClientRect();
     const catalog = document.querySelector('[data-service-catalog]')?.getBoundingClientRect();
     const panel = document.querySelector('[data-service-panel][data-active="true"]');
     const style = panel ? getComputedStyle(panel) : null;
@@ -49,7 +50,7 @@ test('desktop keeps the original left hero placement and centers a frameless cat
     return {
       viewport,
       copyLeft: copy?.left ?? 0,
-      copyWidth: copy?.width ?? 0,
+      headingWidth: heading?.width ?? 9999,
       catalogLeft: catalog?.left ?? 0,
       catalogRight: catalog?.right ?? 0,
       catalogCenter,
@@ -61,7 +62,7 @@ test('desktop keeps the original left hero placement and centers a frameless cat
   });
 
   expect(metrics.copyLeft).toBeGreaterThanOrEqual(40);
-  expect(metrics.copyWidth).toBeLessThan(metrics.viewport * 0.62);
+  expect(metrics.headingWidth).toBeLessThan(metrics.viewport * 0.55);
   expect(metrics.catalogLeft).toBeGreaterThanOrEqual(metrics.viewport / 2);
   expect(metrics.catalogRight).toBeLessThanOrEqual(metrics.viewport + 1);
   expect(Math.abs(metrics.catalogCenter - metrics.viewport * 0.75)).toBeLessThanOrEqual(90);
