@@ -98,11 +98,18 @@ test('desktop slogan stacks tightly, shares a right edge, and centers CTAs below
 
   // Pull the closing line closer and make it about 5px smaller at this desktop width.
   const verticalGap = lineTwo!.y - (lineOne!.y + lineOne!.height);
-  expect(verticalGap).toBeGreaterThanOrEqual(0);
+  expect(verticalGap).toBeGreaterThanOrEqual(-4);
   expect(verticalGap).toBeLessThanOrEqual(8);
   const lineTwoFontSize = await page.locator('.hero-title-line--two').evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
   expect(lineTwoFontSize).toBeGreaterThanOrEqual(60);
   expect(lineTwoFontSize).toBeLessThanOrEqual(61.5);
+
+  // Fine tune the closing line exactly 5px left and 4px up on desktop.
+  const lineTwoTransform = await page.locator('.hero-title-line--two').evaluate((node) => getComputedStyle(node).transform);
+  const transformMatch = lineTwoTransform.match(/^matrix\([^,]+,[^,]+,[^,]+,[^,]+,\s*(-?[\d.]+),\s*(-?[\d.]+)\)$/);
+  expect(transformMatch).not.toBeNull();
+  expect(Number(transformMatch![1])).toBeCloseTo(-5, 1);
+  expect(Number(transformMatch![2])).toBeCloseTo(-4, 1);
 
   const rightOne = lineOne!.x + lineOne!.width;
   const rightTwo = lineTwo!.x + lineTwo!.width;
