@@ -41,7 +41,7 @@ test('homepage hero uses the exact supplied PNG artwork', async ({ page }) => {
   expect(decoded.height).toBe(941);
 });
 
-test('capability strip reads like a technical KALTRUCK specification', async ({ page }) => {
+test('capability strip centers clean data without decorative indexes', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -51,8 +51,26 @@ test('capability strip reads like a technical KALTRUCK specification', async ({ 
 
   const items = strip.locator('.cap-item');
   await expect(items).toHaveCount(4);
-  await expect(strip.locator('.cap-index')).toHaveText(['01', '02', '03', '04']);
+  await expect(strip.locator('.cap-index')).toHaveCount(0);
   await expect(strip.locator('.cap-value')).toHaveText(['10+', '12 t', '14 m', 'CAŁA POLSKA']);
+
+  const alignment = await items.evaluateAll((nodes) => nodes.map((node) => {
+    const item = node.getBoundingClientRect();
+    const value = node.querySelector('.cap-value')!.getBoundingClientRect();
+    const label = node.querySelector('.cap-label')!.getBoundingClientRect();
+    return {
+      itemCenter: item.x + item.width / 2,
+      valueCenter: value.x + value.width / 2,
+      labelCenter: label.x + label.width / 2,
+      textAlign: getComputedStyle(node).textAlign,
+    };
+  }));
+
+  for (const metric of alignment) {
+    expect(Math.abs(metric.itemCenter - metric.valueCenter)).toBeLessThanOrEqual(3);
+    expect(Math.abs(metric.itemCenter - metric.labelCenter)).toBeLessThanOrEqual(3);
+    expect(metric.textAlign).toBe('center');
+  }
 
   const metrics = await strip.evaluate((node) => {
     const rect = node.getBoundingClientRect();
@@ -62,7 +80,21 @@ test('capability strip reads like a technical KALTRUCK specification', async ({ 
   expect(metrics.height).toBeGreaterThanOrEqual(130);
   expect(metrics.height).toBeLessThanOrEqual(190);
   expect(metrics.backgroundImage).toContain('linear-gradient');
+});
 
-  const valueSizes = await strip.locator('.cap-value').evaluateAll((nodes) => nodes.map((node) => parseFloat(getComputedStyle(node).fontSize)));
-  expect(valueSizes.every((size) => size >= 34)).toBeTruthy();
+test('intro uses a compact two-line statement', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+  const intro = page.locator('.intro');
+  const title = intro.locator('.section-title');
+  const lines = title.locator('.intro-title-line');
+
+  await expect(lines).toHaveCount(2);
+  await expect(lines.nth(0)).toHaveText('Ciężkie rzeczy');
+  await expect(lines.nth(1)).toHaveText('zostaw nam.');
+
+  const introBox = await intro.boundingBox();
+  expect(introBox).not.toBeNull();
+  expect(introBox!.height).toBeLessThanOrEqual(470);
 });
