@@ -7,22 +7,18 @@
     </div>
 
     <div class="cap-item">
-      <span class="cap-index">01</span>
       <strong class="cap-value">10+</strong>
       <span class="cap-label">lat doświadczenia</span>
     </div>
     <div class="cap-item">
-      <span class="cap-index">02</span>
       <strong class="cap-value">12 t</strong>
       <span class="cap-label">udźwig HDS</span>
     </div>
     <div class="cap-item">
-      <span class="cap-index">03</span>
       <strong class="cap-value">14 m</strong>
       <span class="cap-label">zasięg roboczy</span>
     </div>
     <div class="cap-item">
-      <span class="cap-index">04</span>
       <strong class="cap-value cap-value-wide">CAŁA POLSKA</strong>
       <span class="cap-label">obszar realizacji</span>
     </div>
@@ -110,22 +106,13 @@
   }
 
   .cap-item{
+    align-items:center;
     padding:27px clamp(20px,2vw,32px);
+    text-align:center;
     transition:background-color .22s ease;
   }
 
-  .cap-item:last-child{padding-right:0}
   .cap-item:last-child::after{display:none}
-
-  .cap-index{
-    position:absolute;
-    top:25px;
-    right:24px;
-    color:rgba(215,180,106,.58);
-    font-size:.62rem;
-    font-weight:800;
-    letter-spacing:.14em;
-  }
 
   .cap-value,
   .cap-label{display:block}
@@ -181,19 +168,15 @@
     .cap-intro-line{margin:10px 0 0;width:46px}
     .cap-intro-note{display:none}
     .cap-item{min-height:118px;padding:24px 20px;border-bottom:1px solid var(--line)}
-    .cap-item:nth-of-type(2),.cap-item:nth-of-type(4){padding-left:0}
-    .cap-item:nth-of-type(3),.cap-item:nth-of-type(5){padding-right:0}
     .cap-item:nth-of-type(3)::after,.cap-item:nth-of-type(5)::after{display:none}
     .cap-item:nth-of-type(4),.cap-item:nth-of-type(5){border-bottom:0}
     .cap-value{font-size:clamp(2rem,8vw,2.7rem)}
     .cap-value-wide{font-size:clamp(1.5rem,6vw,2rem)}
-    .cap-index{top:22px;right:18px}
   }
 
   @media(max-width:480px){
     .cap-intro-kicker{font-size:.62rem;letter-spacing:.14em}
     .cap-item{min-height:108px;padding-top:22px;padding-bottom:22px}
     .cap-label{font-size:.66rem;letter-spacing:.02em}
-    .cap-index{font-size:.56rem}
   }
 </style>
