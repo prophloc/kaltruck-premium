@@ -82,7 +82,7 @@ test('capability strip centers clean data without decorative indexes', async ({ 
   expect(metrics.backgroundImage).toContain('linear-gradient');
 });
 
-test('location statement moves from the hero pill into the intro heading', async ({ page }) => {
+test('intro location lockup is smaller, clean, and vertically balanced', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -90,8 +90,29 @@ test('location statement moves from the hero pill into the intro heading', async
 
   const intro = page.locator('.intro');
   const title = intro.locator('.section-title');
-  await expect(title).toHaveText('Transport HDS • Płock • Polska');
-  await expect(title.locator('.intro-title-line')).toHaveCount(0);
+  await expect(title).toHaveText('Transport HDSPłock Polska');
+  await expect(title).not.toContainText('•');
+  await expect(title.locator('.intro-location-main')).toHaveText('Transport HDS');
+  await expect(title.locator('.intro-location-sub')).toHaveText('Płock Polska');
+
+  const titleFontSize = await title.evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
+  expect(titleFontSize).toBeGreaterThanOrEqual(50);
+  expect(titleFontSize).toBeLessThanOrEqual(52);
+
+  const subTransform = await title.locator('.intro-location-sub').evaluate((node) => getComputedStyle(node).transform);
+  const transformMatch = subTransform.match(/^matrix\([^,]+,[^,]+,[^,]+,[^,]+,\s*(-?[\d.]+),\s*(-?[\d.]+)\)$/);
+  expect(transformMatch).not.toBeNull();
+  expect(Number(transformMatch![2])).toBeCloseTo(5, 1);
+
+  const centers = await intro.evaluate(() => {
+    const left = document.querySelector('.intro-heading')!.getBoundingClientRect();
+    const right = document.querySelector('.intro-copy')!.getBoundingClientRect();
+    return {
+      left: left.top + left.height / 2,
+      right: right.top + right.height / 2,
+    };
+  });
+  expect(Math.abs(centers.left - centers.right)).toBeLessThanOrEqual(5);
 
   const introBox = await intro.boundingBox();
   expect(introBox).not.toBeNull();
