@@ -72,6 +72,48 @@ test('desktop keeps the original left hero placement and centers a frameless cat
   expect(metrics.panelBoxShadow).toBe('none');
 });
 
+test('desktop raises the right category heading above the left heading and blurs only behind the catalog', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
+
+  const metrics = await page.evaluate(() => {
+    const leftHeading = document.querySelector('.service-copy h1')?.getBoundingClientRect();
+    const rightHeading = document.querySelector('[data-service-panel][data-active="true"] h2')?.getBoundingClientRect();
+    const catalog = document.querySelector('[data-service-catalog]');
+    const backdrop = catalog ? getComputedStyle(catalog, '::before') : null;
+    return {
+      leftTop: leftHeading?.top ?? 0,
+      rightTop: rightHeading?.top ?? 9999,
+      backdropFilter: backdrop?.backdropFilter ?? 'none',
+      webkitBackdropFilter: backdrop?.getPropertyValue('-webkit-backdrop-filter') ?? 'none',
+    };
+  });
+
+  expect(metrics.rightTop).toBeLessThan(metrics.leftTop - 6);
+  expect(`${metrics.backdropFilter} ${metrics.webkitBackdropFilter}`).toContain('blur(');
+});
+
+test('category controls stay below the longest service list', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
+
+  const catalog = page.locator('[data-service-catalog]');
+  await catalog.locator('[data-service-nav-index="1"]').click();
+  await expect(catalog.locator('[data-service-panel]').nth(1)).toHaveAttribute('data-active', 'true');
+
+  const spacing = await page.evaluate(() => {
+    const activePanel = document.querySelector('[data-service-panel][data-active="true"]');
+    const list = activePanel?.querySelector('ul')?.getBoundingClientRect();
+    const controls = document.querySelector('.service-catalog__controls')?.getBoundingClientRect();
+    return {
+      listBottom: list?.bottom ?? 9999,
+      controlsTop: controls?.top ?? 0,
+    };
+  });
+
+  expect(spacing.controlsTop - spacing.listBottom).toBeGreaterThanOrEqual(18);
+});
+
 test('service catalog fits the hero on desktop and stacks safely on mobile', async ({ page }) => {
   for (const width of [1440, 1024, 390]) {
     await page.setViewportSize({ width, height: 1000 });
