@@ -35,6 +35,42 @@ test('service catalog controls switch the visible document panel', async ({ page
   await expect(panels.nth(1).getByRole('heading', { name: 'Budownictwo i infrastruktura' })).toBeVisible();
 });
 
+test('desktop keeps the original left hero placement and centers a frameless catalog in the right half', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
+
+  const metrics = await page.evaluate(() => {
+    const viewport = document.documentElement.clientWidth;
+    const copy = document.querySelector('.service-copy')?.getBoundingClientRect();
+    const catalog = document.querySelector('[data-service-catalog]')?.getBoundingClientRect();
+    const panel = document.querySelector('[data-service-panel][data-active="true"]');
+    const style = panel ? getComputedStyle(panel) : null;
+    const catalogCenter = catalog ? catalog.left + catalog.width / 2 : 0;
+    return {
+      viewport,
+      copyLeft: copy?.left ?? 0,
+      copyWidth: copy?.width ?? 0,
+      catalogLeft: catalog?.left ?? 0,
+      catalogRight: catalog?.right ?? 0,
+      catalogCenter,
+      panelBackgroundImage: style?.backgroundImage ?? '',
+      panelBackgroundColor: style?.backgroundColor ?? '',
+      panelBorderTopWidth: style?.borderTopWidth ?? '',
+      panelBoxShadow: style?.boxShadow ?? '',
+    };
+  });
+
+  expect(metrics.copyLeft).toBeGreaterThanOrEqual(40);
+  expect(metrics.copyWidth).toBeLessThan(metrics.viewport * 0.62);
+  expect(metrics.catalogLeft).toBeGreaterThanOrEqual(metrics.viewport / 2);
+  expect(metrics.catalogRight).toBeLessThanOrEqual(metrics.viewport + 1);
+  expect(Math.abs(metrics.catalogCenter - metrics.viewport * 0.75)).toBeLessThanOrEqual(90);
+  expect(metrics.panelBackgroundImage).toBe('none');
+  expect(metrics.panelBackgroundColor).toBe('rgba(0, 0, 0, 0)');
+  expect(metrics.panelBorderTopWidth).toBe('0px');
+  expect(metrics.panelBoxShadow).toBe('none');
+});
+
 test('service catalog fits the hero on desktop and stacks safely on mobile', async ({ page }) => {
   for (const width of [1440, 1024, 390]) {
     await page.setViewportSize({ width, height: 1000 });
