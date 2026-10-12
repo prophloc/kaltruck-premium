@@ -82,17 +82,16 @@ test('capability strip centers clean data without decorative indexes', async ({ 
   expect(metrics.backgroundImage).toContain('linear-gradient');
 });
 
-test('intro uses a compact two-line statement', async ({ page }) => {
+test('location statement moves from the hero pill into the intro heading', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
+  await expect(page.locator('.hero-kicker')).toHaveCount(0);
+
   const intro = page.locator('.intro');
   const title = intro.locator('.section-title');
-  const lines = title.locator('.intro-title-line');
-
-  await expect(lines).toHaveCount(2);
-  await expect(lines.nth(0)).toHaveText('Ciężkie rzeczy');
-  await expect(lines.nth(1)).toHaveText('zostaw nam.');
+  await expect(title).toHaveText('Transport HDS • Płock • Polska');
+  await expect(title.locator('.intro-title-line')).toHaveCount(0);
 
   const introBox = await intro.boundingBox();
   expect(introBox).not.toBeNull();
