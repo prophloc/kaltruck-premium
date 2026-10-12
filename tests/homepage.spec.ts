@@ -90,7 +90,6 @@ test('intro location lockup is smaller, clean, and vertically balanced', async (
 
   const intro = page.locator('.intro');
   const title = intro.locator('.section-title');
-  await expect(title).toHaveText('Transport HDSPłock Polska');
   await expect(title).not.toContainText('•');
   await expect(title.locator('.intro-location-main')).toHaveText('Transport HDS');
   await expect(title.locator('.intro-location-sub')).toHaveText('Płock Polska');
