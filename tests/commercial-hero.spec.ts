@@ -96,10 +96,14 @@ test('desktop slogan stacks tightly, shares a right edge, and centers CTAs below
   expect(lineOne!.x).toBeGreaterThanOrEqual(390);
   expect(lineOne!.x).toBeLessThanOrEqual(500);
 
-  // The second line should sit directly below and finish on the same right axis.
+  // Pull the closing line closer and make it about 5px smaller at this desktop width.
   const verticalGap = lineTwo!.y - (lineOne!.y + lineOne!.height);
-  expect(verticalGap).toBeGreaterThanOrEqual(4);
-  expect(verticalGap).toBeLessThanOrEqual(26);
+  expect(verticalGap).toBeGreaterThanOrEqual(0);
+  expect(verticalGap).toBeLessThanOrEqual(8);
+  const lineTwoFontSize = await page.locator('.hero-title-line--two').evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
+  expect(lineTwoFontSize).toBeGreaterThanOrEqual(60);
+  expect(lineTwoFontSize).toBeLessThanOrEqual(61.5);
+
   const rightOne = lineOne!.x + lineOne!.width;
   const rightTwo = lineTwo!.x + lineTwo!.width;
   expect(Math.abs(rightOne - rightTwo)).toBeLessThanOrEqual(8);
