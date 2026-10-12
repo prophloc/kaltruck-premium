@@ -1,17 +1,84 @@
 ---
 interface Project { data: { title:string; category:string; image:string; alt:string; width:number; height:number; summary?:string } }
 const { projects } = Astro.props as { projects: Project[] };
+
+const sourceCategories = [
+  'Transport i montaż konstrukcji',
+  'Budownictwo i infrastruktura',
+  'Energetyka i przemysł',
+  'Rolnictwo i rekreacja',
+  'Reklama i wydarzenia',
+] as const;
+
+const projectGroup = (project: Project) => {
+  const text = `${project.data.category} ${project.data.title}`.toLocaleLowerCase('pl');
+  if (/rolnic|silos|siano|traw|łod|lod|jacht|gołęb|goleb/.test(text)) return 'Rolnictwo i rekreacja';
+  if (/reklam|billboard|paczkomat|event|imprez/.test(text)) return 'Reklama i wydarzenia';
+  if (/kontener|holender|suwnic|stacj.*ładow/.test(text)) return 'Transport i montaż konstrukcji';
+  if (/prefab|budow|szkielet|płyt|plyt|ogrodz|ekran|kład|klad|wiadukt|ruszt|szalunk|big-bag/.test(text)) return 'Budownictwo i infrastruktura';
+  return 'Energetyka i przemysł';
+};
 ---
-<div class="project-gallery" data-project-gallery>
-  {projects.map((project, index) => (
-    <article class:list={['project', index % 2 === 0 ? 'project--feature' : 'project--support']}>
-      <div class="project-media">
-        <img src={project.data.image} alt={project.data.alt} width={project.data.width} height={project.data.height} loading={index < 2 ? 'eager' : 'lazy'} />
-      </div>
-      <div class="project-meta"><span>{project.data.category}</span><h2>{project.data.title}</h2></div>
-    </article>
-  ))}
+<div class="project-gallery-shell" data-project-gallery>
+  <div class="project-filters" aria-label="Kategorie realizacji">
+    <button class="project-filter is-active" type="button" data-project-filter="Wszystkie" aria-pressed="true">Wszystkie</button>
+    {sourceCategories.map((category) => (
+      <button class="project-filter" type="button" data-project-filter={category} aria-pressed="false">{category}</button>
+    ))}
+  </div>
+
+  <div class="project-gallery">
+    {projects.map((project, index) => {
+      const group = projectGroup(project);
+      return (
+        <article
+          class:list={['project', index % 2 === 0 ? 'project--feature' : 'project--support']}
+          data-project-group={group}
+        >
+          <div class="project-media">
+            <img src={project.data.image} alt={project.data.alt} width={project.data.width} height={project.data.height} loading={index < 2 ? 'eager' : 'lazy'} />
+          </div>
+          <div class="project-meta">
+            <span>{project.data.category}</span>
+            <h2>{project.data.title}</h2>
+            <small>{group}</small>
+          </div>
+        </article>
+      );
+    })}
+  </div>
 </div>
+
+<script is:inline>
+  (() => {
+    const gallery = document.querySelector('[data-project-gallery]');
+    if (!gallery) return;
+    const filters = [...gallery.querySelectorAll('[data-project-filter]')];
+    const projects = [...gallery.querySelectorAll('[data-project-group]')];
+    filters.forEach((button) => {
+      button.addEventListener('click', () => {
+        const selected = button.getAttribute('data-project-filter') || 'Wszystkie';
+        filters.forEach((item) => {
+          const active = item === button;
+          item.classList.toggle('is-active', active);
+          item.setAttribute('aria-pressed', String(active));
+        });
+        projects.forEach((project) => {
+          const visible = selected === 'Wszystkie' || project.getAttribute('data-project-group') === selected;
+          project.hidden = !visible;
+        });
+      });
+    });
+  })();
+</script>
+
 <style>
-.project-gallery{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(18px,2vw,28px);align-items:start}.project{margin:0 0 clamp(24px,3vw,42px)}.project--feature{grid-column:span 7}.project--support{grid-column:span 5}.project-media{overflow:hidden;background:#151719;border-radius:var(--radius-md);aspect-ratio:4/3}.project-media img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}.project:hover img{transform:scale(1.02)}.project-meta{display:grid;gap:8px;padding-top:16px}.project-meta span{color:var(--accent);font-size:.72rem;text-transform:uppercase;letter-spacing:.14em}.project-meta h2{font-size:clamp(1.35rem,2vw,2.2rem);line-height:1.05;letter-spacing:-.03em;margin:0;max-width:18ch}@media(max-width:760px){.project-gallery{grid-template-columns:1fr}.project--feature,.project--support{grid-column:1}.project{margin-bottom:34px}.project-meta h2{font-size:1.6rem}}
+.project-gallery-shell{display:grid;gap:clamp(34px,4vw,56px)}
+.project-filters{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.project-filter{min-height:40px;padding:0 14px;border:1px solid rgba(255,255,255,.12);border-radius:999px;background:rgba(255,255,255,.025);color:rgba(255,255,255,.68);font:inherit;font-size:.77rem;font-weight:720;letter-spacing:.025em;cursor:pointer;transition:color .2s ease,border-color .2s ease,background .2s ease,transform .2s ease}
+.project-filter:hover{color:#fff;border-color:rgba(255,255,255,.3);transform:translateY(-1px)}
+.project-filter.is-active{color:#f0c977;border-color:rgba(215,180,106,.56);background:rgba(215,180,106,.08)}
+.project-gallery{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(18px,2vw,28px);align-items:start}.project{margin:0 0 clamp(24px,3vw,42px)}.project[hidden]{display:none!important}.project--feature{grid-column:span 7}.project--support{grid-column:span 5}.project-media{overflow:hidden;background:#151719;border-radius:var(--radius-md);aspect-ratio:4/3}.project-media img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}.project:hover img{transform:scale(1.02)}.project-meta{display:grid;gap:8px;padding-top:16px}.project-meta span{color:var(--accent);font-size:.72rem;text-transform:uppercase;letter-spacing:.14em}.project-meta h2{font-size:clamp(1.35rem,2vw,2.2rem);line-height:1.05;letter-spacing:-.03em;margin:0;max-width:18ch}.project-meta small{color:rgba(255,255,255,.48);font-size:.72rem;letter-spacing:.015em}
+@media(max-width:760px){.project-gallery-shell{gap:30px}.project-filters{display:grid;grid-template-columns:1fr 1fr;gap:7px}.project-filter{min-height:44px;padding:7px 10px;font-size:.7rem}.project-gallery{grid-template-columns:1fr}.project--feature,.project--support{grid-column:1}.project{margin-bottom:34px}.project-meta h2{font-size:1.6rem}}
+@media(max-width:460px){.project-filters{grid-template-columns:1fr}}
 </style>
