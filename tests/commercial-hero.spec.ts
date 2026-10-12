@@ -90,13 +90,11 @@ test('desktop slogan stacks tightly, shares a right edge, and centers CTAs below
   expect(lineTwo).not.toBeNull();
   expect(actions).not.toBeNull();
 
-  // Keep the first line where it already sits against the crane boom.
   expect(lineOne!.y).toBeGreaterThanOrEqual(330);
   expect(lineOne!.y).toBeLessThanOrEqual(410);
   expect(lineOne!.x).toBeGreaterThanOrEqual(390);
   expect(lineOne!.x).toBeLessThanOrEqual(500);
 
-  // Pull the closing line closer and make it about 5px smaller at this desktop width.
   const verticalGap = lineTwo!.y - (lineOne!.y + lineOne!.height);
   expect(verticalGap).toBeGreaterThanOrEqual(-4);
   expect(verticalGap).toBeLessThanOrEqual(8);
@@ -104,7 +102,6 @@ test('desktop slogan stacks tightly, shares a right edge, and centers CTAs below
   expect(lineTwoFontSize).toBeGreaterThanOrEqual(60);
   expect(lineTwoFontSize).toBeLessThanOrEqual(61.5);
 
-  // Fine tune the closing line exactly 5px left and 4px up on desktop.
   const lineTwoTransform = await page.locator('.hero-title-line--two').evaluate((node) => getComputedStyle(node).transform);
   const transformMatch = lineTwoTransform.match(/^matrix\([^,]+,[^,]+,[^,]+,[^,]+,\s*(-?[\d.]+),\s*(-?[\d.]+)\)$/);
   expect(transformMatch).not.toBeNull();
@@ -115,7 +112,6 @@ test('desktop slogan stacks tightly, shares a right edge, and centers CTAs below
   const rightTwo = lineTwo!.x + lineTwo!.width;
   expect(Math.abs(rightOne - rightTwo)).toBeLessThanOrEqual(8);
 
-  // CTAs should be centered under the visual width of the two-line slogan group.
   const groupLeft = Math.min(lineOne!.x, lineTwo!.x);
   const groupRight = Math.max(rightOne, rightTwo);
   const groupCenter = (groupLeft + groupRight) / 2;
@@ -129,5 +125,8 @@ test('hero omits the location pill after moving that statement into the intro', 
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
   await expect(page.locator('.hero-kicker')).toHaveCount(0);
-  await expect(page.locator('.intro .section-title')).toHaveText('Transport HDS • Płock • Polska');
+  const title = page.locator('.intro .section-title');
+  await expect(title).not.toContainText('•');
+  await expect(title.locator('.intro-location-main')).toHaveText('Transport HDS');
+  await expect(title.locator('.intro-location-sub')).toHaveText('Płock Polska');
 });
