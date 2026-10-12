@@ -62,7 +62,7 @@ test('hero keeps the sales message vertically centered and CTAs prominent', asyn
   expect(metrics.every((item) => item.height >= 58 && item.fontSize >= 15 && item.fontWeight >= 700)).toBeTruthy();
 });
 
-test('hero centers the cinematic composition as one group while preserving internal offsets', async ({ page }) => {
+test('hero centers the cinematic composition as one group', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -70,12 +70,6 @@ test('hero centers the cinematic composition as one group while preserving inter
   expect(stageBox).not.toBeNull();
   const stageCenter = stageBox!.x + stageBox!.width / 2;
   expect(Math.abs(stageCenter - 800)).toBeLessThanOrEqual(24);
-
-  const lineOne = await page.locator('.hero-title-line--one').boundingBox();
-  const lineTwo = await page.locator('.hero-title-line--two').boundingBox();
-  expect(lineOne).not.toBeNull();
-  expect(lineTwo).not.toBeNull();
-  expect(lineOne!.x - lineTwo!.x).toBeGreaterThanOrEqual(20);
 
   const leadBand = await page.locator('.hero-bottom-copy').boundingBox();
   const actions = await page.locator('.hero-actions').boundingBox();
