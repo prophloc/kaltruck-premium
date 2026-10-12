@@ -124,23 +124,10 @@ test('desktop slogan stacks tightly, shares a right edge, and centers CTAs below
   expect(actions!.y).toBeGreaterThan(lineTwo!.y + lineTwo!.height);
 });
 
-test('hero kicker is a compact glass pill', async ({ page }) => {
+test('hero omits the location pill after moving that statement into the intro', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-  const metrics = await page.locator('.hero-kicker').evaluate((node) => {
-    const style = getComputedStyle(node);
-    const rect = node.getBoundingClientRect();
-    return {
-      width: rect.width,
-      borderRadius: parseFloat(style.borderRadius),
-      backdropFilter: style.backdropFilter,
-      backgroundColor: style.backgroundColor,
-    };
-  });
-
-  expect(metrics.width).toBeLessThan(390);
-  expect(metrics.borderRadius).toBeGreaterThanOrEqual(20);
-  expect(metrics.backdropFilter).toContain('blur');
-  expect(metrics.backgroundColor).not.toBe('rgba(0, 0, 0, 0)');
+  await expect(page.locator('.hero-kicker')).toHaveCount(0);
+  await expect(page.locator('.intro .section-title')).toHaveText('Transport HDS • Płock • Polska');
 });
