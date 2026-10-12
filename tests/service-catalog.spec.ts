@@ -72,7 +72,7 @@ test('desktop keeps the original left hero placement and centers a frameless cat
   expect(metrics.panelBoxShadow).toBe('none');
 });
 
-test('desktop raises the right category heading above the left heading and blurs only behind the catalog', async ({ page }) => {
+test('desktop raises the right category heading and blurs only behind the service text stage', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
 
@@ -80,17 +80,45 @@ test('desktop raises the right category heading above the left heading and blurs
     const leftHeading = document.querySelector('.service-copy h1')?.getBoundingClientRect();
     const rightHeading = document.querySelector('[data-service-panel][data-active="true"] h2')?.getBoundingClientRect();
     const catalog = document.querySelector('[data-service-catalog]');
-    const backdrop = catalog ? getComputedStyle(catalog, '::before') : null;
+    const stage = document.querySelector('.service-catalog__stage');
+    const catalogBackdrop = catalog ? getComputedStyle(catalog, '::before') : null;
+    const stageBackdrop = stage ? getComputedStyle(stage, '::before') : null;
     return {
       leftTop: leftHeading?.top ?? 0,
       rightTop: rightHeading?.top ?? 9999,
-      backdropFilter: backdrop?.backdropFilter ?? 'none',
-      webkitBackdropFilter: backdrop?.getPropertyValue('-webkit-backdrop-filter') ?? 'none',
+      catalogBackdropFilter: catalogBackdrop?.backdropFilter ?? 'none',
+      catalogWebkitBackdropFilter: catalogBackdrop?.getPropertyValue('-webkit-backdrop-filter') ?? 'none',
+      stageBackdropFilter: stageBackdrop?.backdropFilter ?? 'none',
+      stageWebkitBackdropFilter: stageBackdrop?.getPropertyValue('-webkit-backdrop-filter') ?? 'none',
     };
   });
 
   expect(metrics.rightTop).toBeLessThan(metrics.leftTop - 6);
-  expect(`${metrics.backdropFilter} ${metrics.webkitBackdropFilter}`).toContain('blur(');
+  expect(`${metrics.catalogBackdropFilter} ${metrics.catalogWebkitBackdropFilter}`).not.toContain('blur(');
+  expect(`${metrics.stageBackdropFilter} ${metrics.stageWebkitBackdropFilter}`).toContain('blur(');
+});
+
+test('category numbers sit below the text, include upward arrows and are visually larger', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
+
+  const metrics = await page.evaluate(() => {
+    const stage = document.querySelector('.service-catalog__stage')?.getBoundingClientRect();
+    const controls = document.querySelector('.service-catalog__controls')?.getBoundingClientRect();
+    const firstButton = document.querySelector('[data-service-nav-index="0"]');
+    const buttonStyle = firstButton ? getComputedStyle(firstButton) : null;
+    return {
+      stageBottom: stage?.bottom ?? 9999,
+      controlsTop: controls?.top ?? 0,
+      firstText: firstButton?.textContent?.replace(/\s+/g, ' ').trim() ?? '',
+      firstFontSize: buttonStyle ? Number.parseFloat(buttonStyle.fontSize) : 0,
+    };
+  });
+
+  expect(metrics.controlsTop).toBeGreaterThan(metrics.stageBottom);
+  expect(metrics.firstText).toContain('↑');
+  expect(metrics.firstText).toContain('01');
+  expect(metrics.firstFontSize).toBeGreaterThanOrEqual(13);
 });
 
 test('category controls stay below the longest service list', async ({ page }) => {
