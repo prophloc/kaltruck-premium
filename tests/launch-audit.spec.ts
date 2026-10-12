@@ -213,7 +213,7 @@ test('realization gallery uses a controlled modular rhythm', async ({ page }) =>
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
   const cards = page.locator('[data-project-gallery] .project');
-  await expect(cards).toHaveCount(8);
+  await expect(cards).toHaveCount(10);
   const topDifference = await cards.evaluateAll((nodes) => {
     if (nodes.length < 2) return 0;
     return Math.abs(nodes[0].getBoundingClientRect().top - nodes[1].getBoundingClientRect().top);
