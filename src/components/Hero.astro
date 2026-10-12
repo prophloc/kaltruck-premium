@@ -7,8 +7,6 @@ import { siteConfig } from '../config/site';
 
   <div class="container hero-content">
     <div class="hero-stage">
-      <p class="eyebrow hero-kicker">Transport HDS • Płock • Polska</p>
-
       <div class="hero-lockup">
         <h1 class="hero-title" aria-label="Ciężki ładunek? Zostaw to nam!">
           <span class="hero-title-line hero-title-line--one">CIĘŻKI ŁADUNEK?</span>
@@ -76,25 +74,6 @@ import { siteConfig } from '../config/site';
   align-content:center;
 }
 .hero-lockup{display:contents}
-.hero-kicker{
-  grid-column:2 / span 4;
-  justify-self:start;
-  width:max-content;
-  max-width:100%;
-  display:inline-flex;
-  align-items:center;
-  min-height:36px;
-  margin:0 0 clamp(18px,2.3vh,28px);
-  padding:8px 15px;
-  border:1px solid rgba(255,255,255,.16);
-  border-radius:999px;
-  background:rgba(8,10,12,.42);
-  color:#f0c977;
-  box-shadow:0 10px 30px rgba(0,0,0,.16);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-  text-shadow:0 2px 14px rgba(0,0,0,.55);
-}
 .hero-title{
   grid-column:1 / -1;
   display:grid;
@@ -195,9 +174,6 @@ import { siteConfig } from '../config/site';
 .hero-scroll span{font-size:1rem;margin-top:10px}
 
 @media(min-width:1181px){
-  .hero-kicker{
-    transform:translateY(-28px);
-  }
   .hero-lockup{
     grid-column:2 / span 9;
     display:flex;
@@ -242,7 +218,6 @@ import { siteConfig } from '../config/site';
 @media(max-width:1180px){
   .hero-bg{object-position:58% 50%}
   .hero-stage{width:min(100%,980px)}
-  .hero-kicker{grid-column:1 / span 5}
   .hero-title-line--one{grid-column:1 / span 10;font-size:clamp(3.2rem,6.4vw,5.4rem)}
   .hero-title-line--two{grid-column:3 / -1;font-size:clamp(4.5rem,9.4vw,7.8rem)}
   .hero-actions{grid-column:6 / -1}
@@ -252,7 +227,6 @@ import { siteConfig } from '../config/site';
   .hero{min-height:100svh}
   .hero-content{min-height:100svh;padding-top:calc(var(--header-height) + 42px);padding-bottom:154px}
   .hero-stage{width:min(100%,780px)}
-  .hero-kicker{grid-column:1 / span 7}
   .hero-title-line--one{grid-column:1 / -1;font-size:clamp(3rem,8.2vw,4.8rem)}
   .hero-title-line--two{grid-column:2 / -1;font-size:clamp(4.2rem,12.8vw,6.8rem)}
   .hero-support{margin-top:30px}
@@ -272,7 +246,6 @@ import { siteConfig } from '../config/site';
   }
   .hero-content{padding-top:calc(var(--header-height) + 34px);padding-bottom:176px}
   .hero-stage{display:block;width:100%}
-  .hero-kicker{margin-bottom:16px;padding:7px 12px;min-height:34px}
   .hero-title{display:block}
   .hero-title-line{white-space:normal;width:auto}
   .hero-title-line--one{font-size:clamp(2.7rem,12.6vw,3.7rem);line-height:.92}
