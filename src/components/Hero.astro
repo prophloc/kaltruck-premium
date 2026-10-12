@@ -9,15 +9,17 @@ import { siteConfig } from '../config/site';
     <div class="hero-stage">
       <p class="eyebrow hero-kicker">Transport HDS • Płock • Polska</p>
 
-      <h1 class="hero-title" aria-label="Ciężki ładunek? Zostaw to nam!">
-        <span class="hero-title-line hero-title-line--one">CIĘŻKI ŁADUNEK?</span>
-        <span class="hero-title-line hero-title-line--two">ZOSTAW TO NAM!</span>
-      </h1>
+      <div class="hero-lockup">
+        <h1 class="hero-title" aria-label="Ciężki ładunek? Zostaw to nam!">
+          <span class="hero-title-line hero-title-line--one">CIĘŻKI ŁADUNEK?</span>
+          <span class="hero-title-line hero-title-line--two">ZOSTAW TO NAM!</span>
+        </h1>
 
-      <div class="hero-support">
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="/wycena/">Wyceń transport</a>
-          <a class="btn btn-secondary hero-phone" href={`tel:${siteConfig.phone}`}>Zadzwoń: 514 948 373</a>
+        <div class="hero-support">
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="/wycena/">Wyceń transport</a>
+            <a class="btn btn-secondary hero-phone" href={`tel:${siteConfig.phone}`}>Zadzwoń: 514 948 373</a>
+          </div>
         </div>
       </div>
     </div>
@@ -73,6 +75,7 @@ import { siteConfig } from '../config/site';
   column-gap:var(--grid-gap);
   align-content:center;
 }
+.hero-lockup{display:contents}
 .hero-kicker{
   grid-column:2 / span 4;
   justify-self:start;
@@ -195,17 +198,44 @@ import { siteConfig } from '../config/site';
   .hero-kicker{
     transform:translateY(-28px);
   }
-  .hero-title-line--one{
+  .hero-lockup{
+    grid-column:2 / span 9;
+    display:flex;
+    width:max-content;
+    max-width:100%;
+    flex-direction:column;
+    align-items:stretch;
     transform:translate(86px,56px);
   }
+  .hero-title{
+    display:flex;
+    width:max-content;
+    max-width:100%;
+    flex-direction:column;
+    align-items:flex-end;
+  }
+  .hero-title-line--one{
+    transform:none;
+  }
   .hero-title-line--two{
+    margin-top:clamp(8px,1.1vh,12px);
     font-size:clamp(3.35rem,4.1vw,4.25rem);
     line-height:.9;
     letter-spacing:-.045em;
-    transform:translate(-190px,150px);
+    transform:none;
+  }
+  .hero-support{
+    display:block;
+    width:100%;
+    margin-top:clamp(24px,3vh,32px);
   }
   .hero-actions{
-    transform:translate(105px,112px);
+    display:flex;
+    width:max-content;
+    max-width:100%;
+    margin-inline:auto;
+    justify-content:center;
+    transform:none;
   }
 }
 
