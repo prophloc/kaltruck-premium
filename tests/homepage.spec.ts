@@ -40,3 +40,29 @@ test('homepage hero uses the exact supplied PNG artwork', async ({ page }) => {
   expect(decoded.width).toBe(1672);
   expect(decoded.height).toBe(941);
 });
+
+test('capability strip reads like a technical KALTRUCK specification', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+  const strip = page.locator('.cap-strip');
+  await expect(strip).toBeVisible();
+  await expect(strip.locator('.cap-intro')).toContainText('KALTRUCK / MOŻLIWOŚCI');
+
+  const items = strip.locator('.cap-item');
+  await expect(items).toHaveCount(4);
+  await expect(strip.locator('.cap-index')).toHaveText(['01', '02', '03', '04']);
+  await expect(strip.locator('.cap-value')).toHaveText(['10+', '12 t', '14 m', 'CAŁA POLSKA']);
+
+  const metrics = await strip.evaluate((node) => {
+    const rect = node.getBoundingClientRect();
+    const style = getComputedStyle(node);
+    return { height: rect.height, backgroundImage: style.backgroundImage };
+  });
+  expect(metrics.height).toBeGreaterThanOrEqual(130);
+  expect(metrics.height).toBeLessThanOrEqual(190);
+  expect(metrics.backgroundImage).toContain('linear-gradient');
+
+  const valueSizes = await strip.locator('.cap-value').evaluateAll((nodes) => nodes.map((node) => parseFloat(getComputedStyle(node).fontSize)));
+  expect(valueSizes.every((size) => size >= 34)).toBeTruthy();
+});
