@@ -3,15 +3,19 @@ import { siteConfig } from '../config/site';
 ---
 <footer class="site-footer">
   <div class="container footer-grid">
-    <div>
-      <p class="eyebrow">KALTRUCK</p>
-      <h2>Ciężki ładunek.<br />Precyzyjna robota.</h2>
+    <div class="footer-brand">
+      <img src="/brand/kaltruck-logo.svg" width="2548" height="1305" alt="KALTRUCK Transport HDS" />
+      <p>Ciężki ładunek. Precyzyjna robota.</p>
     </div>
-    <div class="footer-links">
-      <a href="/transport-hds/">Usługi</a><a href="/realizacje/">Realizacje</a><a href="/sprzet/">Sprzęt</a><a href="/o-nas/">O nas</a><a href="/kontakt/">Kontakt</a>
+    <div class="footer-links-wrap">
+      <p class="footer-label">Nawigacja</p>
+      <div class="footer-links">
+        <a href="/transport-hds/">Usługi</a><a href="/realizacje/">Realizacje</a><a href="/sprzet/">Sprzęt</a><a href="/o-nas/">O nas</a><a href="/kontakt/">Kontakt</a>
+      </div>
     </div>
     <div class="footer-contact">
-      <a href={`tel:${siteConfig.phone}`}>+48 514 948 373</a>
+      <p class="footer-label">Kontakt</p>
+      <a class="footer-phone" href={`tel:${siteConfig.phone}`}>+48 514 948 373</a>
       <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
       <span>Płock • Mazowsze • Polska</span>
     </div>
@@ -19,12 +23,28 @@ import { siteConfig } from '../config/site';
   <div class="container footer-bottom"><span>© {new Date().getFullYear()} {siteConfig.legalName}</span><span>Transport HDS</span></div>
 </footer>
 <style>
-  .site-footer { border-top: 1px solid var(--line); background: #070809; padding: 72px 0 28px; }
-  .footer-grid { display: grid; grid-template-columns: 1.4fr .6fr 1fr; gap: 48px; }
-  h2 { font-size: clamp(2.4rem, 5vw, 5.2rem); line-height: .95; letter-spacing: -.045em; margin: 18px 0 0; }
-  .footer-links, .footer-contact { display: grid; align-content: start; gap: 12px; }
-  .footer-contact { color: var(--muted); }
-  .footer-contact a:first-child { color: var(--text); font-size: 1.4rem; font-weight: 760; }
-  .footer-bottom { border-top: 1px solid var(--line); margin-top: 64px; padding-top: 24px; display: flex; justify-content: space-between; color: #888; font-size: .82rem; }
-  @media(max-width: 800px){ .footer-grid { grid-template-columns: 1fr; } .footer-bottom { gap: 12px; flex-direction: column; } }
+  .site-footer{border-top:1px solid var(--line);background:#060708;padding:clamp(54px,5.5vw,76px) 0 24px}
+  .footer-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:start}
+  .footer-brand{grid-column:1 / span 5;max-width:27rem}
+  .footer-brand img{display:block;width:clamp(150px,12vw,196px);height:auto;filter:invert(1);margin-bottom:22px}
+  .footer-brand p{margin:0;color:#bbb7af;font-size:clamp(1.15rem,1.55vw,1.42rem);line-height:1.5;max-width:24ch}
+  .footer-links-wrap{grid-column:7 / span 2}
+  .footer-contact{grid-column:9 / -1}
+  .footer-label{margin:0 0 16px;color:var(--accent);font-size:.72rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+  .footer-links,.footer-contact{display:grid;align-content:start;gap:11px}
+  .footer-links a{width:max-content;color:#e7e4de}
+  .footer-links a:hover{color:var(--accent)}
+  .footer-contact{color:#9d9992}
+  .footer-contact a{overflow-wrap:anywhere}
+  .footer-phone{color:#fff!important;font-size:clamp(1.25rem,1.8vw,1.55rem);font-weight:800;letter-spacing:-.02em}
+  .footer-bottom{border-top:1px solid var(--line);margin-top:clamp(42px,4.5vw,58px);padding-top:20px;display:flex;justify-content:space-between;gap:20px;color:#777;font-size:.78rem}
+  @media(max-width:900px){.footer-brand{grid-column:1/span 5}.footer-links-wrap{grid-column:7/span 2}.footer-contact{grid-column:9/-1}}
+  @media(max-width:760px){
+    .site-footer{padding-top:44px}
+    .footer-grid{grid-template-columns:1fr 1fr;gap:38px 24px}
+    .footer-brand{grid-column:1/-1}
+    .footer-links-wrap,.footer-contact{grid-column:auto}
+    .footer-brand p{max-width:28ch}
+    .footer-bottom{margin-top:38px;flex-direction:column;gap:8px}
+  }
 </style>

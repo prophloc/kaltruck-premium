@@ -1,4 +1,5 @@
 ---
+import { siteConfig } from '../config/site';
 const links = [
   ['Usługi', '/transport-hds/'],
   ['Realizacje', '/realizacje/'],
@@ -14,15 +15,23 @@ const links = [
       {links.map(([label, href]) => <a href={href}>{label}</a>)}
     </nav>
     <a class="btn btn-primary" href="/wycena/">Wyceń transport</a>
+    <div class="mobile-contact" aria-label="Kontakt">
+      <a href={`tel:${siteConfig.phone}`}>514 948 373</a>
+      <a href={`tel:${siteConfig.secondaryPhone}`}>784 430 022</a>
+      <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+    </div>
   </div>
 </div>
 
 <style>
   .mobile-menu { position: fixed; inset: 0; z-index: 70; background: rgba(5,6,7,.72); backdrop-filter: blur(12px); visibility: hidden; opacity: 0; transition: opacity .2s ease, visibility .2s ease; }
   .mobile-menu[data-open="true"] { visibility: visible; opacity: 1; }
-  .mobile-menu__panel { position: absolute; right: 0; top: 0; width: min(90vw, 430px); height: 100%; padding: 90px 32px 36px; background: #0e1012; border-left: 1px solid var(--line); }
-  .mobile-menu__close { position: absolute; top: 22px; right: 24px; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--text); font-size: 2rem; }
-  nav { display: grid; gap: 8px; margin-bottom: 30px; }
-  nav a { font-size: clamp(2rem, 9vw, 3.2rem); font-weight: 760; letter-spacing: -.04em; padding: 4px 0; }
-  @media (min-width: 900px) { .mobile-menu { display: none; } }
+  .mobile-menu__panel { position: absolute; right: 0; top: 0; width: min(90vw, 430px); height: 100%; padding: 92px clamp(24px, 5vw, 36px) 36px; background: #0e1012; border-left: 1px solid var(--line); box-shadow: var(--shadow); }
+  .mobile-menu__close { position: absolute; top: 20px; right: clamp(20px, 4vw, 28px); width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--text); font-size: 2rem; line-height: 1; }
+  nav { display: grid; gap: 6px; margin-bottom: 30px; }
+  nav a { font-size: clamp(2rem, 8vw, 3.1rem); font-weight: 760; line-height: 1.05; letter-spacing: -.04em; padding: 5px 0; }
+  .mobile-contact { display: grid; gap: 8px; margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); }
+  .mobile-contact a { width: fit-content; color: rgba(255,255,255,.78); font-size: .95rem; font-weight: 680; letter-spacing: .01em; }
+  .mobile-contact a:hover { color: var(--accent-strong); }
+  @media (min-width: 1081px) { .mobile-menu { display: none; } }
 </style>
