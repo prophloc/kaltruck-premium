@@ -43,7 +43,7 @@ test('realizations hero shows all ten realization thumbnails pulled ten percent 
   expect(metrics!.averageCardHeight).toBeGreaterThanOrEqual(80);
 });
 
-test('realization thumbnails use brighter photos and centered blurred category strips', async ({ page }) => {
+test('realization thumbnails use brighter photos and centered blurred category strips with larger labels', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
 
@@ -66,6 +66,7 @@ test('realization thumbnails use brighter photos and centered blurred category s
       labelCenterOffset: Math.abs((labelRect.top + labelRect.height / 2) - (cardRect.top + cardRect.height / 2)),
       backdropFilter: labelStyle.backdropFilter || labelStyle.webkitBackdropFilter,
       labelText: label.textContent?.trim() ?? '',
+      fontSize: Number.parseFloat(labelStyle.fontSize),
     };
   });
 
@@ -73,6 +74,7 @@ test('realization thumbnails use brighter photos and centered blurred category s
   expect(appearance!.filter).toContain('brightness(0.82)');
   expect(appearance!.labelCenterOffset).toBeLessThan(2);
   expect(appearance!.backdropFilter).toContain('blur(');
+  expect(appearance!.fontSize).toBeGreaterThanOrEqual(13);
   await expect(card.locator('span')).toHaveText(category!);
 });
 
