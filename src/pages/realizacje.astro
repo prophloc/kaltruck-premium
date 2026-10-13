@@ -93,7 +93,7 @@ const heroProjects = [...projects].sort((a, b) => a.id.localeCompare(b.id, 'pl')
   .realization-category-preview{position:absolute;left:50%;top:50%;width:50%;transform:translateY(-50%);display:grid;gap:14px;padding-left:clamp(28px,3.2vw,52px);min-width:0}
   .preview-intro{margin:0;color:#c6c1b8;font-size:clamp(.88rem,1vw,1rem);line-height:1.5;max-width:34ch}
   .realization-category-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-  .realization-category-card{position:relative;isolation:isolate;overflow:hidden;display:block;min-height:72px;padding:0;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:#121416;color:#fff;text-align:left;text-decoration:none;cursor:pointer;transition:transform .22s ease,border-color .22s ease}
+  .realization-category-card{position:relative;isolation:isolate;overflow:hidden;display:block;min-height:84px;padding:0;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:#121416;color:#fff;text-align:left;text-decoration:none;cursor:pointer;transition:transform .22s ease,border-color .22s ease}
   .realization-category-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.74) brightness(.64);transition:transform .35s ease,filter .35s ease}
   .realization-category-card::after{content:'';position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,rgba(6,7,8,.04) 0%,rgba(6,7,8,.24) 42%,rgba(6,7,8,.9) 100%)}
   .realization-category-card span{position:absolute;z-index:1;left:12px;right:11px;bottom:9px;font-size:.72rem;font-weight:760;line-height:1.12;letter-spacing:-.01em;text-shadow:0 1px 8px rgba(0,0,0,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -106,7 +106,7 @@ const heroProjects = [...projects].sort((a, b) => a.id.localeCompare(b.id, 'pl')
   @media(max-width:1050px){
     .page-head-copy{grid-column:1/span 7}
     .realization-category-preview{left:auto;right:0;width:44%;padding-left:20px}
-    .realization-category-card{min-height:66px}
+    .realization-category-card{min-height:78px}
     .realization-category-card span{font-size:.65rem}
   }
 
