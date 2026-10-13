@@ -1,11 +1,23 @@
 import { test, expect } from '@playwright/test';
 
-test('realizations hero shows all ten realization thumbnails pulled ten percent closer to the headline', async ({ page }) => {
+const parentCategories = [
+  'Transport i montaż konstrukcji',
+  'Budownictwo i infrastruktura',
+  'Energetyka i przemysł',
+  'Rolnictwo i rekreacja',
+  'Reklama i wydarzenia',
+];
+
+test('realizations hero shows exactly one thumbnail per parent category pulled ten percent closer to the headline', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
 
   const cards = page.locator('[data-realization-project-card]');
-  await expect(cards).toHaveCount(10);
+  await expect(cards).toHaveCount(5);
+
+  const categories = await cards.evaluateAll((elements) => elements.map((el) => el.getAttribute('data-realization-category')));
+  expect(new Set(categories).size).toBe(5);
+  expect([...categories].sort()).toEqual([...parentCategories].sort());
 
   const metrics = await page.evaluate(() => {
     const hero = document.querySelector('.page-head-grid')?.getBoundingClientRect();
