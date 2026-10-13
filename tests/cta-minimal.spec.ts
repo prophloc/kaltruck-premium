@@ -29,18 +29,23 @@ test('CTA heading stays on exactly two visual lines on desktop', async ({ page }
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
 
-  const lineCount = await page.evaluate(() => {
-    const heading = document.querySelector('.cta h2');
-    if (!heading) return 0;
-    const range = document.createRange();
-    range.selectNodeContents(heading);
-    const tops = Array.from(range.getClientRects())
-      .filter((rect) => rect.width > 1 && rect.height > 1)
-      .map((rect) => Math.round(rect.top));
-    return new Set(tops).size;
+  const metrics = await page.evaluate(() => {
+    const lines = Array.from(document.querySelectorAll('.cta-heading-line'));
+    return {
+      count: lines.length,
+      lineRatios: lines.map((line) => {
+        const style = getComputedStyle(line);
+        const lineHeight = Number.parseFloat(style.lineHeight);
+        const height = line.getBoundingClientRect().height;
+        return lineHeight > 0 ? height / lineHeight : 999;
+      }),
+      tops: lines.map((line) => line.getBoundingClientRect().top),
+    };
   });
 
-  expect(lineCount).toBe(2);
+  expect(metrics.count).toBe(2);
+  expect(metrics.lineRatios.every((ratio) => ratio <= 1.15)).toBe(true);
+  expect(metrics.tops[1]).toBeGreaterThan(metrics.tops[0]);
 });
 
 test('CTA has a decorative map that fades upward from the bottom edge', async ({ page }) => {
