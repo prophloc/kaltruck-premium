@@ -47,6 +47,8 @@ test('clicking a hero category selects the matching gallery filter', async ({ pa
   const filter = page.locator(`[data-project-filter="${category}"]`);
   await expect(filter).toHaveAttribute('aria-pressed', 'true');
 
-  const galleryTop = await page.locator('[data-project-gallery]').evaluate((el) => el.getBoundingClientRect().top);
-  expect(galleryTop).toBeLessThan(220);
+  await expect.poll(
+    () => page.locator('[data-project-gallery]').evaluate((el) => el.getBoundingClientRect().top),
+    { timeout: 3000 },
+  ).toBeLessThan(220);
 });
