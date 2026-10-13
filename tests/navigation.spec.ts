@@ -30,6 +30,42 @@ for (const width of [899, 900, 1024, 1079, 1080]) {
   });
 }
 
+test('navigation highlights the current section with the theme accent', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+
+  const routes = [
+    ['/realizacje/', 'Realizacje'],
+    ['/sprzet/', 'Sprzęt'],
+    ['/o-nas/', 'O nas'],
+    ['/kontakt/', 'Kontakt'],
+    ['/transport-hds/', 'Usługi'],
+    ['/transport-kontenerow/', 'Usługi'],
+    ['/rozladunek-hds/', 'Usługi'],
+    ['/wynajem-hds/', 'Usługi'],
+  ] as const;
+
+  for (const [path, label] of routes) {
+    await page.goto(path, { waitUntil: 'domcontentloaded' });
+    const nav = page.locator('.desktop-nav');
+    const active = nav.getByRole('link', { name: label, exact: true });
+    const inactive = nav.getByRole('link').filter({ hasNotText: label }).first();
+    await expect(active).toHaveAttribute('aria-current', 'page');
+    const [activeColor, inactiveColor] = await Promise.all([
+      active.evaluate((el) => getComputedStyle(el).color),
+      inactive.evaluate((el) => getComputedStyle(el).color),
+    ]);
+    expect(activeColor).not.toBe(inactiveColor);
+  }
+});
+
+test('mobile navigation marks the current page too', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
+  await page.locator('[data-menu-open]').click();
+  const active = page.locator('[data-mobile-menu]').getByRole('link', { name: 'Realizacje', exact: true });
+  await expect(active).toHaveAttribute('aria-current', 'page');
+});
+
 test('navigation remains available without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
