@@ -72,30 +72,29 @@ test('desktop keeps the original left hero placement and centers a frameless cat
   expect(metrics.panelBoxShadow).toBe('none');
 });
 
-test('desktop raises the right category heading and blurs only behind the service text stage', async ({ page }) => {
+test('desktop aligns the right category label with the left eyebrow and uses a darker blurred backdrop', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
 
   const metrics = await page.evaluate(() => {
-    const leftHeading = document.querySelector('.service-copy h1')?.getBoundingClientRect();
-    const rightHeading = document.querySelector('[data-service-panel][data-active="true"] h2')?.getBoundingClientRect();
-    const catalog = document.querySelector('[data-service-catalog]');
+    const leftEyebrow = document.querySelector('.service-copy .eyebrow')?.getBoundingClientRect();
+    const rightMeta = document.querySelector('[data-service-panel][data-active="true"] .service-document__meta')?.getBoundingClientRect();
     const stage = document.querySelector('.service-catalog__stage');
-    const catalogBackdrop = catalog ? getComputedStyle(catalog, '::before') : null;
     const stageBackdrop = stage ? getComputedStyle(stage, '::before') : null;
+    const background = stageBackdrop?.backgroundColor ?? '';
+    const alphaMatch = background.match(/rgba?\([^,]+,[^,]+,[^,]+(?:,\s*([\d.]+))?\)/);
     return {
-      leftTop: leftHeading?.top ?? 0,
-      rightTop: rightHeading?.top ?? 9999,
-      catalogBackdropFilter: catalogBackdrop?.backdropFilter ?? 'none',
-      catalogWebkitBackdropFilter: catalogBackdrop?.getPropertyValue('-webkit-backdrop-filter') ?? 'none',
+      leftEyebrowTop: leftEyebrow?.top ?? 0,
+      rightMetaTop: rightMeta?.top ?? 9999,
       stageBackdropFilter: stageBackdrop?.backdropFilter ?? 'none',
       stageWebkitBackdropFilter: stageBackdrop?.getPropertyValue('-webkit-backdrop-filter') ?? 'none',
+      backdropAlpha: alphaMatch?.[1] ? Number.parseFloat(alphaMatch[1]) : 1,
     };
   });
 
-  expect(metrics.rightTop).toBeLessThan(metrics.leftTop - 6);
-  expect(`${metrics.catalogBackdropFilter} ${metrics.catalogWebkitBackdropFilter}`).not.toContain('blur(');
+  expect(Math.abs(metrics.rightMetaTop - metrics.leftEyebrowTop)).toBeLessThanOrEqual(8);
   expect(`${metrics.stageBackdropFilter} ${metrics.stageWebkitBackdropFilter}`).toContain('blur(');
+  expect(metrics.backdropAlpha).toBeGreaterThanOrEqual(0.2);
 });
 
 test('category numbers sit below the text, include upward arrows and are visually larger', async ({ page }) => {
