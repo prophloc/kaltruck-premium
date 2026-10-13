@@ -52,7 +52,7 @@ test('realizations hero shows exactly one thumbnail per parent category pulled t
   expect(metrics!.panelCenterRatio).toBeLessThan(0.705);
   expect(Math.abs(metrics!.panelCenterY - metrics!.heroCenterY)).toBeLessThan(24);
   expect(metrics!.averageCardWidth).toBeGreaterThan(190);
-  expect(metrics!.averageCardHeight).toBeGreaterThanOrEqual(80);
+  expect(metrics!.averageCardHeight).toBeGreaterThanOrEqual(102);
 });
 
 test('realization thumbnails use brighter photos and centered blurred category strips with two pixel larger labels', async ({ page }) => {
