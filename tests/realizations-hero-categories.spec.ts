@@ -42,6 +42,39 @@ test('realizations hero shows all ten realization thumbnails centered in the rig
   expect(metrics!.minCardLeft).toBeGreaterThanOrEqual(metrics!.heroMid - 8);
 });
 
+test('realization thumbnails use brighter photos and centered blurred category strips', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
+
+  const card = page.locator('[data-realization-project-card]').first();
+  const category = await card.getAttribute('data-realization-category');
+  expect(category).toBeTruthy();
+
+  const appearance = await card.evaluate((el) => {
+    const image = el.querySelector('img');
+    const label = el.querySelector('span');
+    if (!image || !label) return null;
+
+    const cardRect = el.getBoundingClientRect();
+    const labelRect = label.getBoundingClientRect();
+    const imageStyle = getComputedStyle(image);
+    const labelStyle = getComputedStyle(label);
+
+    return {
+      filter: imageStyle.filter,
+      labelCenterOffset: Math.abs((labelRect.top + labelRect.height / 2) - (cardRect.top + cardRect.height / 2)),
+      backdropFilter: labelStyle.backdropFilter || labelStyle.webkitBackdropFilter,
+      labelText: label.textContent?.trim() ?? '',
+    };
+  });
+
+  expect(appearance).not.toBeNull();
+  expect(appearance!.filter).toContain('brightness(0.82)');
+  expect(appearance!.labelCenterOffset).toBeLessThan(2);
+  expect(appearance!.backdropFilter).toContain('blur(');
+  await expect(card.locator('span')).toHaveText(category!);
+});
+
 test('clicking a realization thumbnail selects its matching gallery category', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
