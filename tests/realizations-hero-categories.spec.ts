@@ -20,6 +20,7 @@ test('realizations hero shows all ten realization thumbnails centered in the rig
     const panelCenterX = panel.left + panel.width / 2;
     const panelCenterY = panel.top + panel.height / 2;
     const averageCardWidth = cards.reduce((sum, rect) => sum + rect.width, 0) / cards.length;
+    const averageCardHeight = cards.reduce((sum, rect) => sum + rect.height, 0) / cards.length;
 
     return {
       rightHalfCenterX,
@@ -27,6 +28,7 @@ test('realizations hero shows all ten realization thumbnails centered in the rig
       panelCenterX,
       panelCenterY,
       averageCardWidth,
+      averageCardHeight,
       minCardLeft: Math.min(...cards.map((rect) => rect.left)),
       heroMid: hero.left + hero.width / 2,
     };
@@ -36,6 +38,7 @@ test('realizations hero shows all ten realization thumbnails centered in the rig
   expect(Math.abs(metrics!.panelCenterX - metrics!.rightHalfCenterX)).toBeLessThan(24);
   expect(Math.abs(metrics!.panelCenterY - metrics!.heroCenterY)).toBeLessThan(24);
   expect(metrics!.averageCardWidth).toBeGreaterThan(190);
+  expect(metrics!.averageCardHeight).toBeGreaterThanOrEqual(80);
   expect(metrics!.minCardLeft).toBeGreaterThanOrEqual(metrics!.heroMid - 8);
 });
 
