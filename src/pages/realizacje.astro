@@ -40,9 +40,9 @@ const heroCategories = sourceCategories.map((category) => {
         <p class="preview-intro">Wybrane realizacje z prawdziwych zleceń Transport HDS Kalwasińscy.</p>
         <div class="realization-category-grid">
           {heroCategories.map(({ category, project }, index) => (
-            <button
+            <a
               class:list={['realization-category-card', index === heroCategories.length - 1 && 'realization-category-card--wide']}
-              type="button"
+              href="#realization-gallery"
               data-realization-category-card={category}
               aria-label={`Pokaż realizacje: ${category}`}
             >
@@ -55,14 +55,14 @@ const heroCategories = sourceCategories.map((category) => {
                 aria-hidden="true"
               />
               <span>{category}</span>
-            </button>
+            </a>
           ))}
         </div>
       </aside>
     </div>
   </section>
 
-  <section class="section gallery-section">
+  <section class="section gallery-section" id="realization-gallery">
     <div class="container"><ProjectGallery projects={projects} /></div>
   </section>
   <CTASection />
@@ -78,13 +78,6 @@ const heroCategories = sourceCategories.map((category) => {
         const filter = [...document.querySelectorAll('[data-project-filter]')]
           .find((button) => button.getAttribute('data-project-filter') === category);
         if (filter instanceof HTMLElement) filter.click();
-
-        const gallery = document.querySelector('[data-project-gallery]');
-        if (gallery) {
-          const headerHeight = document.querySelector('header')?.getBoundingClientRect().height ?? 84;
-          const targetTop = gallery.getBoundingClientRect().top + window.scrollY - headerHeight - 18;
-          window.scrollTo(0, Math.max(0, targetTop));
-        }
       });
     });
   })();
@@ -99,7 +92,7 @@ const heroCategories = sourceCategories.map((category) => {
   .realization-category-preview{grid-column:9/-1;display:grid;gap:18px;align-self:end;min-width:0}
   .preview-intro{margin:0;color:#c6c1b8;font-size:clamp(.88rem,1vw,1rem);line-height:1.55;max-width:31ch}
   .realization-category-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-  .realization-category-card{position:relative;isolation:isolate;overflow:hidden;min-height:82px;padding:0;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:#121416;color:#fff;text-align:left;cursor:pointer;transition:transform .22s ease,border-color .22s ease}
+  .realization-category-card{position:relative;isolation:isolate;overflow:hidden;display:block;min-height:82px;padding:0;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:#121416;color:#fff;text-align:left;text-decoration:none;cursor:pointer;transition:transform .22s ease,border-color .22s ease}
   .realization-category-card--wide{grid-column:1/-1;min-height:76px}
   .realization-category-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.72) brightness(.62);transition:transform .35s ease,filter .35s ease}
   .realization-category-card::after{content:'';position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,rgba(6,7,8,.08) 0%,rgba(6,7,8,.3) 44%,rgba(6,7,8,.88) 100%)}
