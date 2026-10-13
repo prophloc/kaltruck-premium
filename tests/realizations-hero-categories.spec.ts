@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('realizations hero shows all ten realization thumbnails centered in the right half', async ({ page }) => {
+test('realizations hero shows all ten realization thumbnails pulled ten percent closer to the headline', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
 
@@ -9,13 +9,13 @@ test('realizations hero shows all ten realization thumbnails centered in the rig
 
   const metrics = await page.evaluate(() => {
     const hero = document.querySelector('.page-head-grid')?.getBoundingClientRect();
+    const copy = document.querySelector('.page-head-copy')?.getBoundingClientRect();
     const panel = document.querySelector('.realization-category-preview')?.getBoundingClientRect();
     const cards = [...document.querySelectorAll('[data-realization-project-card]')]
       .map((el) => el.getBoundingClientRect());
 
-    if (!hero || !panel || !cards.length) return null;
+    if (!hero || !copy || !panel || !cards.length) return null;
 
-    const rightHalfCenterX = hero.left + hero.width * .75;
     const heroCenterY = hero.top + hero.height / 2;
     const panelCenterX = panel.left + panel.width / 2;
     const panelCenterY = panel.top + panel.height / 2;
@@ -23,23 +23,24 @@ test('realizations hero shows all ten realization thumbnails centered in the rig
     const averageCardHeight = cards.reduce((sum, rect) => sum + rect.height, 0) / cards.length;
 
     return {
-      rightHalfCenterX,
+      heroWidth: hero.width,
+      copyInset: copy.left - hero.left,
+      panelCenterRatio: (panelCenterX - hero.left) / hero.width,
       heroCenterY,
-      panelCenterX,
       panelCenterY,
       averageCardWidth,
       averageCardHeight,
-      minCardLeft: Math.min(...cards.map((rect) => rect.left)),
-      heroMid: hero.left + hero.width / 2,
     };
   });
 
   expect(metrics).not.toBeNull();
-  expect(Math.abs(metrics!.panelCenterX - metrics!.rightHalfCenterX)).toBeLessThan(24);
+  expect(metrics!.copyInset / metrics!.heroWidth).toBeGreaterThan(0.045);
+  expect(metrics!.copyInset / metrics!.heroWidth).toBeLessThan(0.055);
+  expect(metrics!.panelCenterRatio).toBeGreaterThan(0.695);
+  expect(metrics!.panelCenterRatio).toBeLessThan(0.705);
   expect(Math.abs(metrics!.panelCenterY - metrics!.heroCenterY)).toBeLessThan(24);
   expect(metrics!.averageCardWidth).toBeGreaterThan(190);
   expect(metrics!.averageCardHeight).toBeGreaterThanOrEqual(80);
-  expect(metrics!.minCardLeft).toBeGreaterThanOrEqual(metrics!.heroMid - 8);
 });
 
 test('realization thumbnails use brighter photos and centered blurred category strips', async ({ page }) => {
