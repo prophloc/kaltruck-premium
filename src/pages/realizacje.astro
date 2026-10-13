@@ -23,7 +23,11 @@ const projectGroup = (project: (typeof projects)[number]) => {
   return 'Energetyka i przemysł';
 };
 
-const heroProjects = [...projects].sort((a, b) => a.id.localeCompare(b.id, 'pl'));
+const sortedProjects = [...projects].sort((a, b) => a.id.localeCompare(b.id, 'pl'));
+const heroProjects = sourceCategories.flatMap((category) => {
+  const project = sortedProjects.find((item) => projectGroup(item) === category);
+  return project ? [{ project, category }] : [];
+});
 ---
 <BaseLayout title="Realizacje HDS | KALTRUCK Kalwasińscy" description="Zobacz autentyczne realizacje KALTRUCK: kontenery, prefabrykaty, urządzenia przemysłowe, konstrukcje i nietypowe ładunki obsługiwane HDS." canonicalPath="/realizacje/">
   <section class="page-head section">
@@ -36,28 +40,25 @@ const heroProjects = [...projects].sort((a, b) => a.id.localeCompare(b.id, 'pl')
       <aside class="realization-category-preview" aria-label="Realizacje w skrócie">
         <p class="preview-intro">Realizacje z prawdziwych zleceń Transport HDS Kalwasińscy.</p>
         <div class="realization-category-grid">
-          {heroProjects.map((project) => {
-            const category = projectGroup(project);
-            return (
-              <a
-                class="realization-category-card"
-                href="#realization-gallery"
-                data-realization-project-card={project.id}
-                data-realization-category={category}
-                aria-label={`Pokaż realizację: ${project.data.title}`}
-              >
-                <img
-                  src={project.data.image}
-                  alt=""
-                  width={project.data.width}
-                  height={project.data.height}
-                  loading="eager"
-                  aria-hidden="true"
-                />
-                <span>{category}</span>
-              </a>
-            );
-          })}
+          {heroProjects.map(({ project, category }) => (
+            <a
+              class="realization-category-card"
+              href="#realization-gallery"
+              data-realization-project-card={project.id}
+              data-realization-category={category}
+              aria-label={`Pokaż kategorię: ${category}`}
+            >
+              <img
+                src={project.data.image}
+                alt=""
+                width={project.data.width}
+                height={project.data.height}
+                loading="eager"
+                aria-hidden="true"
+              />
+              <span>{category}</span>
+            </a>
+          ))}
         </div>
       </aside>
     </div>
