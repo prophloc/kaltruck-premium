@@ -1,48 +1,52 @@
 import { test, expect } from '@playwright/test';
 
-const categories = [
-  'Transport i montaż konstrukcji',
-  'Budownictwo i infrastruktura',
-  'Energetyka i przemysł',
-  'Rolnictwo i rekreacja',
-  'Reklama i wydarzenia',
-];
-
-test('realizations hero shows five compact category thumbnails on the right', async ({ page }) => {
+test('realizations hero shows all ten realization thumbnails centered in the right half', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
 
-  const cards = page.locator('[data-realization-category-card]');
-  await expect(cards).toHaveCount(5);
-
-  for (const category of categories) {
-    const card = page.locator(`[data-realization-category-card="${category}"]`);
-    await expect(card).toBeVisible();
-    await expect(card.locator('img')).toBeVisible();
-    await expect(card).toContainText(category);
-  }
+  const cards = page.locator('[data-realization-project-card]');
+  await expect(cards).toHaveCount(10);
 
   const metrics = await page.evaluate(() => {
     const hero = document.querySelector('.page-head-grid')?.getBoundingClientRect();
-    const cards = [...document.querySelectorAll('[data-realization-category-card]')].map((el) => el.getBoundingClientRect());
+    const panel = document.querySelector('.realization-category-preview')?.getBoundingClientRect();
+    const cards = [...document.querySelectorAll('[data-realization-project-card]')]
+      .map((el) => el.getBoundingClientRect());
+
+    if (!hero || !panel || !cards.length) return null;
+
+    const rightHalfCenterX = hero.left + hero.width * .75;
+    const heroCenterY = hero.top + hero.height / 2;
+    const panelCenterX = panel.left + panel.width / 2;
+    const panelCenterY = panel.top + panel.height / 2;
+    const averageCardWidth = cards.reduce((sum, rect) => sum + rect.width, 0) / cards.length;
+
     return {
-      heroMid: hero ? hero.left + hero.width / 2 : 0,
-      minCardLeft: cards.length ? Math.min(...cards.map((rect) => rect.left)) : 0,
-      maxCardBottom: cards.length ? Math.max(...cards.map((rect) => rect.bottom)) : 9999,
-      heroBottom: hero?.bottom ?? 0,
+      rightHalfCenterX,
+      heroCenterY,
+      panelCenterX,
+      panelCenterY,
+      averageCardWidth,
+      minCardLeft: Math.min(...cards.map((rect) => rect.left)),
+      heroMid: hero.left + hero.width / 2,
     };
   });
 
-  expect(metrics.minCardLeft).toBeGreaterThan(metrics.heroMid - 24);
-  expect(metrics.maxCardBottom).toBeLessThanOrEqual(metrics.heroBottom + 24);
+  expect(metrics).not.toBeNull();
+  expect(Math.abs(metrics!.panelCenterX - metrics!.rightHalfCenterX)).toBeLessThan(24);
+  expect(Math.abs(metrics!.panelCenterY - metrics!.heroCenterY)).toBeLessThan(24);
+  expect(metrics!.averageCardWidth).toBeGreaterThan(190);
+  expect(metrics!.minCardLeft).toBeGreaterThanOrEqual(metrics!.heroMid - 8);
 });
 
-test('clicking a hero category selects the matching gallery filter', async ({ page }) => {
+test('clicking a realization thumbnail selects its matching gallery category', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
 
-  const category = 'Energetyka i przemysł';
-  await page.locator(`[data-realization-category-card="${category}"]`).click();
+  const card = page.locator('[data-realization-project-card]').first();
+  const category = await card.getAttribute('data-realization-category');
+  expect(category).toBeTruthy();
+  await card.click();
 
   const filter = page.locator(`[data-project-filter="${category}"]`);
   await expect(filter).toHaveAttribute('aria-pressed', 'true');
