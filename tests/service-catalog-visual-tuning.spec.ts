@@ -9,10 +9,12 @@ test('service list dashes are centered and backdrop bounds contain counter and s
     const firstItem = document.querySelector('[data-service-panel][data-active="true"] [data-service-item]');
     const counter = document.querySelector('[data-service-panel][data-active="true"] .service-document__meta strong');
     const separator = document.querySelector('[data-service-panel][data-active="true"] .service-document__underline');
+    const controls = document.querySelector('.service-catalog__controls');
     const stageRect = stage?.getBoundingClientRect();
     const itemRect = firstItem?.getBoundingClientRect();
     const counterRect = counter?.getBoundingClientRect();
     const separatorRect = separator?.getBoundingClientRect();
+    const controlsRect = controls?.getBoundingClientRect();
     const dash = firstItem ? getComputedStyle(firstItem, '::before') : null;
     const backdrop = stage ? getComputedStyle(stage, '::before') : null;
 
@@ -25,7 +27,10 @@ test('service list dashes are centered and backdrop bounds contain counter and s
     const itemCenter = (itemRect?.height ?? 0) / 2;
     const backdropLeft = backdrop ? Number.parseFloat(backdrop.left) : 0;
     const backdropWidth = backdrop ? Number.parseFloat(backdrop.width) : 0;
-    const backdropRight = (stageRect?.left ?? 0) + backdropLeft + backdropWidth;
+    const backdropAbsoluteLeft = (stageRect?.left ?? 0) + backdropLeft;
+    const backdropRight = backdropAbsoluteLeft + backdropWidth;
+    const backdropCenter = backdropAbsoluteLeft + backdropWidth / 2;
+    const controlsCenter = controlsRect ? controlsRect.left + controlsRect.width / 2 : 9999;
 
     return {
       dashCenterDelta: Math.abs(dashCenter - itemCenter),
@@ -34,6 +39,7 @@ test('service list dashes are centered and backdrop bounds contain counter and s
       counterRight: counterRect?.right ?? 9999,
       separatorRight: separatorRect?.right ?? 9999,
       backdropRight,
+      controlsCenterDelta: Math.abs(controlsCenter - backdropCenter),
     };
   });
 
@@ -42,4 +48,5 @@ test('service list dashes are centered and backdrop bounds contain counter and s
   expect(metrics.backdropWidth / metrics.stageWidth).toBeLessThanOrEqual(0.91);
   expect(metrics.counterRight).toBeLessThanOrEqual(metrics.backdropRight - 8);
   expect(metrics.separatorRight).toBeLessThanOrEqual(metrics.backdropRight);
+  expect(metrics.controlsCenterDelta).toBeLessThanOrEqual(2);
 });
