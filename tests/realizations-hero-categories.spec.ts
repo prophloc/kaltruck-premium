@@ -23,16 +23,18 @@ test('realizations hero shows exactly one thumbnail per parent category pulled t
     const hero = document.querySelector('.page-head-grid')?.getBoundingClientRect();
     const copy = document.querySelector('.page-head-copy')?.getBoundingClientRect();
     const panel = document.querySelector('.realization-category-preview')?.getBoundingClientRect();
+    const grid = document.querySelector('.realization-category-grid')?.getBoundingClientRect();
     const cards = [...document.querySelectorAll('[data-realization-project-card]')]
       .map((el) => el.getBoundingClientRect());
 
-    if (!hero || !copy || !panel || !cards.length) return null;
+    if (!hero || !copy || !panel || !grid || !cards.length) return null;
 
     const heroCenterY = hero.top + hero.height / 2;
     const panelCenterX = panel.left + panel.width / 2;
     const panelCenterY = panel.top + panel.height / 2;
     const averageCardWidth = cards.reduce((sum, rect) => sum + rect.width, 0) / cards.length;
     const averageCardHeight = cards.reduce((sum, rect) => sum + rect.height, 0) / cards.length;
+    const lastCard = cards[cards.length - 1];
 
     return {
       heroWidth: hero.width,
@@ -42,6 +44,10 @@ test('realizations hero shows exactly one thumbnail per parent category pulled t
       panelCenterY,
       averageCardWidth,
       averageCardHeight,
+      gridCenterX: grid.left + grid.width / 2,
+      lastCardCenterX: lastCard.left + lastCard.width / 2,
+      firstCardWidth: cards[0].width,
+      lastCardWidth: lastCard.width,
     };
   });
 
@@ -53,6 +59,8 @@ test('realizations hero shows exactly one thumbnail per parent category pulled t
   expect(Math.abs(metrics!.panelCenterY - metrics!.heroCenterY)).toBeLessThan(24);
   expect(metrics!.averageCardWidth).toBeGreaterThan(190);
   expect(metrics!.averageCardHeight).toBeGreaterThanOrEqual(102);
+  expect(Math.abs(metrics!.lastCardCenterX - metrics!.gridCenterX)).toBeLessThan(2);
+  expect(Math.abs(metrics!.lastCardWidth - metrics!.firstCardWidth)).toBeLessThan(2);
 });
 
 test('realization thumbnails use brighter photos and centered blurred category strips with two pixel larger labels', async ({ page }) => {
