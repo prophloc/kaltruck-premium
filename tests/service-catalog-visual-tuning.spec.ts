@@ -27,7 +27,7 @@ test('service list dashes are vertically centered and backdrop is 20 percent nar
     };
   });
 
-  expect(metrics.dashCenterDelta).toBeLessThanOrEqual(0.75);
-  expect(metrics.backdropWidth / metrics.stageWidth).toBeGreaterThanOrEqual(0.79);
-  expect(metrics.backdropWidth / metrics.stageWidth).toBeLessThanOrEqual(0.81);
+  expect(metrics.dashCenterDelta).toBeLessThanOrEqual(0.1);
+  expect(metrics.backdropWidth / metrics.stageWidth).toBeGreaterThanOrEqual(0.89);
+  expect(metrics.backdropWidth / metrics.stageWidth).toBeLessThanOrEqual(0.91);
 });
