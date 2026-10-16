@@ -37,6 +37,8 @@ type GalleryItem = {
   title:string;
   description:string;
   projectCategory:string;
+  width:number;
+  height:number;
 };
 
 const groupedItems: Record<string, GalleryItem[]> = Object.fromEntries(
@@ -52,10 +54,14 @@ const groupedItems: Record<string, GalleryItem[]> = Object.fromEntries(
           title: project.data.title,
           description: project.data.summary || 'Autentyczna realizacja Transport HDS Kalwasińscy.',
           projectCategory: project.data.category,
+          width: project.data.width,
+          height: project.data.height,
         }));
       }),
   ]),
 );
+
+const initialProject = projects[0];
 ---
 <div class="project-gallery-shell" data-project-gallery>
   <div class="project-filters" aria-label="Kategorie realizacji">
@@ -112,7 +118,13 @@ const groupedItems: Record<string, GalleryItem[]> = Object.fromEntries(
 
     <div class="project-lightbox-stage" data-project-lightbox-stage>
       <figure class="project-lightbox-figure">
-        <img src="" alt="" data-project-lightbox-image />
+        <img
+          src={initialProject?.data.image || ''}
+          alt={initialProject?.data.alt || 'Realizacja KALTRUCK HDS'}
+          width={initialProject?.data.width || 1}
+          height={initialProject?.data.height || 1}
+          data-project-lightbox-image
+        />
       </figure>
       <aside class="project-lightbox-copy">
         <p class="project-lightbox-category" data-project-lightbox-category-label></p>
@@ -193,6 +205,8 @@ const groupedItems: Record<string, GalleryItem[]> = Object.fromEntries(
       const item = categoryItems[activeIndex];
       image.setAttribute('src', item.src);
       image.setAttribute('alt', item.alt || item.title || activeCategory);
+      image.setAttribute('width', String(item.width || 1));
+      image.setAttribute('height', String(item.height || 1));
       title.textContent = item.title || '';
       description.textContent = item.description || '';
       categoryLabel.textContent = activeCategory;
@@ -217,7 +231,9 @@ const groupedItems: Record<string, GalleryItem[]> = Object.fromEntries(
         button.setAttribute('aria-label', `Pokaż zdjęcie ${index + 1} z ${categoryItems.length}: ${item.title || activeCategory}`);
         const thumbImage = document.createElement('img');
         thumbImage.src = item.src;
-        thumbImage.alt = '';
+        thumbImage.alt = item.alt || item.title || activeCategory;
+        thumbImage.width = 164;
+        thumbImage.height = 120;
         thumbImage.loading = 'lazy';
         button.appendChild(thumbImage);
         button.addEventListener('click', () => {
