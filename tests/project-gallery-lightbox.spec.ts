@@ -48,3 +48,46 @@ test('lightbox navigates through every photo in the selected parent category and
   await expect(lightbox).toHaveAttribute('aria-hidden', 'true');
   await expect(page.locator('body')).not.toHaveClass(/lightbox-open/);
 });
+
+test('desktop lightbox centers the photo, blends copy into the photo and docks navigation with thumbnails', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 1000 });
+  await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
+  await page.locator('[data-project-group]').first().locator('[data-project-lightbox-open]').click();
+
+  const lightbox = page.locator('[data-project-lightbox]');
+  const figure = lightbox.locator('[data-project-lightbox-figure]');
+  const image = lightbox.locator('[data-project-lightbox-image]');
+  const overlay = lightbox.locator('[data-project-lightbox-overlay]');
+  const controls = lightbox.locator('[data-project-lightbox-controls]');
+
+  await expect(overlay).toBeVisible();
+  await expect(overlay.locator('[data-project-lightbox-category-label]')).toBeVisible();
+  await expect(overlay.locator('[data-project-lightbox-title]')).toBeVisible();
+  await expect(overlay.locator('[data-project-lightbox-description]')).toBeVisible();
+  await expect(controls.locator('[data-project-lightbox-prev]')).toBeVisible();
+  await expect(controls.locator('[data-project-lightbox-next]')).toBeVisible();
+  await expect(controls.locator('[data-project-lightbox-thumbs]')).toBeVisible();
+
+  const geometry = await page.evaluate(() => {
+    const lightbox = document.querySelector('[data-project-lightbox]')?.getBoundingClientRect();
+    const figure = document.querySelector('[data-project-lightbox-figure]')?.getBoundingClientRect();
+    const image = document.querySelector('[data-project-lightbox-image]')?.getBoundingClientRect();
+    const overlay = document.querySelector('[data-project-lightbox-overlay]')?.getBoundingClientRect();
+    const controls = document.querySelector('[data-project-lightbox-controls]')?.getBoundingClientRect();
+    if (!lightbox || !figure || !image || !overlay || !controls) return null;
+    return {
+      imageCenterOffset: Math.abs((image.left + image.width / 2) - (lightbox.left + lightbox.width / 2)),
+      overlayInsideImage: overlay.left >= image.left - 2 && overlay.right <= image.right + 2 && overlay.top >= image.top - 2 && overlay.bottom <= image.bottom + 2,
+      controlsBelowFigure: controls.top >= figure.bottom - 6,
+    };
+  });
+
+  expect(geometry).not.toBeNull();
+  expect(geometry!.imageCenterOffset).toBeLessThan(20);
+  expect(geometry!.overlayInsideImage).toBe(true);
+  expect(geometry!.controlsBelowFigure).toBe(true);
+
+  const firstThumb = controls.locator('[data-project-lightbox-thumb]').first();
+  const thumbStyle = await firstThumb.evaluate((el) => getComputedStyle(el).backgroundColor);
+  expect(thumbStyle).not.toBe('rgb(255, 255, 255)');
+});
