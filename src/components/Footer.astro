@@ -7,7 +7,7 @@ import DistanceEstimator from './DistanceEstimator.astro';
   <div class="container footer-grid">
     <div class="footer-brand">
       <img src="/brand/kaltruck-logo.svg" width="2548" height="1305" alt="KALTRUCK Transport HDS" />
-      <p><span>Ciężki ładunek.</span><span>Precyzyjna robota.</span></p>
+      <p>CIĘŻKI ŁADUNEK... PRECYZYJNA ROBOTA.</p>
     </div>
     <div class="footer-links-wrap">
       <p class="footer-label">Nawigacja</p>
@@ -25,14 +25,13 @@ import DistanceEstimator from './DistanceEstimator.astro';
   <div class="container footer-bottom"><span>© {new Date().getFullYear()} {siteConfig.legalName}</span><span>Transport HDS</span></div>
 </footer>
 <style>
-  .site-footer{border-top:1px solid var(--line);background:#060708;padding:clamp(32px,2.7vw,40px) 0 18px}
-  .footer-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:start}
-  .footer-brand{grid-column:1/span 4;max-width:24rem}
-  .footer-brand img{display:block;width:clamp(195px,13vw,220px);height:auto;filter:invert(1);margin-bottom:10px}
-  .footer-brand p{margin:0;color:#bbb7af;font-size:clamp(1.02rem,1.28vw,1.2rem);line-height:1.4;max-width:22ch}
-  .footer-brand p span{display:block}
-  .footer-links-wrap{grid-column:6/span 2}
-  .footer-contact{grid-column:9/-1}
+  .site-footer{border-top:1px solid var(--line);background:#060708;padding:0 0 18px}
+  .footer-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:stretch}
+  .footer-brand{grid-column:1/span 5;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .footer-brand img{display:block;width:clamp(260px,18vw,300px);height:auto;filter:invert(1)}
+  .footer-brand p{margin:10px 0 0;color:#bbb7af;font-size:clamp(.72rem,.82vw,.82rem);font-weight:800;line-height:1.2;letter-spacing:.1em;white-space:nowrap}
+  .footer-links-wrap{grid-column:6/span 2;align-self:start}
+  .footer-contact{grid-column:9/-1;align-self:start}
   .footer-label{margin:0 0 10px;color:var(--accent);font-size:.68rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
   .footer-links,.footer-contact{display:grid;align-content:start;gap:7px}
   .footer-links a{width:max-content;color:#e7e4de}
@@ -47,13 +46,15 @@ import DistanceEstimator from './DistanceEstimator.astro';
     .footer-brand{grid-column:1/span 5}
     .footer-links-wrap{grid-column:7/span 2}
     .footer-contact{grid-column:9/-1}
+    .footer-brand img{width:clamp(240px,30vw,280px)}
+    .footer-brand p{font-size:clamp(.64rem,1.45vw,.76rem)}
   }
   @media(max-width:760px){
-    .site-footer{padding-top:30px}
     .footer-grid{grid-template-columns:1fr 1fr;gap:28px 22px}
-    .footer-brand{grid-column:1/-1}
+    .footer-brand{grid-column:1/-1;padding:8px 0 4px}
     .footer-links-wrap,.footer-contact{grid-column:auto}
-    .footer-brand img{width:clamp(190px,45vw,220px)}
+    .footer-brand img{width:clamp(220px,58vw,270px)}
+    .footer-brand p{font-size:clamp(.62rem,2.4vw,.74rem);letter-spacing:.07em}
     .footer-bottom{margin-top:24px;flex-direction:column;gap:7px}
   }
 </style>
