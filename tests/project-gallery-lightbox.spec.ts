@@ -55,7 +55,6 @@ test('desktop lightbox centers the photo, blends copy into the photo and docks n
   await page.locator('[data-project-group]').first().locator('[data-project-lightbox-open]').click();
 
   const lightbox = page.locator('[data-project-lightbox]');
-  const figure = lightbox.locator('[data-project-lightbox-figure]');
   const image = lightbox.locator('[data-project-lightbox-image]');
   const overlay = lightbox.locator('[data-project-lightbox-overlay]');
   const controls = lightbox.locator('[data-project-lightbox-controls]');
@@ -68,7 +67,15 @@ test('desktop lightbox centers the photo, blends copy into the photo and docks n
   await expect(controls.locator('[data-project-lightbox-next]')).toBeVisible();
   await expect(controls.locator('[data-project-lightbox-thumbs]')).toBeVisible();
 
-  const geometry = await page.evaluate(() => {
+  await expect.poll(
+    () => image.evaluate((node) => {
+      const img = node as HTMLImageElement;
+      return img.complete && img.naturalWidth > 0 && img.getBoundingClientRect().width > 0;
+    }),
+    { timeout: 5000 },
+  ).toBe(true);
+
+  const readGeometry = () => page.evaluate(() => {
     const lightbox = document.querySelector('[data-project-lightbox]')?.getBoundingClientRect();
     const figure = document.querySelector('[data-project-lightbox-figure]')?.getBoundingClientRect();
     const image = document.querySelector('[data-project-lightbox-image]')?.getBoundingClientRect();
@@ -76,16 +83,17 @@ test('desktop lightbox centers the photo, blends copy into the photo and docks n
     const controls = document.querySelector('[data-project-lightbox-controls]')?.getBoundingClientRect();
     if (!lightbox || !figure || !image || !overlay || !controls) return null;
     return {
-      imageCenterOffset: Math.abs((image.left + image.width / 2) - (lightbox.left + lightbox.width / 2)),
+      centered: Math.abs((image.left + image.width / 2) - (lightbox.left + lightbox.width / 2)) < 20,
       overlayInsideImage: overlay.left >= image.left - 2 && overlay.right <= image.right + 2 && overlay.top >= image.top - 2 && overlay.bottom <= image.bottom + 2,
       controlsBelowFigure: controls.top >= figure.bottom - 6,
     };
   });
 
-  expect(geometry).not.toBeNull();
-  expect(geometry!.imageCenterOffset).toBeLessThan(20);
-  expect(geometry!.overlayInsideImage).toBe(true);
-  expect(geometry!.controlsBelowFigure).toBe(true);
+  await expect.poll(readGeometry, { timeout: 5000 }).toEqual({
+    centered: true,
+    overlayInsideImage: true,
+    controlsBelowFigure: true,
+  });
 
   const firstThumb = controls.locator('[data-project-lightbox-thumb]').first();
   const thumbStyle = await firstThumb.evaluate((el) => getComputedStyle(el).backgroundColor);
