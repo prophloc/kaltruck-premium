@@ -1,0 +1,183 @@
+---
+import { siteConfig } from '../config/site';
+import GoogleMapsPin from './GoogleMapsPin.astro';
+
+interface Props {
+  instanceId?: string;
+  variant?: 'default' | 'drawer';
+  deferMap?: boolean;
+}
+
+const {
+  instanceId = 'footer-route',
+  variant = 'default',
+  deferMap = false,
+} = Astro.props as Props;
+
+const mapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY || '';
+const baseAddress = siteConfig.baseAddress;
+const fallbackMap = `https://www.google.com/maps?q=${encodeURIComponent(baseAddress)}&output=embed`;
+const initialMap = mapsApiKey
+  ? `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(mapsApiKey)}&q=${encodeURIComponent(baseAddress)}&language=pl&region=PL`
+  : fallbackMap;
+const originInputId = `${instanceId}-origin`;
+const destinationInputId = `${instanceId}-destination`;
+---
+<section
+  class:list={['google-route', variant === 'drawer' && 'google-route--drawer']}
+  data-google-route
+  data-base-address={baseAddress}
+  data-api-key={mapsApiKey}
+  data-defer-map={deferMap ? 'true' : 'false'}
+>
+  <div class="google-route-panel">
+    <div class="google-route-heading" data-route-heading>
+      <h2>Sprawdź trasę transportu</h2>
+      <GoogleMapsPin class="google-route-heading-pin" />
+    </div>
+
+    <form class="google-route-form" data-google-route-form>
+      <div class="google-route-fields">
+        <label class="google-route-field" for={originInputId}>
+          <span class="google-route-point" aria-hidden="true">OD</span>
+          <input
+            id={originInputId}
+            data-google-route-origin
+            type="text"
+            inputmode="search"
+            autocomplete="street-address"
+            aria-label="Skąd jedzie ładunek?"
+            placeholder="Skąd? np. Warszawa"
+            value="Płock"
+            required
+          />
+        </label>
+        <label class="google-route-field" for={destinationInputId}>
+          <span class="google-route-point" aria-hidden="true">DO</span>
+          <input
+            id={destinationInputId}
+            data-google-route-destination
+            type="text"
+            inputmode="search"
+            autocomplete="street-address"
+            aria-label="Dokąd jedzie ładunek?"
+            placeholder="Dokąd? np. Łódź"
+          />
+        </label>
+      </div>
+      <button type="submit">Pokaż trasę</button>
+    </form>
+
+    <div class="google-route-meta">
+      <a href={siteConfig.googleMapsUrl} target="_blank" rel="noreferrer">Baza: {baseAddress}</a>
+      <span data-google-route-status>{mapsApiKey ? 'Mapa Google jest gotowa do wyznaczenia trasy.' : 'Do wyznaczania trasy na stronie potrzebny jest klucz Maps Embed API.'}</span>
+    </div>
+  </div>
+
+  <div class="google-route-map-shell">
+    <iframe
+      data-google-route-map
+      data-initial-src={initialMap}
+      title="Google Maps — trasa transportu"
+      src={deferMap ? 'about:blank' : initialMap}
+      loading="lazy"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+    ></iframe>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const bindRoutes = () => {
+      document.querySelectorAll('[data-google-route]').forEach((root) => {
+        if (!(root instanceof HTMLElement) || root.dataset.routeBound === 'true') return;
+        root.dataset.routeBound = 'true';
+
+        const form = root.querySelector('[data-google-route-form]');
+        const originInput = root.querySelector('[data-google-route-origin]');
+        const destinationInput = root.querySelector('[data-google-route-destination]');
+        const iframe = root.querySelector('[data-google-route-map]');
+        const status = root.querySelector('[data-google-route-status]');
+        const baseAddress = root.getAttribute('data-base-address') || 'Tokarska 40, 09-401 Płock';
+
+        if (!(form instanceof HTMLFormElement) || !(originInput instanceof HTMLInputElement) || !(iframe instanceof HTMLIFrameElement)) return;
+
+        const ensureMap = () => {
+          const currentSrc = iframe.getAttribute('src') || '';
+          const initialSrc = iframe.getAttribute('data-initial-src') || '';
+          if ((!currentSrc || currentSrc === 'about:blank') && initialSrc) iframe.src = initialSrc;
+        };
+
+        root.addEventListener('kaltruck:route-activate', ensureMap);
+        if (root.getAttribute('data-defer-map') !== 'true') ensureMap();
+
+        form.addEventListener('submit', (event) => {
+          event.preventDefault();
+          const origin = originInput.value.trim();
+          if (!origin) return;
+
+          const destination = destinationInput instanceof HTMLInputElement ? destinationInput.value.trim() : '';
+          const resolvedDestination = destination || baseAddress;
+          const apiKey = root.getAttribute('data-api-key') || '';
+          if (!apiKey) {
+            ensureMap();
+            if (status) status.textContent = 'Włącz Maps Embed API i dodaj PUBLIC_GOOGLE_MAPS_API_KEY, aby trasa była widoczna tutaj na stronie.';
+            return;
+          }
+
+          const params = new URLSearchParams({
+            key: apiKey,
+            origin,
+            destination: resolvedDestination,
+            mode: 'driving',
+            units: 'metric',
+            language: 'pl',
+            region: 'PL',
+          });
+
+          iframe.src = `https://www.google.com/maps/embed/v1/directions?${params.toString()}`;
+          if (status) status.textContent = `Google Maps: ${origin} → ${resolvedDestination}`;
+        });
+      });
+    };
+
+    bindRoutes();
+  })();
+</script>
+
+<style>
+  .google-route{display:grid;grid-template-columns:minmax(270px,.72fr) minmax(0,1.28fr);gap:clamp(20px,2.6vw,38px);align-items:stretch;margin:0;padding:22px 0;border-bottom:1px solid var(--line)}
+  .google-route-panel{display:flex;flex-direction:column;justify-content:center;min-width:0}
+  .google-route-heading{display:flex;align-items:center;gap:11px;margin:0 0 14px}
+  .google-route-heading h2{margin:0;color:#f4f1eb;font-size:clamp(1.45rem,2vw,2.05rem);line-height:1;letter-spacing:-.04em}
+  .google-route-heading-pin{display:block;width:29px;height:42px;object-fit:contain;flex:0 0 auto}
+  .google-route-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:stretch}
+  .google-route-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-width:0}
+  .google-route-field{position:relative;display:block;min-width:0}
+  .google-route-point{position:absolute;z-index:1;left:11px;top:50%;transform:translateY(-50%);display:grid;place-items:center;min-width:26px;height:24px;padding:0 5px;border-radius:7px;background:rgba(215,180,106,.16);color:#d9ba68;font-size:.61rem;font-weight:900;letter-spacing:.05em;pointer-events:none}
+  .google-route-form input{width:100%;min-width:0;height:46px;padding:0 12px 0 45px;border:1px solid rgba(255,255,255,.15);border-radius:11px;background:#0d0f11;color:#f4f1eb;font:inherit;outline:none}
+  .google-route-form input:focus{border-color:rgba(215,180,106,.72);box-shadow:0 0 0 3px rgba(215,180,106,.08)}
+  .google-route-form button{height:46px;padding:0 18px;border:1px solid rgba(215,180,106,.56);border-radius:11px;background:var(--accent);color:#090a0b;font:inherit;font-size:.78rem;font-weight:850;cursor:pointer}
+  .google-route-form button:hover{filter:brightness(1.06)}
+  .google-route-meta{display:grid;gap:3px;margin-top:9px;font-size:.72rem;line-height:1.35}
+  .google-route-meta a{width:max-content;max-width:100%;color:#d9ba68;text-decoration:none}
+  .google-route-meta span{color:#77736d}
+  .google-route-map-shell{min-height:194px;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:#0c0e10}
+  .google-route-map-shell iframe{display:block;width:100%;height:100%;min-height:194px;border:0;filter:saturate(.82) contrast(1.02)}
+  .google-route--drawer{grid-template-columns:1fr;gap:16px;margin:0;padding:22px;border:0;background:#f7f4ee;color:#141412}
+  .google-route--drawer .google-route-heading{margin-bottom:12px}
+  .google-route--drawer .google-route-heading h2{color:#141412;font-size:clamp(1.45rem,2.2vw,1.9rem)}
+  .google-route--drawer .google-route-heading-pin{width:26px;height:26px}
+  .google-route--drawer .google-route-form input{border-color:rgba(20,20,18,.16);background:#fff;color:#141412;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
+  .google-route--drawer .google-route-form input::placeholder{color:#8c887f}
+  .google-route--drawer .google-route-point{background:#ede2c9;color:#6d5117}
+  .google-route--drawer .google-route-meta a{color:#765a1d}
+  .google-route--drawer .google-route-meta span{color:#6f6b63}
+  .google-route--drawer .google-route-map-shell{border-color:rgba(20,20,18,.12);background:#e7e3dc;box-shadow:0 10px 26px rgba(20,20,18,.08)}
+  .google-route--drawer .google-route-map-shell,.google-route--drawer .google-route-map-shell iframe{min-height:230px}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  @media(max-width:900px){.google-route{grid-template-columns:1fr;padding:22px 0}.google-route-panel{max-width:46rem}.google-route-map-shell,.google-route-map-shell iframe{min-height:280px}.google-route--drawer{padding:18px}.google-route--drawer .google-route-map-shell,.google-route--drawer .google-route-map-shell iframe{min-height:220px}}
+  @media(max-width:680px){.google-route-fields{grid-template-columns:1fr}.google-route-form{grid-template-columns:1fr auto}.google-route--drawer .google-route-form{grid-template-columns:1fr}.google-route--drawer .google-route-form button{width:100%}}
+  @media(max-width:560px){.google-route{gap:16px;padding:20px 0}.google-route-form{grid-template-columns:1fr}.google-route-form button{width:100%}.google-route-map-shell,.google-route-map-shell iframe{min-height:250px}.google-route--drawer{padding:16px}.google-route--drawer .google-route-map-shell,.google-route--drawer .google-route-map-shell iframe{min-height:205px}}
+</style>

@@ -7,11 +7,30 @@ const schema = faqSchema(items);
   <div class="container faq-grid">
     <div class="faq-heading"><p class="eyebrow">FAQ</p><h2 class="section-title">{title}</h2></div>
     <div class="faq-list">
-      {items.map((item) => <details><summary>{item.question}<span>+</span></summary><p>{item.answer}</p></details>)}
+      {items.map((item) => (
+        <details>
+          <summary>{item.question}<span data-faq-icon aria-hidden="true">+</span></summary>
+          <p>{item.answer}</p>
+        </details>
+      ))}
     </div>
   </div>
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 </section>
+<script is:inline>
+  (() => {
+    document.querySelectorAll('.faq-list details').forEach((node) => {
+      if (!(node instanceof HTMLDetailsElement) || node.dataset.faqBound === 'true') return;
+      node.dataset.faqBound = 'true';
+      const icon = node.querySelector('[data-faq-icon]');
+      const syncIcon = () => {
+        if (icon) icon.textContent = node.open ? '−' : '+';
+      };
+      node.addEventListener('toggle', syncIcon);
+      syncIcon();
+    });
+  })();
+</script>
 <style>
   .faq-section{background:#0d0f11;border-top:1px solid var(--line)}
   .faq-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:start}
@@ -19,9 +38,10 @@ const schema = faqSchema(items);
   .faq-heading .section-title{margin-top:18px;max-width:8ch}
   .faq-list{grid-column:7 / -1;border-top:1px solid var(--line)}
   details{border-bottom:1px solid var(--line)}
-  summary{list-style:none;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding:26px 0;cursor:pointer;font-size:clamp(1rem,1.25vw,1.16rem);font-weight:720}
+  summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:26px 0;cursor:pointer;font-size:clamp(1rem,1.25vw,1.16rem);font-weight:720}
   summary::-webkit-details-marker{display:none}
-  summary span{color:var(--accent);font-size:1.4rem;line-height:1}
-  details p{color:var(--muted);margin:0 0 26px;max-width:58ch}
+  summary span{display:inline-grid;place-items:center;flex:0 0 24px;width:24px;height:24px;color:var(--accent);font-size:1.35rem;font-weight:500;line-height:1;transition:transform .2s ease,color .2s ease}
+  details[open] summary span{transform:rotate(180deg);color:#efd48e}
+  details p{color:var(--muted);margin:0 0 26px;max-width:58ch;line-height:1.65}
   @media(max-width:800px){.faq-grid{grid-template-columns:1fr;gap:34px}.faq-heading,.faq-list{grid-column:auto}.faq-heading{position:static}.faq-heading .section-title{max-width:11ch}}
 </style>

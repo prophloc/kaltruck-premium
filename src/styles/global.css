@@ -30,10 +30,161 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .skip-link:focus { transform: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
+/* Runtime lightbox thumbnails are created by JavaScript, so they cannot inherit Astro's scoped component attribute. */
+.project-lightbox-thumbs > .project-lightbox-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 0 0 80px;
+  width: 80px;
+  height: 58px;
+  padding: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 8px;
+  background: #0d0f11;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.38);
+  cursor: pointer;
+  opacity: .62;
+  transition: opacity .2s ease, border-color .2s ease, background .2s ease, transform .2s ease;
+}
+.project-lightbox-thumbs > .project-lightbox-thumb > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  border-radius: 5px;
+  background: #0a0c0e;
+}
+.project-lightbox-thumbs > .project-lightbox-thumb:hover {
+  opacity: .92;
+  border-color: rgba(215,180,106,.34);
+  background: rgba(215,180,106,.035);
+  transform: translateY(-1px);
+}
+.project-lightbox-thumbs > .project-lightbox-thumb.is-active {
+  opacity: 1;
+  border-color: rgba(215,180,106,.82);
+  background: rgba(215,180,106,.09);
+  box-shadow: 0 0 0 1px rgba(215,180,106,.13), inset 0 0 0 1px rgba(0,0,0,.35);
+}
+.project-lightbox-thumbs > .project-lightbox-thumb:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Keep the thumbnail rail movable by the gallery code without exposing a manual horizontal scrollbar. */
+.project-lightbox[data-project-lightbox] .project-lightbox-thumbs {
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-thumbs::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Short thumbnail sets sit in the exact horizontal center, with arrows hugging their outer edges. */
+.project-lightbox[data-project-lightbox] .project-lightbox-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: min(1240px, calc(100vw - 72px));
+  margin-inline: auto;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-controls > .project-lightbox-thumbs {
+  flex: 0 1 auto;
+  width: max-content;
+  max-width: calc(100% - 108px);
+  min-width: 0;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-controls > .project-lightbox-nav {
+  flex: 0 0 auto;
+}
+
+/* Font chevrons sit off-center because of their baseline. Draw geometric arrows instead. */
+.project-lightbox[data-project-lightbox] .project-lightbox-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-nav::before {
+  content: "";
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-style: solid;
+  border-color: currentColor;
+  border-width: 0 2px 2px 0;
+  flex: 0 0 auto;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-prev::before {
+  transform: rotate(135deg);
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-next::before {
+  transform: rotate(-45deg);
+}
+
+/* The font × has asymmetric glyph metrics. Draw the close mark from two lines anchored at the exact center. */
+.project-lightbox[data-project-lightbox] .project-lightbox-close-glyph {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-size: 0;
+  line-height: 0;
+  transform: none;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-close-glyph::before,
+.project-lightbox[data-project-lightbox] .project-lightbox-close-glyph::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transform-origin: 50% 50%;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-close-glyph::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-close-glyph::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* GoogleMapsPin is an Astro child component; these global selectors deliberately bridge component scoping. */
+.hero-route-toggle > .hero-route-toggle-pin {
+  display: block;
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+  transform: rotate(-90deg);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.16));
+}
+.google-route-heading > .google-route-heading-pin {
+  display: block;
+  width: 29px;
+  height: 42px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+.google-route--drawer .google-route-heading > .google-route-heading-pin {
+  width: 26px;
+  height: 26px;
+}
+
 @media (max-width: 900px) {
   :root { --page-gutter: clamp(20px, 4.5vw, 36px); --section-space: clamp(72px, 10vw, 104px); --section-space-compact: clamp(56px, 8vw, 80px); --grid-gap: clamp(18px, 3vw, 28px); }
   .section-title { max-width: 14ch; font-size: clamp(2.35rem, 8vw, 4.5rem); }
   .lead { max-width: 52ch; }
+  .project-lightbox-thumbs > .project-lightbox-thumb { flex-basis: 66px; width: 66px; height: 48px; padding: 2px; }
+  .project-lightbox[data-project-lightbox] .project-lightbox-controls { gap: 7px; width: 100%; }
+  .project-lightbox[data-project-lightbox] .project-lightbox-controls > .project-lightbox-thumbs { max-width: calc(100% - 90px); }
 }
 
 @media (max-width: 700px) {
@@ -42,6 +193,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .section-title { max-width: 12ch; }
   .eyebrow { font-size: .72rem; letter-spacing: .16em; }
   .btn { min-height: 50px; padding-inline: 20px; }
+}
+
+@media (max-width: 620px) {
+  .hero-route-toggle > .hero-route-toggle-pin { width: 22px; height: 22px; }
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .001ms !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; } }

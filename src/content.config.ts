@@ -20,6 +20,7 @@ const realizations = defineCollection({
     title: z.string(),
     category: z.string(),
     image: z.string(),
+    images: z.array(z.string()).min(1).optional(),
     alt: z.string(),
     width: z.number().int().positive(),
     height: z.number().int().positive(),

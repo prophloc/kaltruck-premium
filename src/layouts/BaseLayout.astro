@@ -47,5 +47,52 @@ const socialImage = new URL(image, siteConfig.siteUrl).toString();
     <Header />
     <main id="main-content"><slot /></main>
     <Footer />
+
+    <script is:inline>
+      (() => {
+        const image = document.querySelector('[data-project-lightbox-image]');
+        if (!(image instanceof HTMLImageElement)) return;
+
+        const lightbox = image.closest('[data-project-lightbox]');
+        if (!(lightbox instanceof HTMLElement)) return;
+
+        const fitImage = () => {
+          if (lightbox.hidden || !image.naturalWidth || !image.naturalHeight) return;
+
+          const compact = window.matchMedia('(max-width: 900px)').matches;
+          const maxWidth = compact
+            ? Math.max(1, window.innerWidth - 20)
+            : Math.max(1, Math.min(1380, window.innerWidth - 150));
+          const maxHeight = compact
+            ? Math.max(1, window.innerHeight - 175)
+            : Math.max(1, window.innerHeight - 165);
+          const scale = Math.min(maxWidth / image.naturalWidth, maxHeight / image.naturalHeight);
+
+          image.style.width = `${image.naturalWidth * scale}px`;
+          image.style.height = `${image.naturalHeight * scale}px`;
+
+          requestAnimationFrame(() => {
+            const figure = image.closest('[data-project-lightbox-figure]');
+            const overlay = lightbox.querySelector('[data-project-lightbox-overlay]');
+            if (!(figure instanceof HTMLElement) || !(overlay instanceof HTMLElement)) return;
+            const figureRect = figure.getBoundingClientRect();
+            const imageRect = image.getBoundingClientRect();
+            overlay.style.left = `${Math.max(0, imageRect.left - figureRect.left)}px`;
+            overlay.style.top = `${Math.max(0, imageRect.top - figureRect.top)}px`;
+            overlay.style.width = `${imageRect.width}px`;
+            overlay.style.height = `${imageRect.height}px`;
+          });
+        };
+
+        image.addEventListener('load', fitImage);
+        window.addEventListener('resize', fitImage);
+
+        const observer = new MutationObserver(() => requestAnimationFrame(fitImage));
+        observer.observe(lightbox, { attributes: true, attributeFilter: ['hidden'] });
+        observer.observe(image, { attributes: true, attributeFilter: ['src'] });
+
+        fitImage();
+      })();
+    </script>
   </body>
 </html>
