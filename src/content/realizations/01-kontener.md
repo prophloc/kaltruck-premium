@@ -16,6 +16,8 @@ images:
   - https://hdsplock.pl/zdj/realizacje/transport-kontenerow-11.jpg
   - https://hdsplock.pl/zdj/realizacje/transport-kontenerow-12.jpg
   - https://hdsplock.pl/zdj/realizacje/transport-kontenerow-13.jpg
+  - /images/realizations/kaltruck-kontener-01.webp
+  - /images/realizations/kaltruck-kontener-02.webp
 alt: Kontener ustawiany przy użyciu HDS KALTRUCK
 width: 1435
 height: 1080
