@@ -7,6 +7,7 @@ images:
   - https://hdsplock.pl/zdj/realizacje/billboardy-i-reklamy-02.jpg
   - https://hdsplock.pl/zdj/realizacje/billboardy-i-reklamy-03.jpg
   - https://hdsplock.pl/zdj/realizacje/billboardy-i-reklamy-04.jpg
+  - /images/realizations/kaltruck-pylon-reklamowy-01.webp
 alt: Montaż konstrukcji reklamowej z wykorzystaniem HDS KALTRUCK
 width: 813
 height: 1080
