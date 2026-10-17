@@ -85,6 +85,25 @@ button, a { -webkit-tap-highlight-color: transparent; }
   height: 0;
 }
 
+/* Short thumbnail sets sit in the exact horizontal center, with arrows hugging their outer edges. */
+.project-lightbox[data-project-lightbox] .project-lightbox-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: min(1240px, calc(100vw - 72px));
+  margin-inline: auto;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-controls > .project-lightbox-thumbs {
+  flex: 0 1 auto;
+  width: max-content;
+  max-width: calc(100% - 108px);
+  min-width: 0;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-controls > .project-lightbox-nav {
+  flex: 0 0 auto;
+}
+
 /* Font chevrons sit off-center because of their baseline. Draw geometric arrows instead. */
 .project-lightbox[data-project-lightbox] .project-lightbox-nav {
   display: flex;
@@ -143,6 +162,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .section-title { max-width: 14ch; font-size: clamp(2.35rem, 8vw, 4.5rem); }
   .lead { max-width: 52ch; }
   .project-lightbox-thumbs > .project-lightbox-thumb { flex-basis: 66px; width: 66px; height: 48px; padding: 2px; }
+  .project-lightbox[data-project-lightbox] .project-lightbox-controls { gap: 7px; width: 100%; }
+  .project-lightbox[data-project-lightbox] .project-lightbox-controls > .project-lightbox-thumbs { max-width: calc(100% - 90px); }
 }
 
 @media (max-width: 700px) {
