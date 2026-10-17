@@ -14,36 +14,29 @@ const initialMap = mapsApiKey
   data-base-address={baseAddress}
   data-api-key={mapsApiKey}
 >
-  <div class="google-route-top">
-    <div class="google-route-slot google-route-brand-slot"><slot name="brand" /></div>
+  <div class="google-route-panel">
+    <p class="google-route-label">Google Maps</p>
+    <h2>Sprawdź trasę do KALTRUCK</h2>
+    <p class="google-route-copy">Wpisz miejscowość lub adres. Trasa, kilometry i przewidywany czas przejazdu pojawią się bezpośrednio na mapie Google.</p>
 
-    <div class="google-route-panel">
-      <p class="google-route-label">Google Maps</p>
-      <h2>Sprawdź trasę do KALTRUCK</h2>
-      <p class="google-route-copy">Wpisz miejscowość lub adres. Trasa, kilometry i przewidywany czas przejazdu pojawią się bezpośrednio na mapie Google.</p>
+    <form class="google-route-form" data-google-route-form>
+      <label class="sr-only" for="kaltruck-route-origin">Skąd jedziesz?</label>
+      <input
+        id="kaltruck-route-origin"
+        data-google-route-origin
+        type="text"
+        inputmode="search"
+        autocomplete="street-address"
+        placeholder="Np. Warszawa, Kutno, Łódź…"
+        required
+      />
+      <button type="submit">Pokaż trasę</button>
+    </form>
 
-      <form class="google-route-form" data-google-route-form>
-        <label class="sr-only" for="kaltruck-route-origin">Skąd jedziesz?</label>
-        <input
-          id="kaltruck-route-origin"
-          data-google-route-origin
-          type="text"
-          inputmode="search"
-          autocomplete="street-address"
-          placeholder="Np. Warszawa, Kutno, Łódź…"
-          required
-        />
-        <button type="submit">Pokaż trasę</button>
-      </form>
-
-      <div class="google-route-meta">
-        <a href={siteConfig.googleMapsUrl} target="_blank" rel="noreferrer">Baza: {baseAddress}</a>
-        <span data-google-route-status>{mapsApiKey ? 'Mapa Google jest gotowa do wyznaczenia trasy.' : 'Do wyznaczania trasy na stronie potrzebny jest klucz Maps Embed API.'}</span>
-      </div>
+    <div class="google-route-meta">
+      <a href={siteConfig.googleMapsUrl} target="_blank" rel="noreferrer">Baza: {baseAddress}</a>
+      <span data-google-route-status>{mapsApiKey ? 'Mapa Google jest gotowa do wyznaczenia trasy.' : 'Do wyznaczania trasy na stronie potrzebny jest klucz Maps Embed API.'}</span>
     </div>
-
-    <div class="google-route-slot google-route-navigation-slot"><slot name="navigation" /></div>
-    <div class="google-route-slot google-route-contact-slot"><slot name="contact" /></div>
   </div>
 
   <div class="google-route-map-shell">
@@ -99,46 +92,22 @@ const initialMap = mapsApiKey
 </script>
 
 <style>
-  .google-route{display:grid;gap:18px;margin:0;padding:0 0 18px;border-bottom:1px solid var(--line)}
-  .google-route-top{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:start}
-  .google-route-slot{min-width:0}
-  .google-route-brand-slot{grid-column:1/span 3}
-  .google-route-panel{grid-column:4/span 4;display:flex;flex-direction:column;justify-content:flex-start;min-width:0;padding-top:1px}
-  .google-route-navigation-slot{grid-column:8/span 2}
-  .google-route-contact-slot{grid-column:10/-1}
+  .google-route{display:grid;grid-template-columns:minmax(270px,.72fr) minmax(0,1.28fr);gap:clamp(20px,2.6vw,38px);align-items:stretch;margin:0 0 14px;padding:0 0 14px;border-bottom:1px solid var(--line)}
+  .google-route-panel{display:flex;flex-direction:column;justify-content:center;min-width:0}
   .google-route-label{margin:0 0 6px;color:var(--accent);font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
-  .google-route h2{margin:0 0 8px;color:#f4f1eb;font-size:clamp(1.35rem,1.7vw,1.85rem);line-height:1;letter-spacing:-.04em}
-  .google-route-copy{margin:0 0 12px;color:#98948d;font-size:.78rem;line-height:1.45;max-width:47ch}
+  .google-route h2{margin:0 0 8px;color:#f4f1eb;font-size:clamp(1.45rem,2vw,2.05rem);line-height:1;letter-spacing:-.04em}
+  .google-route-copy{margin:0 0 14px;color:#98948d;font-size:.82rem;line-height:1.45;max-width:50ch}
   .google-route-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
   .google-route-form input{min-width:0;height:46px;padding:0 13px;border:1px solid rgba(255,255,255,.15);border-radius:11px;background:#0d0f11;color:#f4f1eb;font:inherit;outline:none}
   .google-route-form input:focus{border-color:rgba(215,180,106,.72);box-shadow:0 0 0 3px rgba(215,180,106,.08)}
-  .google-route-form button{height:46px;padding:0 17px;border:1px solid rgba(215,180,106,.56);border-radius:11px;background:var(--accent);color:#090a0b;font:inherit;font-size:.77rem;font-weight:850;cursor:pointer;white-space:nowrap}
+  .google-route-form button{height:46px;padding:0 18px;border:1px solid rgba(215,180,106,.56);border-radius:11px;background:var(--accent);color:#090a0b;font:inherit;font-size:.78rem;font-weight:850;cursor:pointer}
   .google-route-form button:hover{filter:brightness(1.06)}
-  .google-route-meta{display:grid;gap:2px;margin-top:8px;font-size:.69rem;line-height:1.32}
+  .google-route-meta{display:grid;gap:3px;margin-top:9px;font-size:.72rem;line-height:1.35}
   .google-route-meta a{width:max-content;max-width:100%;color:#d9ba68;text-decoration:none}
   .google-route-meta span{color:#77736d}
-  .google-route-map-shell{width:100%;height:206px;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:#0c0e10}
-  .google-route-map-shell iframe{display:block;width:100%;height:100%;border:0;filter:saturate(.82) contrast(1.02)}
+  .google-route-map-shell{min-height:194px;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:#0c0e10}
+  .google-route-map-shell iframe{display:block;width:100%;height:100%;min-height:194px;border:0;filter:saturate(.82) contrast(1.02)}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-  @media(max-width:1050px){
-    .google-route-brand-slot{grid-column:1/span 3}
-    .google-route-panel{grid-column:4/span 5}
-    .google-route-navigation-slot{grid-column:9/span 2}
-    .google-route-contact-slot{grid-column:11/-1}
-    .google-route-form{grid-template-columns:1fr}
-    .google-route-form button{width:100%}
-  }
-  @media(max-width:900px){
-    .google-route-top{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:24px 30px}
-    .google-route-brand-slot,.google-route-navigation-slot{grid-column:1}
-    .google-route-panel,.google-route-contact-slot{grid-column:2}
-    .google-route-navigation-slot,.google-route-contact-slot{grid-row:2}
-    .google-route-map-shell{height:260px}
-  }
-  @media(max-width:640px){
-    .google-route-top{grid-template-columns:1fr;gap:24px}
-    .google-route-brand-slot,.google-route-panel,.google-route-navigation-slot,.google-route-contact-slot{grid-column:1;grid-row:auto}
-    .google-route-panel{max-width:46rem}
-    .google-route-map-shell{height:250px}
-  }
+  @media(max-width:900px){.google-route{grid-template-columns:1fr}.google-route-panel{max-width:46rem}.google-route-map-shell,.google-route-map-shell iframe{min-height:280px}}
+  @media(max-width:560px){.google-route{gap:16px}.google-route-form{grid-template-columns:1fr}.google-route-form button{width:100%}.google-route-map-shell,.google-route-map-shell iframe{min-height:250px}}
 </style>
