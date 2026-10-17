@@ -2,205 +2,112 @@
 import { siteConfig } from '../config/site';
 
 const mapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY || '';
+const baseAddress = siteConfig.baseAddress;
+const fallbackMap = `https://www.google.com/maps?q=${encodeURIComponent(baseAddress)}&output=embed`;
+const initialMap = mapsApiKey
+  ? `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(mapsApiKey)}&q=${encodeURIComponent(baseAddress)}&language=pl&region=PL`
+  : fallbackMap;
 ---
 <section
-  class="distance-estimator"
-  data-distance-estimator
-  data-base-address={siteConfig.baseAddress}
+  class="google-route"
+  data-google-route
+  data-base-address={baseAddress}
   data-api-key={mapsApiKey}
 >
-  <div class="distance-copy">
-    <p class="distance-label">Sprawdź dojazd</p>
-    <h2>Ile kilometrów do KALTRUCK?</h2>
-    <p>Wpisz adres i sprawdź dystans do bazy w Płocku.</p>
-    <a
-      data-distance-base-link
-      class="distance-base-link"
-      href={siteConfig.googleMapsUrl}
-      target="_blank"
-      rel="noreferrer"
-    >
-      Baza: {siteConfig.baseAddress}
-    </a>
-  </div>
+  <div class="google-route-panel">
+    <p class="google-route-label">Google Maps</p>
+    <h2>Sprawdź trasę do KALTRUCK</h2>
+    <p class="google-route-copy">Wpisz miejscowość lub adres. Trasa, kilometry i przewidywany czas przejazdu pojawią się bezpośrednio na mapie Google.</p>
 
-  <div class="distance-panel">
-    <div class="distance-autocomplete" data-distance-autocomplete-host>
+    <form class="google-route-form" data-google-route-form>
+      <label class="sr-only" for="kaltruck-route-origin">Skąd jedziesz?</label>
       <input
-        class="distance-fallback-input"
-        data-distance-fallback-input
+        id="kaltruck-route-origin"
+        data-google-route-origin
         type="text"
         inputmode="search"
         autocomplete="street-address"
-        placeholder="Wpisz miejscowość lub adres"
-        aria-label="Miejsce rozpoczęcia trasy"
+        placeholder="Np. Warszawa, Kutno, Łódź…"
+        required
       />
-    </div>
+      <button type="submit">Pokaż trasę</button>
+    </form>
 
-    <div class="distance-result-card" aria-live="polite">
-      <span>Odległość drogowa</span>
-      <strong data-distance-result>Wybierz lokalizację — od razu pokażemy km</strong>
-      <small data-distance-status>Trasa liczona samochodem do bazy KALTRUCK.</small>
+    <div class="google-route-meta">
+      <a href={siteConfig.googleMapsUrl} target="_blank" rel="noreferrer">Baza: {baseAddress}</a>
+      <span data-google-route-status>{mapsApiKey ? 'Mapa Google jest gotowa do wyznaczenia trasy.' : 'Do wyznaczania trasy na stronie potrzebny jest klucz Maps Embed API.'}</span>
     </div>
+  </div>
 
-    <a
-      class="distance-directions-link"
-      data-distance-directions-link
-      href={siteConfig.googleMapsUrl}
-      target="_blank"
-      rel="noreferrer"
-    >Otwórz trasę w Google Maps</a>
+  <div class="google-route-map-shell">
+    <iframe
+      data-google-route-map
+      title="Google Maps — trasa do KALTRUCK"
+      src={initialMap}
+      loading="lazy"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+    ></iframe>
   </div>
 </section>
 
 <script is:inline>
   (() => {
-    const estimator = document.querySelector('[data-distance-estimator]');
-    if (!estimator) return;
+    const root = document.querySelector('[data-google-route]');
+    if (!root) return;
 
-    const host = estimator.querySelector('[data-distance-autocomplete-host]');
-    const fallbackInput = estimator.querySelector('[data-distance-fallback-input]');
-    const result = estimator.querySelector('[data-distance-result]');
-    const status = estimator.querySelector('[data-distance-status]');
-    const directionsLink = estimator.querySelector('[data-distance-directions-link]');
-    const baseAddress = estimator.getAttribute('data-base-address') || 'Tokarska 40, 09-401 Płock';
-    const apiKey = estimator.getAttribute('data-api-key') || '';
+    const form = root.querySelector('[data-google-route-form]');
+    const input = root.querySelector('[data-google-route-origin]');
+    const iframe = root.querySelector('[data-google-route-map]');
+    const status = root.querySelector('[data-google-route-status]');
+    const baseAddress = root.getAttribute('data-base-address') || 'Tokarska 40, 09-401 Płock';
 
-    if (!host || !result || !status || !directionsLink) return;
+    if (!(form instanceof HTMLFormElement) || !(input instanceof HTMLInputElement) || !(iframe instanceof HTMLIFrameElement)) return;
 
-    const routeUrl = (origin = '') => {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const origin = input.value.trim();
+      if (!origin) return;
+
+      const apiKey = root.getAttribute('data-api-key') || '';
+      if (!apiKey) {
+        if (status) status.textContent = 'Włącz Maps Embed API i dodaj PUBLIC_GOOGLE_MAPS_API_KEY, aby trasa była widoczna tutaj na stronie.';
+        return;
+      }
+
       const params = new URLSearchParams({
-        api: '1',
+        key: apiKey,
+        origin,
         destination: baseAddress,
-        travelmode: 'driving',
+        mode: 'driving',
+        units: 'metric',
+        language: 'pl',
+        region: 'PL',
       });
-      if (origin) params.set('origin', origin);
-      return `https://www.google.com/maps/dir/?${params.toString()}`;
-    };
 
-    directionsLink.setAttribute('href', routeUrl());
-
-    if (fallbackInput instanceof HTMLInputElement) {
-      fallbackInput.addEventListener('input', () => {
-        directionsLink.setAttribute('href', routeUrl(fallbackInput.value.trim()));
-      });
-    }
-
-    if (!apiKey) {
-      status.textContent = 'Automatyczny wynik km uruchomi się po dodaniu klucza Google Maps API.';
-      return;
-    }
-
-    const loadGoogleMaps = () => {
-      if (window.google?.maps?.importLibrary) return Promise.resolve();
-      return new Promise((resolve, reject) => {
-        const callbackName = `__kaltruckMapsReady_${Date.now()}`;
-        const script = document.createElement('script');
-        window[callbackName] = () => {
-          delete window[callbackName];
-          resolve();
-        };
-        script.async = true;
-        script.defer = true;
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&v=weekly&loading=async&callback=${callbackName}`;
-        script.onerror = () => {
-          delete window[callbackName];
-          reject(new Error('Google Maps failed to load'));
-        };
-        document.head.appendChild(script);
-      });
-    };
-
-    const formatKilometers = (meters) => {
-      const km = meters / 1000;
-      const digits = km < 100 ? 1 : 0;
-      return `${new Intl.NumberFormat('pl-PL', { maximumFractionDigits: digits }).format(km)} km`;
-    };
-
-    const updateDirectionsLink = (origin) => {
-      directionsLink.setAttribute('href', routeUrl(origin));
-    };
-
-    const calculateRoute = async (place, Route) => {
-      result.textContent = 'Liczymy trasę…';
-      status.textContent = 'Google Maps wyznacza odległość drogową.';
-
-      try {
-        const response = await Route.computeRoutes({
-          origin: place,
-          destination: baseAddress,
-          travelMode: 'DRIVING',
-          routingPreference: 'TRAFFIC_AWARE',
-          fields: ['distanceMeters'],
-        });
-        const route = response?.routes?.[0];
-        if (!route || typeof route.distanceMeters !== 'number') throw new Error('No route');
-
-        const originLabel = place.formattedAddress || place.displayName || 'wybranej lokalizacji';
-        result.textContent = formatKilometers(route.distanceMeters);
-        status.textContent = `Z ${originLabel} do ${baseAddress}.`;
-        updateDirectionsLink(originLabel);
-      } catch (error) {
-        result.textContent = 'Nie udało się policzyć km';
-        status.textContent = 'Spróbuj wybrać inną lokalizację z listy Google.';
-      }
-    };
-
-    const init = async () => {
-      try {
-        await loadGoogleMaps();
-        const placesLibrary = await google.maps.importLibrary('places');
-        const routesLibrary = await google.maps.importLibrary('routes');
-        const PlaceAutocompleteElement = placesLibrary.PlaceAutocompleteElement;
-        const Route = routesLibrary.Route;
-
-        const autocomplete = new PlaceAutocompleteElement({
-          includedRegionCodes: ['pl'],
-        });
-        autocomplete.setAttribute('placeholder', 'Wpisz miejscowość lub adres');
-        autocomplete.setAttribute('aria-label', 'Miejsce rozpoczęcia trasy');
-        autocomplete.classList.add('distance-google-autocomplete');
-        host.replaceChildren(autocomplete);
-
-        const handlePlaceSelection = async (event) => {
-          const prediction = event.placePrediction;
-          if (!prediction) return;
-          const place = prediction.toPlace();
-          await place.fetchFields({ fields: ['displayName', 'formattedAddress', 'location'] });
-          if (!place.location) return;
-          await calculateRoute(place, Route);
-        };
-
-        autocomplete.addEventListener('gmp-select', handlePlaceSelection);
-        autocomplete.addEventListener('gmp-placeselect', handlePlaceSelection);
-        status.textContent = 'Wybierz lokalizację z podpowiedzi Google.';
-      } catch (error) {
-        status.textContent = 'Nie udało się załadować Google Maps. Nadal możesz otworzyć trasę przyciskiem poniżej.';
-      }
-    };
-
-    init();
+      iframe.src = `https://www.google.com/maps/embed/v1/directions?${params.toString()}`;
+      if (status) status.textContent = `Google Maps: ${origin} → ${baseAddress}`;
+    });
   })();
 </script>
 
 <style>
-  .distance-estimator{display:grid;grid-template-columns:minmax(250px,.55fr) minmax(0,1.45fr);gap:clamp(20px,2.5vw,36px);align-items:center;padding:0 0 12px;margin:0 0 12px;border-bottom:1px solid var(--line)}
-  .distance-copy{max-width:32rem}
-  .distance-label{margin:0 0 4px;color:var(--accent);font-size:.65rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
-  .distance-copy h2{margin:0 0 4px;color:#f4f1eb;font-size:clamp(1.35rem,1.8vw,1.9rem);line-height:1;letter-spacing:-.04em}
-  .distance-copy>p:not(.distance-label){margin:0;color:#918d86;font-size:.8rem;line-height:1.35;max-width:46ch}
-  .distance-base-link{display:inline-flex;margin-top:5px;color:#d8b968;font-size:.73rem;font-weight:700;text-decoration:none}
-  .distance-base-link:hover{color:#f0c977}
-  .distance-panel{display:grid;grid-template-columns:minmax(210px,1.15fr) minmax(190px,.95fr) minmax(140px,.62fr);gap:7px;align-items:stretch;min-width:0}
-  .distance-autocomplete{min-height:48px;min-width:0}
-  .distance-fallback-input,.distance-google-autocomplete{display:block;width:100%;min-height:48px;box-sizing:border-box;border:1px solid rgba(255,255,255,.14);border-radius:11px;background:#0d0f11;color:#f4f1eb;font:inherit;padding:0 13px;outline:none;transition:border-color .2s ease,box-shadow .2s ease}
-  .distance-fallback-input:focus,.distance-google-autocomplete:focus-within{border-color:rgba(215,180,106,.7);box-shadow:0 0 0 3px rgba(215,180,106,.08)}
-  .distance-result-card{display:flex;align-items:center;min-width:0;padding:7px 12px;border:1px solid rgba(255,255,255,.1);border-radius:11px;background:rgba(255,255,255,.025)}
-  .distance-result-card>span,.distance-result-card small{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-  .distance-result-card strong{color:#f4f1eb;font-size:.88rem;line-height:1.2;letter-spacing:-.015em}
-  .distance-directions-link{display:flex;align-items:center;justify-content:center;min-height:48px;padding:0 10px;border:1px solid rgba(215,180,106,.38);border-radius:11px;color:#e3c16f;font-size:.72rem;font-weight:800;line-height:1.15;text-align:center;text-decoration:none;transition:background .2s ease,border-color .2s ease,color .2s ease}
-  .distance-directions-link:hover{background:rgba(215,180,106,.08);border-color:rgba(215,180,106,.68);color:#f0c977}
-  @media(max-width:1120px){.distance-estimator{grid-template-columns:1fr}.distance-copy{max-width:46rem}.distance-panel{grid-template-columns:minmax(220px,1.2fr) minmax(210px,1fr) minmax(145px,.65fr)}}
-  @media(max-width:760px){.distance-estimator{padding-bottom:18px;margin-bottom:22px}.distance-panel{grid-template-columns:1fr 1fr}.distance-autocomplete{grid-column:1/-1}.distance-directions-link{min-height:46px}}
-  @media(max-width:560px){.distance-estimator{gap:16px}.distance-panel{grid-template-columns:1fr}.distance-autocomplete{grid-column:auto}.distance-directions-link{min-height:44px}}
+  .google-route{display:grid;grid-template-columns:minmax(270px,.72fr) minmax(0,1.28fr);gap:clamp(20px,2.6vw,38px);align-items:stretch;margin:0 0 22px;padding:0 0 22px;border-bottom:1px solid var(--line)}
+  .google-route-panel{display:flex;flex-direction:column;justify-content:center;min-width:0}
+  .google-route-label{margin:0 0 6px;color:var(--accent);font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+  .google-route h2{margin:0 0 8px;color:#f4f1eb;font-size:clamp(1.45rem,2vw,2.05rem);line-height:1;letter-spacing:-.04em}
+  .google-route-copy{margin:0 0 14px;color:#98948d;font-size:.82rem;line-height:1.45;max-width:50ch}
+  .google-route-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+  .google-route-form input{min-width:0;height:46px;padding:0 13px;border:1px solid rgba(255,255,255,.15);border-radius:11px;background:#0d0f11;color:#f4f1eb;font:inherit;outline:none}
+  .google-route-form input:focus{border-color:rgba(215,180,106,.72);box-shadow:0 0 0 3px rgba(215,180,106,.08)}
+  .google-route-form button{height:46px;padding:0 18px;border:1px solid rgba(215,180,106,.56);border-radius:11px;background:var(--accent);color:#090a0b;font:inherit;font-size:.78rem;font-weight:850;cursor:pointer}
+  .google-route-form button:hover{filter:brightness(1.06)}
+  .google-route-meta{display:grid;gap:3px;margin-top:9px;font-size:.72rem;line-height:1.35}
+  .google-route-meta a{width:max-content;max-width:100%;color:#d9ba68;text-decoration:none}
+  .google-route-meta span{color:#77736d}
+  .google-route-map-shell{min-height:218px;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:#0c0e10}
+  .google-route-map-shell iframe{display:block;width:100%;height:100%;min-height:218px;border:0;filter:saturate(.82) contrast(1.02)}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  @media(max-width:900px){.google-route{grid-template-columns:1fr}.google-route-panel{max-width:46rem}.google-route-map-shell,.google-route-map-shell iframe{min-height:280px}}
+  @media(max-width:560px){.google-route{gap:16px}.google-route-form{grid-template-columns:1fr}.google-route-form button{width:100%}.google-route-map-shell,.google-route-map-shell iframe{min-height:250px}}
 </style>
