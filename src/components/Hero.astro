@@ -1,6 +1,7 @@
 ---
 import { siteConfig } from '../config/site';
 import DistanceEstimator from './DistanceEstimator.astro';
+import GoogleMapsPin from './GoogleMapsPin.astro';
 ---
 <section class="hero" data-commercial-hero>
   <img class="hero-bg" src="/images/home/hero-hds-original.png" width="1672" height="941" alt="Czerwony samochód HDS KALTRUCK z żurawiem podnoszącym kontener" fetchpriority="high" />
@@ -18,7 +19,7 @@ import DistanceEstimator from './DistanceEstimator.astro';
       aria-controls="hero-route-panel"
       aria-label="Sprawdź trasę transportu"
     >
-      <span class="hero-route-toggle-text">TRASA</span>
+      <GoogleMapsPin class="hero-route-toggle-pin" />
     </button>
   </div>
 
@@ -111,7 +112,7 @@ import DistanceEstimator from './DistanceEstimator.astro';
     radial-gradient(circle at 50% 50%,rgba(5,6,7,.08) 0%,rgba(5,6,7,.24) 52%,rgba(5,6,7,.5) 100%);
 }
 .hero-route-drawer{
-  --route-handle:48px;
+  --route-handle:58px;
   position:absolute;
   z-index:7;
   left:0;
@@ -146,12 +147,11 @@ import DistanceEstimator from './DistanceEstimator.astro';
 .hero-route-toggle{
   width:var(--route-handle);
   height:clamp(82px,10svh,106px);
-  padding:8px 0;
+  padding:10px 8px;
   border:1px solid rgba(215,180,106,.72);
   border-left:0;
   border-radius:0 12px 12px 0;
-  background:rgba(8,10,11,.94);
-  color:#f2eee5;
+  background:rgba(248,245,239,.96);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -159,8 +159,8 @@ import DistanceEstimator from './DistanceEstimator.astro';
   pointer-events:auto;
   backdrop-filter:blur(12px);
 }
-.hero-route-toggle:hover{background:rgba(19,20,20,.98);color:var(--accent)}
-.hero-route-toggle-text{writing-mode:vertical-rl;transform:rotate(180deg);font-size:.84rem;font-weight:900;letter-spacing:.22em;line-height:1}
+.hero-route-toggle:hover{background:#fff}
+.hero-route-toggle-pin{display:block;width:34px;height:49px;object-fit:contain;filter:drop-shadow(0 3px 5px rgba(0,0,0,.18))}
 .hero-content{
   position:relative;
   z-index:2;
@@ -332,10 +332,10 @@ import DistanceEstimator from './DistanceEstimator.astro';
 }
 
 @media(max-width:620px){
-  .hero-route-drawer{--route-handle:44px;width:calc(100vw - 10px)}
+  .hero-route-drawer{--route-handle:50px;width:calc(100vw - 10px)}
   .hero-route-panel{max-height:76svh;border-radius:0 14px 14px 0}
-  .hero-route-toggle{border-radius:0 10px 10px 0;height:clamp(78px,10svh,94px)}
-  .hero-route-toggle-text{font-size:.78rem;letter-spacing:.18em}
+  .hero-route-toggle{border-radius:0 10px 10px 0;height:clamp(78px,10svh,94px);padding:9px 7px}
+  .hero-route-toggle-pin{width:30px;height:43px}
   .hero-bg{object-position:64% center}
   .hero-overlay{
     background:
