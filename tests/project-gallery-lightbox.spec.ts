@@ -115,21 +115,21 @@ test('desktop lightbox centers the photo, blends copy into the photo and docks n
   });
 });
 
-test('thumbnail rail and arrows are borderless, vertically aligned, and close glyph is centered', async ({ page }) => {
+test('thumbnail rail has no visible scrollbar and arrow glyphs align to thumbnail image center', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 1000 });
   await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
   await page.locator('[data-project-group]').first().locator('[data-project-lightbox-open]').click();
 
   const lightbox = page.locator('[data-project-lightbox]');
   const controls = lightbox.locator('[data-project-lightbox-controls]');
-  const thumbs = controls.locator('[data-project-lightbox-thumbs]');
   const firstThumbImage = controls.locator('[data-project-lightbox-thumb] img').first();
-  const prev = controls.locator('[data-project-lightbox-prev]');
-  const next = controls.locator('[data-project-lightbox-next]');
-  const close = lightbox.locator('[data-project-lightbox-close]');
+  const prevGlyph = controls.locator('[data-project-lightbox-prev-glyph]');
+  const nextGlyph = controls.locator('[data-project-lightbox-next-glyph]');
   const closeGlyph = lightbox.locator('[data-project-lightbox-close-glyph]');
 
   await expect(firstThumbImage).toBeVisible();
+  await expect(prevGlyph).toBeVisible();
+  await expect(nextGlyph).toBeVisible();
   await expect(closeGlyph).toBeVisible();
 
   const chrome = await page.evaluate(() => {
@@ -137,35 +137,39 @@ test('thumbnail rail and arrows are borderless, vertically aligned, and close gl
     const thumbImage = document.querySelector('[data-project-lightbox-thumb] img') as HTMLElement | null;
     const prev = document.querySelector('[data-project-lightbox-prev]') as HTMLElement | null;
     const next = document.querySelector('[data-project-lightbox-next]') as HTMLElement | null;
+    const prevGlyph = document.querySelector('[data-project-lightbox-prev-glyph]') as SVGElement | null;
+    const nextGlyph = document.querySelector('[data-project-lightbox-next-glyph]') as SVGElement | null;
     const close = document.querySelector('[data-project-lightbox-close]') as HTMLElement | null;
-    const glyph = document.querySelector('[data-project-lightbox-close-glyph]') as HTMLElement | null;
-    if (!thumbs || !thumbImage || !prev || !next || !close || !glyph) return null;
+    const closeGlyph = document.querySelector('[data-project-lightbox-close-glyph]') as HTMLElement | null;
+    if (!thumbs || !thumbImage || !prev || !next || !prevGlyph || !nextGlyph || !close || !closeGlyph) return null;
 
     const thumbRect = thumbImage.getBoundingClientRect();
-    const prevRect = prev.getBoundingClientRect();
-    const nextRect = next.getBoundingClientRect();
+    const prevGlyphRect = prevGlyph.getBoundingClientRect();
+    const nextGlyphRect = nextGlyph.getBoundingClientRect();
     const closeRect = close.getBoundingClientRect();
-    const glyphRect = glyph.getBoundingClientRect();
+    const closeGlyphRect = closeGlyph.getBoundingClientRect();
     const centerY = (rect: DOMRect) => rect.top + rect.height / 2;
     const centerX = (rect: DOMRect) => rect.left + rect.width / 2;
 
     return {
       railBorder: getComputedStyle(thumbs).borderTopWidth,
+      scrollbarWidth: getComputedStyle(thumbs).scrollbarWidth,
       prevBorder: getComputedStyle(prev).borderTopWidth,
       nextBorder: getComputedStyle(next).borderTopWidth,
-      prevCenterOffset: Math.abs(centerY(prevRect) - centerY(thumbRect)),
-      nextCenterOffset: Math.abs(centerY(nextRect) - centerY(thumbRect)),
-      closeXOffset: Math.abs(centerX(closeRect) - centerX(glyphRect)),
-      closeYOffset: Math.abs(centerY(closeRect) - centerY(glyphRect)),
+      prevGlyphCenterOffset: Math.abs(centerY(prevGlyphRect) - centerY(thumbRect)),
+      nextGlyphCenterOffset: Math.abs(centerY(nextGlyphRect) - centerY(thumbRect)),
+      closeXOffset: Math.abs(centerX(closeRect) - centerX(closeGlyphRect)),
+      closeYOffset: Math.abs(centerY(closeRect) - centerY(closeGlyphRect)),
     };
   });
 
   expect(chrome).not.toBeNull();
   expect(chrome!.railBorder).toBe('0px');
+  expect(chrome!.scrollbarWidth).toBe('none');
   expect(chrome!.prevBorder).toBe('0px');
   expect(chrome!.nextBorder).toBe('0px');
-  expect(chrome!.prevCenterOffset).toBeLessThanOrEqual(2);
-  expect(chrome!.nextCenterOffset).toBeLessThanOrEqual(2);
+  expect(chrome!.prevGlyphCenterOffset).toBeLessThanOrEqual(1);
+  expect(chrome!.nextGlyphCenterOffset).toBeLessThanOrEqual(1);
   expect(chrome!.closeXOffset).toBeLessThanOrEqual(2);
   expect(chrome!.closeYOffset).toBeLessThanOrEqual(2);
 });
