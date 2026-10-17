@@ -24,6 +24,9 @@ images:
   - https://hdsplock.pl/zdj/realizacje/materia-y-budowlane-05.jpg
   - https://hdsplock.pl/zdj/realizacje/materia-y-budowlane-06.jpg
   - https://hdsplock.pl/zdj/realizacje/materia-y-budowlane-07.jpg
+  - /images/realizations/kaltruck-dom-szkieletowy-01.webp
+  - /images/realizations/kaltruck-budowa-hds-01.webp
+  - /images/realizations/kaltruck-drewno-hds-01.webp
 alt: Konstrukcje i materiały budowlane podczas realizacji HDS
 width: 810
 height: 1080
