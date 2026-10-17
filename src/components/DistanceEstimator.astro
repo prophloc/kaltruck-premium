@@ -1,5 +1,6 @@
 ---
 import { siteConfig } from '../config/site';
+import GoogleMapsPin from './GoogleMapsPin.astro';
 
 interface Props {
   instanceId?: string;
@@ -30,12 +31,10 @@ const destinationInputId = `${instanceId}-destination`;
   data-defer-map={deferMap ? 'true' : 'false'}
 >
   <div class="google-route-panel">
-    <p class="google-route-label">
-      <span class="google-brand-icon" data-google-brand-icon aria-hidden="true"><span>G</span></span>
-      <span>Google Maps</span>
-    </p>
-    <h2>Sprawdź trasę transportu</h2>
-    <p class="google-route-copy">Podaj punkt odbioru i punkt dostawy. Jeśli pole „Dokąd” zostawisz puste, wyznaczymy trasę do bazy KALTRUCK.</p>
+    <div class="google-route-heading" data-route-heading>
+      <h2>Sprawdź trasę transportu</h2>
+      <GoogleMapsPin class="google-route-heading-pin" />
+    </div>
 
     <form class="google-route-form" data-google-route-form>
       <div class="google-route-fields">
@@ -49,6 +48,7 @@ const destinationInputId = `${instanceId}-destination`;
             autocomplete="street-address"
             aria-label="Skąd jedzie ładunek?"
             placeholder="Skąd? np. Warszawa"
+            value="Płock"
             required
           />
         </label>
@@ -70,7 +70,7 @@ const destinationInputId = `${instanceId}-destination`;
 
     <div class="google-route-meta">
       <a href={siteConfig.googleMapsUrl} target="_blank" rel="noreferrer">Baza: {baseAddress}</a>
-      <span data-google-route-status>{mapsApiKey ? 'Pole „Dokąd” możesz zostawić puste — wtedy celem będzie baza KALTRUCK.' : 'Do wyznaczania trasy na stronie potrzebny jest klucz Maps Embed API.'}</span>
+      <span data-google-route-status>{mapsApiKey ? 'Mapa Google jest gotowa do wyznaczenia trasy.' : 'Do wyznaczania trasy na stronie potrzebny jest klucz Maps Embed API.'}</span>
     </div>
   </div>
 
@@ -149,11 +149,9 @@ const destinationInputId = `${instanceId}-destination`;
 <style>
   .google-route{display:grid;grid-template-columns:minmax(270px,.72fr) minmax(0,1.28fr);gap:clamp(20px,2.6vw,38px);align-items:stretch;margin:0;padding:22px 0;border-bottom:1px solid var(--line)}
   .google-route-panel{display:flex;flex-direction:column;justify-content:center;min-width:0}
-  .google-route-label{display:flex;align-items:center;gap:8px;margin:0 0 7px;color:var(--accent);font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
-  .google-brand-icon{display:grid;place-items:center;width:22px;height:22px;flex:0 0 22px;border-radius:50%;background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.18)}
-  .google-brand-icon>span{font-size:.9rem;font-weight:900;line-height:1;background:conic-gradient(from -35deg,#4285f4 0 28%,#34a853 28% 50%,#fbbc05 50% 72%,#ea4335 72% 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .google-route h2{margin:0 0 8px;color:#f4f1eb;font-size:clamp(1.45rem,2vw,2.05rem);line-height:1;letter-spacing:-.04em}
-  .google-route-copy{margin:0 0 14px;color:#98948d;font-size:.82rem;line-height:1.45;max-width:58ch}
+  .google-route-heading{display:flex;align-items:center;gap:11px;margin:0 0 14px}
+  .google-route-heading h2{margin:0;color:#f4f1eb;font-size:clamp(1.45rem,2vw,2.05rem);line-height:1;letter-spacing:-.04em}
+  .google-route-heading-pin{display:block;width:29px;height:42px;object-fit:contain;flex:0 0 auto}
   .google-route-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:stretch}
   .google-route-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-width:0}
   .google-route-field{position:relative;display:block;min-width:0}
@@ -168,9 +166,9 @@ const destinationInputId = `${instanceId}-destination`;
   .google-route-map-shell{min-height:194px;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:#0c0e10}
   .google-route-map-shell iframe{display:block;width:100%;height:100%;min-height:194px;border:0;filter:saturate(.82) contrast(1.02)}
   .google-route--drawer{grid-template-columns:1fr;gap:16px;margin:0;padding:22px;border:0;background:#f7f4ee;color:#141412}
-  .google-route--drawer .google-route-label{color:#765a1d}
-  .google-route--drawer h2{color:#141412;font-size:clamp(1.45rem,2.2vw,1.9rem)}
-  .google-route--drawer .google-route-copy{max-width:60ch;color:#5d5a53}
+  .google-route--drawer .google-route-heading{margin-bottom:12px}
+  .google-route--drawer .google-route-heading h2{color:#141412;font-size:clamp(1.45rem,2.2vw,1.9rem)}
+  .google-route--drawer .google-route-heading-pin{width:31px;height:44px}
   .google-route--drawer .google-route-form input{border-color:rgba(20,20,18,.16);background:#fff;color:#141412;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
   .google-route--drawer .google-route-form input::placeholder{color:#8c887f}
   .google-route--drawer .google-route-point{background:#ede2c9;color:#6d5117}
@@ -181,5 +179,5 @@ const destinationInputId = `${instanceId}-destination`;
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   @media(max-width:900px){.google-route{grid-template-columns:1fr;padding:22px 0}.google-route-panel{max-width:46rem}.google-route-map-shell,.google-route-map-shell iframe{min-height:280px}.google-route--drawer{padding:18px}.google-route--drawer .google-route-map-shell,.google-route--drawer .google-route-map-shell iframe{min-height:220px}}
   @media(max-width:680px){.google-route-fields{grid-template-columns:1fr}.google-route-form{grid-template-columns:1fr auto}.google-route--drawer .google-route-form{grid-template-columns:1fr}.google-route--drawer .google-route-form button{width:100%}}
-  @media(max-width:560px){.google-route{gap:16px;padding:20px 0}.google-route-form{grid-template-columns:1fr}.google-route-form button{width:100%}.google-route-map-shell,.google-route-map-shell iframe{min-height:250px}.google-route--drawer{padding:16px}.google-route--drawer .google-route-copy{font-size:.76rem;margin-bottom:11px}.google-route--drawer .google-route-map-shell,.google-route--drawer .google-route-map-shell iframe{min-height:205px}}
+  @media(max-width:560px){.google-route{gap:16px;padding:20px 0}.google-route-form{grid-template-columns:1fr}.google-route-form button{width:100%}.google-route-map-shell,.google-route-map-shell iframe{min-height:250px}.google-route--drawer{padding:16px}.google-route--drawer .google-route-map-shell,.google-route--drawer .google-route-map-shell iframe{min-height:205px}}
 </style>
