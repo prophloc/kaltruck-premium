@@ -109,6 +109,35 @@ button, a { -webkit-tap-highlight-color: transparent; }
   transform: rotate(-45deg);
 }
 
+/* The font × has asymmetric glyph metrics. Draw the close mark from two lines anchored at the exact center. */
+.project-lightbox[data-project-lightbox] .project-lightbox-close-glyph {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-size: 0;
+  line-height: 0;
+  transform: none;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-close-glyph::before,
+.project-lightbox[data-project-lightbox] .project-lightbox-close-glyph::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transform-origin: 50% 50%;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-close-glyph::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-close-glyph::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
 @media (max-width: 900px) {
   :root { --page-gutter: clamp(20px, 4.5vw, 36px); --section-space: clamp(72px, 10vw, 104px); --section-space-compact: clamp(56px, 8vw, 80px); --grid-gap: clamp(18px, 3vw, 28px); }
   .section-title { max-width: 14ch; font-size: clamp(2.35rem, 8vw, 4.5rem); }
