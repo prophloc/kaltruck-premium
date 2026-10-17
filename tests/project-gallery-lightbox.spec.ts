@@ -146,6 +146,9 @@ test('thumbnail rail has no visible scrollbar and geometric arrows align to thum
     const nextStyle = getComputedStyle(next);
     const prevArrow = getComputedStyle(prev, '::before');
     const nextArrow = getComputedStyle(next, '::before');
+    const closeGlyphStyle = getComputedStyle(closeGlyph);
+    const closeBefore = getComputedStyle(closeGlyph, '::before');
+    const closeAfter = getComputedStyle(closeGlyph, '::after');
     const centerY = (rect: DOMRect) => rect.top + rect.height / 2;
     const centerX = (rect: DOMRect) => rect.left + rect.width / 2;
 
@@ -170,6 +173,18 @@ test('thumbnail rail has no visible scrollbar and geometric arrows align to thum
       nextArrowWidth: nextArrow.width,
       closeXOffset: Math.abs(centerX(closeRect) - centerX(closeGlyphRect)),
       closeYOffset: Math.abs(centerY(closeRect) - centerY(closeGlyphRect)),
+      closeGlyphFontSize: closeGlyphStyle.fontSize,
+      closeGlyphPosition: closeGlyphStyle.position,
+      closeBeforeContent: closeBefore.content,
+      closeAfterContent: closeAfter.content,
+      closeBeforeLeft: closeBefore.left,
+      closeAfterLeft: closeAfter.left,
+      closeBeforeTop: closeBefore.top,
+      closeAfterTop: closeAfter.top,
+      closeBeforeWidth: closeBefore.width,
+      closeAfterWidth: closeAfter.width,
+      closeBeforeHeight: closeBefore.height,
+      closeAfterHeight: closeAfter.height,
     };
   });
 
@@ -192,6 +207,18 @@ test('thumbnail rail has no visible scrollbar and geometric arrows align to thum
   expect(chrome!.nextArrowContent).not.toBe('none');
   expect(chrome!.prevArrowWidth).toBe('10px');
   expect(chrome!.nextArrowWidth).toBe('10px');
-  expect(chrome!.closeXOffset).toBeLessThanOrEqual(2);
-  expect(chrome!.closeYOffset).toBeLessThanOrEqual(2);
+  expect(chrome!.closeXOffset).toBeLessThanOrEqual(1);
+  expect(chrome!.closeYOffset).toBeLessThanOrEqual(1);
+  expect(chrome!.closeGlyphFontSize).toBe('0px');
+  expect(chrome!.closeGlyphPosition).toBe('relative');
+  expect(chrome!.closeBeforeContent).not.toBe('none');
+  expect(chrome!.closeAfterContent).not.toBe('none');
+  expect(chrome!.closeBeforeLeft).toBe('50%');
+  expect(chrome!.closeAfterLeft).toBe('50%');
+  expect(chrome!.closeBeforeTop).toBe('50%');
+  expect(chrome!.closeAfterTop).toBe('50%');
+  expect(chrome!.closeBeforeWidth).toBe('16px');
+  expect(chrome!.closeAfterWidth).toBe('16px');
+  expect(chrome!.closeBeforeHeight).toBe('2px');
+  expect(chrome!.closeAfterHeight).toBe('2px');
 });
