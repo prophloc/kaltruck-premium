@@ -62,7 +62,7 @@ test('footer centers the larger brand block and balances the route section verti
   expect(geometry!.footerHeight).toBeLessThanOrEqual(590);
 });
 
-test('homepage has a left-edge route drawer that opens, closes and stays centered on the hero', async ({ page }) => {
+test('homepage route drawer uses the Google Maps pin as its handle and heading mark', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 1000 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -73,23 +73,20 @@ test('homepage has a left-edge route drawer that opens, closes and stays centere
 
   await expect(drawer).toHaveCount(1);
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  await expect(toggle).toHaveText('TRASA');
-  await expect(toggle.locator('.hero-route-toggle-arrow')).toHaveCount(0);
+  await expect(toggle.locator('[data-google-maps-pin]')).toHaveCount(1);
+  await expect(toggle.locator('.hero-route-toggle-text')).toHaveCount(0);
   await expect(panel).toBeHidden();
-  await expect(drawer.locator('[data-google-route]')).toHaveCount(1);
 
   const closedGeometry = await page.evaluate(() => {
     const heroNode = document.querySelector('[data-commercial-hero]');
     const toggleNode = document.querySelector('[data-hero-route-toggle]');
-    const toggleText = document.querySelector('.hero-route-toggle-text');
-    if (!heroNode || !toggleNode || !toggleText) return null;
+    if (!heroNode || !toggleNode) return null;
     const heroRect = heroNode.getBoundingClientRect();
     const toggleRect = toggleNode.getBoundingClientRect();
     return {
       centerDelta: Math.abs((toggleRect.top + toggleRect.height / 2) - (heroRect.top + heroRect.height / 2)),
       heightRatio: toggleRect.height / heroRect.height,
       leftEdge: toggleRect.left - heroRect.left,
-      textSize: Number.parseFloat(getComputedStyle(toggleText).fontSize),
     };
   });
 
@@ -98,29 +95,23 @@ test('homepage has a left-edge route drawer that opens, closes and stays centere
   expect(closedGeometry!.heightRatio).toBeGreaterThanOrEqual(0.08);
   expect(closedGeometry!.heightRatio).toBeLessThanOrEqual(0.12);
   expect(closedGeometry!.leftEdge).toBeLessThanOrEqual(8);
-  expect(closedGeometry!.textSize).toBeGreaterThanOrEqual(13);
 
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-expanded', 'true');
   await expect(panel).toBeVisible();
 
-  const drawerTheme = await drawer.locator('[data-google-route]').evaluate((node) => {
-    const style = getComputedStyle(node);
-    return {
-      background: style.backgroundColor,
-      color: style.color,
-    };
-  });
-  expect(drawerTheme.background).toBe('rgb(247, 244, 238)');
-  expect(drawerTheme.color).toBe('rgb(20, 20, 18)');
-  await expect(drawer.locator('[data-google-brand-icon]')).toHaveCount(1);
+  const drawerRoute = drawer.locator('[data-google-route]');
+  await expect(drawerRoute.locator('[data-route-heading] h2')).toHaveText('Sprawdź trasę transportu');
+  await expect(drawerRoute.locator('[data-route-heading] [data-google-maps-pin]')).toHaveCount(1);
+  await expect(drawerRoute.locator('.google-route-copy')).toHaveCount(0);
+  await expect(drawerRoute.getByText('Google Maps', { exact: true })).toHaveCount(0);
 
   await page.keyboard.press('Escape');
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   await expect(panel).toBeHidden();
 });
 
-test('route form supports custom origin and destination with base fallback', async ({ page }) => {
+test('route form defaults origin to Plock and supports custom destination with base fallback', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 1000 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -134,17 +125,16 @@ test('route form supports custom origin and destination with base fallback', asy
   const map = route.locator('[data-google-route-map]');
   const form = route.locator('[data-google-route-form]');
 
-  await expect(origin).toHaveCount(1);
+  await expect(origin).toHaveValue('Płock');
   await expect(destination).toHaveCount(1);
 
   await route.evaluate((node) => node.setAttribute('data-api-key', 'test-key'));
-  await origin.fill('Warszawa');
   await destination.fill('Łódź');
   await form.locator('button[type="submit"]').click();
 
   const customSrc = await map.getAttribute('src');
   expect(customSrc).toContain('/maps/embed/v1/directions?');
-  expect(new URL(customSrc!).searchParams.get('origin')).toBe('Warszawa');
+  expect(new URL(customSrc!).searchParams.get('origin')).toBe('Płock');
   expect(new URL(customSrc!).searchParams.get('destination')).toBe('Łódź');
 
   await destination.fill('');
