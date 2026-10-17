@@ -16,18 +16,31 @@ test('about hero uses two lines with gold experience accent', async ({ page }) =
   expect(accentColor).not.toBe('rgb(255, 255, 255)');
 });
 
-test('footer exposes KALTRUCK base and Google route distance estimator', async ({ page }) => {
+test('footer embeds Google Maps directions and keeps route on our page', async ({ page }) => {
+  await page.route('https://www.google.com/maps/embed/**', (route) => route.abort());
   await page.goto('/o-nas/', { waitUntil: 'domcontentloaded' });
 
-  const estimator = page.locator('[data-distance-estimator]');
-  await expect(estimator).toBeVisible();
-  await expect(estimator).toHaveAttribute('data-base-address', 'Tokarska 40, 09-401 Płock');
-  await expect(estimator.locator('[data-distance-autocomplete-host]')).toBeVisible();
-  await expect(estimator.locator('[data-distance-result]')).toContainText('km');
+  const routeMap = page.locator('[data-google-route]');
+  await expect(routeMap).toBeVisible();
+  await expect(routeMap).toHaveAttribute('data-base-address', 'Tokarska 40, 09-401 Płock');
 
-  const mapsLink = estimator.locator('[data-distance-base-link]');
-  await expect(mapsLink).toContainText('Tokarska 40');
-  await expect(mapsLink).toHaveAttribute('href', /google\.com\/maps/);
+  const iframe = routeMap.locator('iframe[data-google-route-map]');
+  await expect(iframe).toHaveCount(1);
+  await expect(routeMap.locator('form[data-google-route-form]')).toBeVisible();
+  await expect(routeMap.locator('input[data-google-route-origin]')).toBeVisible();
+
+  // CI intentionally has no production Maps key. Inject a fake key only to verify
+  // that submitting an origin switches the embedded Google map to directions mode.
+  await routeMap.evaluate((node) => node.setAttribute('data-api-key', 'test-key'));
+  await routeMap.locator('input[data-google-route-origin]').fill('Warszawa');
+  await routeMap.locator('form[data-google-route-form]').evaluate((form: HTMLFormElement) => form.requestSubmit());
+
+  await expect(iframe).toHaveAttribute('src', /google\.com\/maps\/embed\/v1\/directions/);
+  const src = await iframe.getAttribute('src');
+  expect(src).toContain('origin=Warszawa');
+  expect(src).toContain('destination=Tokarska+40%2C+09-401+P%C5%82ock');
+  expect(src).toContain('mode=driving');
+  expect(src).toContain('units=metric');
 
   const year = new Date().getFullYear().toString();
   await expect(page.locator('.footer-bottom')).toContainText(`© ${year}`);
