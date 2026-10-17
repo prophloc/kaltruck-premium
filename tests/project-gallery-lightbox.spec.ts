@@ -114,3 +114,58 @@ test('desktop lightbox centers the photo, blends copy into the photo and docks n
     height: 58,
   });
 });
+
+test('thumbnail rail and arrows are borderless, vertically aligned, and close glyph is centered', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 1000 });
+  await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
+  await page.locator('[data-project-group]').first().locator('[data-project-lightbox-open]').click();
+
+  const lightbox = page.locator('[data-project-lightbox]');
+  const controls = lightbox.locator('[data-project-lightbox-controls]');
+  const thumbs = controls.locator('[data-project-lightbox-thumbs]');
+  const firstThumbImage = controls.locator('[data-project-lightbox-thumb] img').first();
+  const prev = controls.locator('[data-project-lightbox-prev]');
+  const next = controls.locator('[data-project-lightbox-next]');
+  const close = lightbox.locator('[data-project-lightbox-close]');
+  const closeGlyph = lightbox.locator('[data-project-lightbox-close-glyph]');
+
+  await expect(firstThumbImage).toBeVisible();
+  await expect(closeGlyph).toBeVisible();
+
+  const chrome = await page.evaluate(() => {
+    const thumbs = document.querySelector('[data-project-lightbox-thumbs]') as HTMLElement | null;
+    const thumbImage = document.querySelector('[data-project-lightbox-thumb] img') as HTMLElement | null;
+    const prev = document.querySelector('[data-project-lightbox-prev]') as HTMLElement | null;
+    const next = document.querySelector('[data-project-lightbox-next]') as HTMLElement | null;
+    const close = document.querySelector('[data-project-lightbox-close]') as HTMLElement | null;
+    const glyph = document.querySelector('[data-project-lightbox-close-glyph]') as HTMLElement | null;
+    if (!thumbs || !thumbImage || !prev || !next || !close || !glyph) return null;
+
+    const thumbRect = thumbImage.getBoundingClientRect();
+    const prevRect = prev.getBoundingClientRect();
+    const nextRect = next.getBoundingClientRect();
+    const closeRect = close.getBoundingClientRect();
+    const glyphRect = glyph.getBoundingClientRect();
+    const centerY = (rect: DOMRect) => rect.top + rect.height / 2;
+    const centerX = (rect: DOMRect) => rect.left + rect.width / 2;
+
+    return {
+      railBorder: getComputedStyle(thumbs).borderTopWidth,
+      prevBorder: getComputedStyle(prev).borderTopWidth,
+      nextBorder: getComputedStyle(next).borderTopWidth,
+      prevCenterOffset: Math.abs(centerY(prevRect) - centerY(thumbRect)),
+      nextCenterOffset: Math.abs(centerY(nextRect) - centerY(thumbRect)),
+      closeXOffset: Math.abs(centerX(closeRect) - centerX(glyphRect)),
+      closeYOffset: Math.abs(centerY(closeRect) - centerY(glyphRect)),
+    };
+  });
+
+  expect(chrome).not.toBeNull();
+  expect(chrome!.railBorder).toBe('0px');
+  expect(chrome!.prevBorder).toBe('0px');
+  expect(chrome!.nextBorder).toBe('0px');
+  expect(chrome!.prevCenterOffset).toBeLessThanOrEqual(2);
+  expect(chrome!.nextCenterOffset).toBeLessThanOrEqual(2);
+  expect(chrome!.closeXOffset).toBeLessThanOrEqual(2);
+  expect(chrome!.closeYOffset).toBeLessThanOrEqual(2);
+});
