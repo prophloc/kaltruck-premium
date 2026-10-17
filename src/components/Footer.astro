@@ -1,7 +1,9 @@
 ---
 import { siteConfig } from '../config/site';
+import DistanceEstimator from './DistanceEstimator.astro';
 ---
 <footer class="site-footer">
+  <div class="container"><DistanceEstimator /></div>
   <div class="container footer-grid">
     <div class="footer-brand">
       <img src="/brand/kaltruck-logo.svg" width="2548" height="1305" alt="KALTRUCK Transport HDS" />
@@ -17,7 +19,7 @@ import { siteConfig } from '../config/site';
       <p class="footer-label">Kontakt</p>
       <a class="footer-phone" href={`tel:${siteConfig.phone}`}>+48 514 948 373</a>
       <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
-      <span>Płock • Mazowsze • Polska</span>
+      <a class="footer-address" href={siteConfig.googleMapsUrl} target="_blank" rel="noreferrer">{siteConfig.baseAddress}</a>
     </div>
   </div>
   <div class="container footer-bottom"><span>© {new Date().getFullYear()} {siteConfig.legalName}</span><span>Transport HDS</span></div>
@@ -36,6 +38,8 @@ import { siteConfig } from '../config/site';
   .footer-links a:hover{color:var(--accent)}
   .footer-contact{color:#9d9992}
   .footer-contact a{overflow-wrap:anywhere}
+  .footer-address{color:#9d9992;text-decoration:none}
+  .footer-address:hover{color:var(--accent)}
   .footer-phone{color:#fff!important;font-size:clamp(1.25rem,1.8vw,1.55rem);font-weight:800;letter-spacing:-.02em}
   .footer-bottom{border-top:1px solid var(--line);margin-top:clamp(42px,4.5vw,58px);padding-top:20px;display:flex;justify-content:space-between;gap:20px;color:#777;font-size:.78rem}
   @media(max-width:900px){.footer-brand{grid-column:1/span 5}.footer-links-wrap{grid-column:7/span 2}.footer-contact{grid-column:9/-1}}
