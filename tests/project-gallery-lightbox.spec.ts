@@ -115,7 +115,7 @@ test('desktop lightbox centers the photo, blends copy into the photo and docks n
   });
 });
 
-test('thumbnail rail has no visible scrollbar and arrow glyphs align to thumbnail image center', async ({ page }) => {
+test('thumbnail rail has no visible scrollbar and geometric arrows align to thumbnail center', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 1000 });
   await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
   await page.locator('[data-project-group]').first().locator('[data-project-lightbox-open]').click();
@@ -123,13 +123,9 @@ test('thumbnail rail has no visible scrollbar and arrow glyphs align to thumbnai
   const lightbox = page.locator('[data-project-lightbox]');
   const controls = lightbox.locator('[data-project-lightbox-controls]');
   const firstThumbImage = controls.locator('[data-project-lightbox-thumb] img').first();
-  const prevGlyph = controls.locator('[data-project-lightbox-prev-glyph]');
-  const nextGlyph = controls.locator('[data-project-lightbox-next-glyph]');
   const closeGlyph = lightbox.locator('[data-project-lightbox-close-glyph]');
 
   await expect(firstThumbImage).toBeVisible();
-  await expect(prevGlyph).toBeVisible();
-  await expect(nextGlyph).toBeVisible();
   await expect(closeGlyph).toBeVisible();
 
   const chrome = await page.evaluate(() => {
@@ -137,27 +133,41 @@ test('thumbnail rail has no visible scrollbar and arrow glyphs align to thumbnai
     const thumbImage = document.querySelector('[data-project-lightbox-thumb] img') as HTMLElement | null;
     const prev = document.querySelector('[data-project-lightbox-prev]') as HTMLElement | null;
     const next = document.querySelector('[data-project-lightbox-next]') as HTMLElement | null;
-    const prevGlyph = document.querySelector('[data-project-lightbox-prev-glyph]') as SVGElement | null;
-    const nextGlyph = document.querySelector('[data-project-lightbox-next-glyph]') as SVGElement | null;
     const close = document.querySelector('[data-project-lightbox-close]') as HTMLElement | null;
     const closeGlyph = document.querySelector('[data-project-lightbox-close-glyph]') as HTMLElement | null;
-    if (!thumbs || !thumbImage || !prev || !next || !prevGlyph || !nextGlyph || !close || !closeGlyph) return null;
+    if (!thumbs || !thumbImage || !prev || !next || !close || !closeGlyph) return null;
 
     const thumbRect = thumbImage.getBoundingClientRect();
-    const prevGlyphRect = prevGlyph.getBoundingClientRect();
-    const nextGlyphRect = nextGlyph.getBoundingClientRect();
+    const prevRect = prev.getBoundingClientRect();
+    const nextRect = next.getBoundingClientRect();
     const closeRect = close.getBoundingClientRect();
     const closeGlyphRect = closeGlyph.getBoundingClientRect();
+    const prevStyle = getComputedStyle(prev);
+    const nextStyle = getComputedStyle(next);
+    const prevArrow = getComputedStyle(prev, '::before');
+    const nextArrow = getComputedStyle(next, '::before');
     const centerY = (rect: DOMRect) => rect.top + rect.height / 2;
     const centerX = (rect: DOMRect) => rect.left + rect.width / 2;
 
     return {
       railBorder: getComputedStyle(thumbs).borderTopWidth,
       scrollbarWidth: getComputedStyle(thumbs).scrollbarWidth,
-      prevBorder: getComputedStyle(prev).borderTopWidth,
-      nextBorder: getComputedStyle(next).borderTopWidth,
-      prevGlyphCenterOffset: Math.abs(centerY(prevGlyphRect) - centerY(thumbRect)),
-      nextGlyphCenterOffset: Math.abs(centerY(nextGlyphRect) - centerY(thumbRect)),
+      prevBorder: prevStyle.borderTopWidth,
+      nextBorder: nextStyle.borderTopWidth,
+      prevCenterOffset: Math.abs(centerY(prevRect) - centerY(thumbRect)),
+      nextCenterOffset: Math.abs(centerY(nextRect) - centerY(thumbRect)),
+      prevFontSize: prevStyle.fontSize,
+      nextFontSize: nextStyle.fontSize,
+      prevDisplay: prevStyle.display,
+      nextDisplay: nextStyle.display,
+      prevAlign: prevStyle.alignItems,
+      nextAlign: nextStyle.alignItems,
+      prevJustify: prevStyle.justifyContent,
+      nextJustify: nextStyle.justifyContent,
+      prevArrowContent: prevArrow.content,
+      nextArrowContent: nextArrow.content,
+      prevArrowWidth: prevArrow.width,
+      nextArrowWidth: nextArrow.width,
       closeXOffset: Math.abs(centerX(closeRect) - centerX(closeGlyphRect)),
       closeYOffset: Math.abs(centerY(closeRect) - centerY(closeGlyphRect)),
     };
@@ -168,8 +178,20 @@ test('thumbnail rail has no visible scrollbar and arrow glyphs align to thumbnai
   expect(chrome!.scrollbarWidth).toBe('none');
   expect(chrome!.prevBorder).toBe('0px');
   expect(chrome!.nextBorder).toBe('0px');
-  expect(chrome!.prevGlyphCenterOffset).toBeLessThanOrEqual(1);
-  expect(chrome!.nextGlyphCenterOffset).toBeLessThanOrEqual(1);
+  expect(chrome!.prevCenterOffset).toBeLessThanOrEqual(1);
+  expect(chrome!.nextCenterOffset).toBeLessThanOrEqual(1);
+  expect(chrome!.prevFontSize).toBe('0px');
+  expect(chrome!.nextFontSize).toBe('0px');
+  expect(chrome!.prevDisplay).toBe('flex');
+  expect(chrome!.nextDisplay).toBe('flex');
+  expect(chrome!.prevAlign).toBe('center');
+  expect(chrome!.nextAlign).toBe('center');
+  expect(chrome!.prevJustify).toBe('center');
+  expect(chrome!.nextJustify).toBe('center');
+  expect(chrome!.prevArrowContent).not.toBe('none');
+  expect(chrome!.nextArrowContent).not.toBe('none');
+  expect(chrome!.prevArrowWidth).toBe('10px');
+  expect(chrome!.nextArrowWidth).toBe('10px');
   expect(chrome!.closeXOffset).toBeLessThanOrEqual(2);
   expect(chrome!.closeYOffset).toBeLessThanOrEqual(2);
 });
