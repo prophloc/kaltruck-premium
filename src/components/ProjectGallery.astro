@@ -236,6 +236,7 @@ const initialProject = projects[0];
         thumb.setAttribute('aria-current', selected ? 'true' : 'false');
         if (selected) thumb.scrollIntoView({ block: 'nearest', inline: 'nearest' });
       });
+      syncOverlay();
       requestAnimationFrame(syncOverlay);
     };
 
@@ -283,6 +284,7 @@ const initialProject = projects[0];
       document.body.classList.add('lightbox-open');
       renderThumbs();
       render();
+      syncOverlay();
       requestAnimationFrame(() => {
         syncOverlay();
         closeButton.focus();
