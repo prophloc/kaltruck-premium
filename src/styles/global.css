@@ -157,6 +157,27 @@ button, a { -webkit-tap-highlight-color: transparent; }
   transform: translate(-50%, -50%) rotate(-45deg);
 }
 
+/* GoogleMapsPin is an Astro child component; these global selectors deliberately bridge component scoping. */
+.hero-route-toggle > .hero-route-toggle-pin {
+  display: block;
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+  transform: rotate(-90deg);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.16));
+}
+.google-route-heading > .google-route-heading-pin {
+  display: block;
+  width: 29px;
+  height: 42px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+.google-route--drawer .google-route-heading > .google-route-heading-pin {
+  width: 26px;
+  height: 26px;
+}
+
 @media (max-width: 900px) {
   :root { --page-gutter: clamp(20px, 4.5vw, 36px); --section-space: clamp(72px, 10vw, 104px); --section-space-compact: clamp(56px, 8vw, 80px); --grid-gap: clamp(18px, 3vw, 28px); }
   .section-title { max-width: 14ch; font-size: clamp(2.35rem, 8vw, 4.5rem); }
@@ -172,6 +193,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .section-title { max-width: 12ch; }
   .eyebrow { font-size: .72rem; letter-spacing: .16em; }
   .btn { min-height: 50px; padding-inline: 20px; }
+}
+
+@media (max-width: 620px) {
+  .hero-route-toggle > .hero-route-toggle-pin { width: 22px; height: 22px; }
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .001ms !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; } }
