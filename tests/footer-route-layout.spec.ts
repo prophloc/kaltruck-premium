@@ -1,56 +1,66 @@
 import { test, expect } from '@playwright/test';
 
-test('footer keeps the route section above a compact brand navigation contact row', async ({ page }) => {
+test('footer centers the larger brand block and balances the route section vertically', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 1000 });
   await page.goto('/o-nas/', { waitUntil: 'domcontentloaded' });
 
-  const footer = page.locator('.site-footer');
   const route = page.locator('[data-google-route]');
   const footerGrid = page.locator('.footer-grid');
-  const brand = page.locator('.footer-brand');
-  const logo = page.locator('.footer-brand img');
-  const brandLines = page.locator('.footer-brand p > span');
-  const navigation = page.locator('.footer-links-wrap');
-  const contact = page.locator('.footer-contact');
+  const tagline = page.locator('.footer-brand p');
 
   await expect(route).toHaveCount(1);
   await expect(footerGrid).toHaveCount(1);
-  await expect(brandLines).toHaveCount(2);
-  await expect(brandLines.nth(0)).toHaveText('Ciężki ładunek.');
-  await expect(brandLines.nth(1)).toHaveText('Precyzyjna robota.');
+  await expect(tagline).toHaveText('CIĘŻKI ŁADUNEK... PRECYZYJNA ROBOTA.');
 
   const geometry = await page.evaluate(() => {
-    const footerNode = document.querySelector('.site-footer');
+    const footer = document.querySelector('.site-footer');
     const routeNode = document.querySelector('[data-google-route]');
+    const panel = document.querySelector('.google-route-panel');
+    const map = document.querySelector('.google-route-map-shell');
     const footerGridNode = document.querySelector('.footer-grid');
-    const brandNode = document.querySelector('.footer-brand');
-    const logoNode = document.querySelector('.footer-brand img');
-    const navigationNode = document.querySelector('.footer-links-wrap');
-    const contactNode = document.querySelector('.footer-contact');
-    if (!footerNode || !routeNode || !footerGridNode || !brandNode || !logoNode || !navigationNode || !contactNode) return null;
+    const brand = document.querySelector('.footer-brand');
+    const logo = document.querySelector('.footer-brand img');
+    const taglineNode = document.querySelector('.footer-brand p');
+    const navigation = document.querySelector('.footer-links-wrap');
+    const contact = document.querySelector('.footer-contact');
+    if (!footer || !routeNode || !panel || !map || !footerGridNode || !brand || !logo || !taglineNode || !navigation || !contact) return null;
 
-    const footerRect = footerNode.getBoundingClientRect();
+    const footerRect = footer.getBoundingClientRect();
     const routeRect = routeNode.getBoundingClientRect();
-    const footerGridRect = footerGridNode.getBoundingClientRect();
-    const brandRect = brandNode.getBoundingClientRect();
-    const logoRect = logoNode.getBoundingClientRect();
-    const navigationRect = navigationNode.getBoundingClientRect();
-    const contactRect = contactNode.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    const mapRect = map.getBoundingClientRect();
+    const gridRect = footerGridNode.getBoundingClientRect();
+    const brandRect = brand.getBoundingClientRect();
+    const logoRect = logo.getBoundingClientRect();
+    const taglineRect = taglineNode.getBoundingClientRect();
+
+    const routeContentTop = Math.min(panelRect.top, mapRect.top);
+    const routeContentBottom = Math.max(panelRect.bottom, mapRect.bottom);
+    const routeTopGap = routeContentTop - footerRect.top;
+    const routeBottomGap = routeRect.bottom - routeContentBottom;
+
+    const brandContentTop = Math.min(logoRect.top, taglineRect.top);
+    const brandContentBottom = Math.max(logoRect.bottom, taglineRect.bottom);
+    const brandContentCenterY = (brandContentTop + brandContentBottom) / 2;
+    const brandContentCenterX = (Math.min(logoRect.left, taglineRect.left) + Math.max(logoRect.right, taglineRect.right)) / 2;
 
     return {
-      routeAboveFooterRow: routeRect.bottom <= footerGridRect.top - 1,
-      footerColumnsAligned: Math.max(
-        Math.abs(brandRect.top - navigationRect.top),
-        Math.abs(brandRect.top - contactRect.top),
-      ) < 36,
+      routeGapDelta: Math.abs(routeTopGap - routeBottomGap),
+      routeTopGap,
+      routeBottomGap,
       logoWidth: logoRect.width,
+      brandHorizontalCenterDelta: Math.abs(brandContentCenterX - (brandRect.left + brandRect.width / 2)),
+      brandVerticalCenterDelta: Math.abs(brandContentCenterY - (gridRect.top + gridRect.height / 2)),
       footerHeight: footerRect.height,
     };
   });
 
   expect(geometry).not.toBeNull();
-  expect(geometry!.routeAboveFooterRow).toBe(true);
-  expect(geometry!.footerColumnsAligned).toBe(true);
-  expect(geometry!.logoWidth).toBeGreaterThanOrEqual(195);
+  expect(geometry!.routeTopGap).toBeGreaterThanOrEqual(18);
+  expect(geometry!.routeBottomGap).toBeGreaterThanOrEqual(18);
+  expect(geometry!.routeGapDelta).toBeLessThanOrEqual(4);
+  expect(geometry!.logoWidth).toBeGreaterThanOrEqual(260);
+  expect(geometry!.brandHorizontalCenterDelta).toBeLessThanOrEqual(5);
+  expect(geometry!.brandVerticalCenterDelta).toBeLessThanOrEqual(8);
   expect(geometry!.footerHeight).toBeLessThanOrEqual(560);
 });
