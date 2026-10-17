@@ -184,6 +184,8 @@ const initialProject = projects[0];
     }
 
     const image = lightbox.querySelector('[data-project-lightbox-image]');
+    const figure = lightbox.querySelector('[data-project-lightbox-figure]');
+    const overlay = lightbox.querySelector('[data-project-lightbox-overlay]');
     const title = lightbox.querySelector('[data-project-lightbox-title]');
     const description = lightbox.querySelector('[data-project-lightbox-description]');
     const categoryLabel = lightbox.querySelector('[data-project-lightbox-category-label]');
@@ -195,7 +197,7 @@ const initialProject = projects[0];
     const nextButton = lightbox.querySelector('[data-project-lightbox-next]');
     const stage = lightbox.querySelector('[data-project-lightbox-stage]');
 
-    if (!image || !title || !description || !categoryLabel || !current || !total || !thumbs || !closeButton || !prevButton || !nextButton || !stage) return;
+    if (!image || !figure || !overlay || !title || !description || !categoryLabel || !current || !total || !thumbs || !closeButton || !prevButton || !nextButton || !stage) return;
 
     let activeCategory = '';
     let activeIndex = 0;
@@ -203,6 +205,16 @@ const initialProject = projects[0];
     let touchStartX = 0;
 
     const items = () => Array.isArray(galleryData[activeCategory]) ? galleryData[activeCategory] : [];
+
+    const syncOverlay = () => {
+      if (lightbox.hidden) return;
+      const figureRect = figure.getBoundingClientRect();
+      const imageRect = image.getBoundingClientRect();
+      overlay.style.left = `${Math.max(0, imageRect.left - figureRect.left)}px`;
+      overlay.style.top = `${Math.max(0, imageRect.top - figureRect.top)}px`;
+      overlay.style.width = `${imageRect.width}px`;
+      overlay.style.height = `${imageRect.height}px`;
+    };
 
     const render = () => {
       const categoryItems = items();
@@ -224,6 +236,7 @@ const initialProject = projects[0];
         thumb.setAttribute('aria-current', selected ? 'true' : 'false');
         if (selected) thumb.scrollIntoView({ block: 'nearest', inline: 'nearest' });
       });
+      requestAnimationFrame(syncOverlay);
     };
 
     const renderThumbs = () => {
@@ -270,7 +283,10 @@ const initialProject = projects[0];
       document.body.classList.add('lightbox-open');
       renderThumbs();
       render();
-      requestAnimationFrame(() => closeButton.focus());
+      requestAnimationFrame(() => {
+        syncOverlay();
+        closeButton.focus();
+      });
     };
 
     const closeLightbox = () => {
@@ -287,6 +303,8 @@ const initialProject = projects[0];
     closeButton.addEventListener('click', closeLightbox);
     prevButton.addEventListener('click', () => move(-1));
     nextButton.addEventListener('click', () => move(1));
+    image.addEventListener('load', syncOverlay);
+    window.addEventListener('resize', syncOverlay);
 
     stage.addEventListener('touchstart', (event) => {
       touchStartX = event.changedTouches[0]?.clientX || 0;
@@ -335,7 +353,7 @@ const initialProject = projects[0];
 .project-lightbox-stage{min-height:0;display:grid;place-items:center;padding:12px clamp(42px,5vw,78px) 0}
 .project-lightbox-figure{position:relative;isolation:isolate;width:fit-content;max-width:100%;min-width:0;min-height:0;margin:0;overflow:hidden;border-radius:12px;background:#0b0d0f;box-shadow:0 24px 80px rgba(0,0,0,.42)}
 .project-lightbox-figure img{display:block;max-width:min(1380px,calc(100vw - 150px));max-height:calc(100vh - 165px);width:auto;height:auto;object-fit:contain}
-.project-lightbox-overlay{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;justify-content:space-between;gap:24px;padding:clamp(20px,2.8vw,42px);pointer-events:none;background:linear-gradient(180deg,rgba(5,6,7,.78) 0%,rgba(5,6,7,.34) 20%,rgba(5,6,7,0) 43%,rgba(5,6,7,0) 60%,rgba(5,6,7,.30) 78%,rgba(5,6,7,.82) 100%)}
+.project-lightbox-overlay{position:absolute;top:0;left:0;z-index:1;display:flex;box-sizing:border-box;flex-direction:column;justify-content:space-between;gap:24px;width:100%;height:100%;padding:clamp(20px,2.8vw,42px);pointer-events:none;background:linear-gradient(180deg,rgba(5,6,7,.78) 0%,rgba(5,6,7,.34) 20%,rgba(5,6,7,0) 43%,rgba(5,6,7,0) 60%,rgba(5,6,7,.30) 78%,rgba(5,6,7,.82) 100%)}
 .project-lightbox-heading{display:grid;gap:8px;max-width:min(72%,760px);text-shadow:0 3px 18px rgba(0,0,0,.58)}
 .project-lightbox-category{margin:0;color:#f0c977;font-size:.7rem;font-weight:780;letter-spacing:.16em;text-transform:uppercase}
 .project-lightbox-heading h2{margin:0;max-width:18ch;font-size:clamp(1.65rem,2.7vw,3.45rem);line-height:.98;letter-spacing:-.045em;text-wrap:balance}
