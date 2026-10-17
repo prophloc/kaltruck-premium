@@ -96,6 +96,21 @@ test('desktop lightbox centers the photo, blends copy into the photo and docks n
   });
 
   const firstThumb = controls.locator('[data-project-lightbox-thumb]').first();
-  const thumbStyle = await firstThumb.evaluate((el) => getComputedStyle(el).backgroundColor);
-  expect(thumbStyle).not.toBe('rgb(255, 255, 255)');
+  const thumbStyle = await firstThumb.evaluate((el) => {
+    const style = getComputedStyle(el);
+    const rect = el.getBoundingClientRect();
+    return {
+      backgroundColor: style.backgroundColor,
+      paddingTop: style.paddingTop,
+      width: Math.round(rect.width),
+      height: Math.round(rect.height),
+    };
+  });
+
+  expect(thumbStyle).toEqual({
+    backgroundColor: 'rgb(13, 15, 17)',
+    paddingTop: '3px',
+    width: 80,
+    height: 58,
+  });
 });
