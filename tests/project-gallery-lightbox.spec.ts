@@ -115,7 +115,7 @@ test('desktop lightbox centers the photo, blends copy into the photo and docks n
   });
 });
 
-test('thumbnail rail has no visible scrollbar and geometric arrows align to thumbnail center', async ({ page }) => {
+test('thumbnail rail has no visible scrollbar and geometric controls are centered', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 1000 });
   await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
   await page.locator('[data-project-group]').first().locator('[data-project-lightbox-open]').click();
@@ -173,14 +173,16 @@ test('thumbnail rail has no visible scrollbar and geometric arrows align to thum
       nextArrowWidth: nextArrow.width,
       closeXOffset: Math.abs(centerX(closeRect) - centerX(closeGlyphRect)),
       closeYOffset: Math.abs(centerY(closeRect) - centerY(closeGlyphRect)),
+      closeGlyphWidth: closeGlyphRect.width,
+      closeGlyphHeight: closeGlyphRect.height,
       closeGlyphFontSize: closeGlyphStyle.fontSize,
       closeGlyphPosition: closeGlyphStyle.position,
       closeBeforeContent: closeBefore.content,
       closeAfterContent: closeAfter.content,
-      closeBeforeLeft: closeBefore.left,
-      closeAfterLeft: closeAfter.left,
-      closeBeforeTop: closeBefore.top,
-      closeAfterTop: closeAfter.top,
+      closeBeforeLeftPx: parseFloat(closeBefore.left),
+      closeAfterLeftPx: parseFloat(closeAfter.left),
+      closeBeforeTopPx: parseFloat(closeBefore.top),
+      closeAfterTopPx: parseFloat(closeAfter.top),
       closeBeforeWidth: closeBefore.width,
       closeAfterWidth: closeAfter.width,
       closeBeforeHeight: closeBefore.height,
@@ -213,10 +215,10 @@ test('thumbnail rail has no visible scrollbar and geometric arrows align to thum
   expect(chrome!.closeGlyphPosition).toBe('relative');
   expect(chrome!.closeBeforeContent).not.toBe('none');
   expect(chrome!.closeAfterContent).not.toBe('none');
-  expect(chrome!.closeBeforeLeft).toBe('50%');
-  expect(chrome!.closeAfterLeft).toBe('50%');
-  expect(chrome!.closeBeforeTop).toBe('50%');
-  expect(chrome!.closeAfterTop).toBe('50%');
+  expect(Math.abs(chrome!.closeBeforeLeftPx - chrome!.closeGlyphWidth / 2)).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(chrome!.closeAfterLeftPx - chrome!.closeGlyphWidth / 2)).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(chrome!.closeBeforeTopPx - chrome!.closeGlyphHeight / 2)).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(chrome!.closeAfterTopPx - chrome!.closeGlyphHeight / 2)).toBeLessThanOrEqual(0.5);
   expect(chrome!.closeBeforeWidth).toBe('16px');
   expect(chrome!.closeAfterWidth).toBe('16px');
   expect(chrome!.closeBeforeHeight).toBe('2px');
