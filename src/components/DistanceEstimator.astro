@@ -1,18 +1,32 @@
 ---
 import { siteConfig } from '../config/site';
 
+interface Props {
+  instanceId?: string;
+  variant?: 'default' | 'drawer';
+  deferMap?: boolean;
+}
+
+const {
+  instanceId = 'footer-route',
+  variant = 'default',
+  deferMap = false,
+} = Astro.props as Props;
+
 const mapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY || '';
 const baseAddress = siteConfig.baseAddress;
 const fallbackMap = `https://www.google.com/maps?q=${encodeURIComponent(baseAddress)}&output=embed`;
 const initialMap = mapsApiKey
   ? `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(mapsApiKey)}&q=${encodeURIComponent(baseAddress)}&language=pl&region=PL`
   : fallbackMap;
+const inputId = `${instanceId}-origin`;
 ---
 <section
-  class="google-route"
+  class:list={['google-route', variant === 'drawer' && 'google-route--drawer']}
   data-google-route
   data-base-address={baseAddress}
   data-api-key={mapsApiKey}
+  data-defer-map={deferMap ? 'true' : 'false'}
 >
   <div class="google-route-panel">
     <p class="google-route-label">Google Maps</p>
@@ -20,9 +34,9 @@ const initialMap = mapsApiKey
     <p class="google-route-copy">Wpisz miejscowość lub adres. Trasa, kilometry i przewidywany czas przejazdu pojawią się bezpośrednio na mapie Google.</p>
 
     <form class="google-route-form" data-google-route-form>
-      <label class="sr-only" for="kaltruck-route-origin">Skąd jedziesz?</label>
+      <label class="sr-only" for={inputId}>Skąd jedziesz?</label>
       <input
-        id="kaltruck-route-origin"
+        id={inputId}
         data-google-route-origin
         type="text"
         inputmode="search"
@@ -42,8 +56,9 @@ const initialMap = mapsApiKey
   <div class="google-route-map-shell">
     <iframe
       data-google-route-map
+      data-initial-src={initialMap}
       title="Google Maps — trasa do KALTRUCK"
-      src={initialMap}
+      src={deferMap ? 'about:blank' : initialMap}
       loading="lazy"
       referrerpolicy="strict-origin-when-cross-origin"
       allowfullscreen
@@ -53,41 +68,57 @@ const initialMap = mapsApiKey
 
 <script is:inline>
   (() => {
-    const root = document.querySelector('[data-google-route]');
-    if (!root) return;
+    const bindRoutes = () => {
+      document.querySelectorAll('[data-google-route]').forEach((root) => {
+        if (!(root instanceof HTMLElement) || root.dataset.routeBound === 'true') return;
+        root.dataset.routeBound = 'true';
 
-    const form = root.querySelector('[data-google-route-form]');
-    const input = root.querySelector('[data-google-route-origin]');
-    const iframe = root.querySelector('[data-google-route-map]');
-    const status = root.querySelector('[data-google-route-status]');
-    const baseAddress = root.getAttribute('data-base-address') || 'Tokarska 40, 09-401 Płock';
+        const form = root.querySelector('[data-google-route-form]');
+        const input = root.querySelector('[data-google-route-origin]');
+        const iframe = root.querySelector('[data-google-route-map]');
+        const status = root.querySelector('[data-google-route-status]');
+        const baseAddress = root.getAttribute('data-base-address') || 'Tokarska 40, 09-401 Płock';
 
-    if (!(form instanceof HTMLFormElement) || !(input instanceof HTMLInputElement) || !(iframe instanceof HTMLIFrameElement)) return;
+        if (!(form instanceof HTMLFormElement) || !(input instanceof HTMLInputElement) || !(iframe instanceof HTMLIFrameElement)) return;
 
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const origin = input.value.trim();
-      if (!origin) return;
+        const ensureMap = () => {
+          const currentSrc = iframe.getAttribute('src') || '';
+          const initialSrc = iframe.getAttribute('data-initial-src') || '';
+          if ((!currentSrc || currentSrc === 'about:blank') && initialSrc) iframe.src = initialSrc;
+        };
 
-      const apiKey = root.getAttribute('data-api-key') || '';
-      if (!apiKey) {
-        if (status) status.textContent = 'Włącz Maps Embed API i dodaj PUBLIC_GOOGLE_MAPS_API_KEY, aby trasa była widoczna tutaj na stronie.';
-        return;
-      }
+        root.addEventListener('kaltruck:route-activate', ensureMap);
+        if (root.getAttribute('data-defer-map') !== 'true') ensureMap();
 
-      const params = new URLSearchParams({
-        key: apiKey,
-        origin,
-        destination: baseAddress,
-        mode: 'driving',
-        units: 'metric',
-        language: 'pl',
-        region: 'PL',
+        form.addEventListener('submit', (event) => {
+          event.preventDefault();
+          const origin = input.value.trim();
+          if (!origin) return;
+
+          const apiKey = root.getAttribute('data-api-key') || '';
+          if (!apiKey) {
+            ensureMap();
+            if (status) status.textContent = 'Włącz Maps Embed API i dodaj PUBLIC_GOOGLE_MAPS_API_KEY, aby trasa była widoczna tutaj na stronie.';
+            return;
+          }
+
+          const params = new URLSearchParams({
+            key: apiKey,
+            origin,
+            destination: baseAddress,
+            mode: 'driving',
+            units: 'metric',
+            language: 'pl',
+            region: 'PL',
+          });
+
+          iframe.src = `https://www.google.com/maps/embed/v1/directions?${params.toString()}`;
+          if (status) status.textContent = `Google Maps: ${origin} → ${baseAddress}`;
+        });
       });
+    };
 
-      iframe.src = `https://www.google.com/maps/embed/v1/directions?${params.toString()}`;
-      if (status) status.textContent = `Google Maps: ${origin} → ${baseAddress}`;
-    });
+    bindRoutes();
   })();
 </script>
 
@@ -107,7 +138,11 @@ const initialMap = mapsApiKey
   .google-route-meta span{color:#77736d}
   .google-route-map-shell{min-height:194px;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:#0c0e10}
   .google-route-map-shell iframe{display:block;width:100%;height:100%;min-height:194px;border:0;filter:saturate(.82) contrast(1.02)}
+  .google-route--drawer{grid-template-columns:1fr;gap:16px;margin:0;padding:22px;border:0;background:#080a0b}
+  .google-route--drawer h2{font-size:clamp(1.45rem,2.2vw,1.9rem)}
+  .google-route--drawer .google-route-copy{max-width:60ch}
+  .google-route--drawer .google-route-map-shell,.google-route--drawer .google-route-map-shell iframe{min-height:230px}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-  @media(max-width:900px){.google-route{grid-template-columns:1fr;padding:22px 0}.google-route-panel{max-width:46rem}.google-route-map-shell,.google-route-map-shell iframe{min-height:280px}}
-  @media(max-width:560px){.google-route{gap:16px;padding:20px 0}.google-route-form{grid-template-columns:1fr}.google-route-form button{width:100%}.google-route-map-shell,.google-route-map-shell iframe{min-height:250px}}
+  @media(max-width:900px){.google-route{grid-template-columns:1fr;padding:22px 0}.google-route-panel{max-width:46rem}.google-route-map-shell,.google-route-map-shell iframe{min-height:280px}.google-route--drawer{padding:18px}.google-route--drawer .google-route-map-shell,.google-route--drawer .google-route-map-shell iframe{min-height:220px}}
+  @media(max-width:560px){.google-route{gap:16px;padding:20px 0}.google-route-form{grid-template-columns:1fr}.google-route-form button{width:100%}.google-route-map-shell,.google-route-map-shell iframe{min-height:250px}.google-route--drawer{padding:16px}.google-route--drawer .google-route-copy{font-size:.76rem;margin-bottom:11px}.google-route--drawer .google-route-map-shell,.google-route--drawer .google-route-map-shell iframe{min-height:205px}}
 </style>
