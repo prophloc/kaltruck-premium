@@ -1,9 +1,27 @@
 ---
 import { siteConfig } from '../config/site';
+import DistanceEstimator from './DistanceEstimator.astro';
 ---
 <section class="hero" data-commercial-hero>
   <img class="hero-bg" src="/images/home/hero-hds-original.png" width="1672" height="941" alt="Czerwony samochód HDS KALTRUCK z żurawiem podnoszącym kontener" fetchpriority="high" />
   <div class="hero-overlay"></div>
+
+  <div class="hero-route-drawer" data-hero-route-drawer>
+    <div id="hero-route-panel" class="hero-route-panel" data-hero-route-panel aria-hidden="true">
+      <DistanceEstimator instanceId="hero-route" variant="drawer" deferMap={true} />
+    </div>
+    <button
+      class="hero-route-toggle"
+      type="button"
+      data-hero-route-toggle
+      aria-expanded="false"
+      aria-controls="hero-route-panel"
+      aria-label="Sprawdź trasę do KALTRUCK"
+    >
+      <span class="hero-route-toggle-text">TRASA</span>
+      <span class="hero-route-toggle-arrow" aria-hidden="true">›</span>
+    </button>
+  </div>
 
   <div class="container hero-content">
     <div class="hero-stage">
@@ -32,6 +50,44 @@ import { siteConfig } from '../config/site';
   <div class="hero-scroll">PRZEWIŃ <span>↓</span></div>
 </section>
 
+<script is:inline>
+  (() => {
+    const drawer = document.querySelector('[data-hero-route-drawer]');
+    const toggle = drawer?.querySelector('[data-hero-route-toggle]');
+    const panel = drawer?.querySelector('[data-hero-route-panel]');
+    const route = drawer?.querySelector('[data-google-route]');
+    const input = drawer?.querySelector('[data-google-route-origin]');
+
+    if (!(drawer instanceof HTMLElement) || !(toggle instanceof HTMLButtonElement) || !(panel instanceof HTMLElement)) return;
+
+    const setOpen = (open) => {
+      drawer.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+
+      if (open && route instanceof HTMLElement) {
+        route.dispatchEvent(new CustomEvent('kaltruck:route-activate'));
+        window.setTimeout(() => {
+          if (input instanceof HTMLInputElement) input.focus({ preventScroll: true });
+        }, 320);
+      }
+    };
+
+    toggle.addEventListener('click', () => {
+      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') setOpen(false);
+    });
+
+    document.addEventListener('pointerdown', (event) => {
+      if (toggle.getAttribute('aria-expanded') !== 'true') return;
+      if (event.target instanceof Node && !drawer.contains(event.target)) setOpen(false);
+    });
+  })();
+</script>
+
 <style>
 .hero{
   min-height:100svh;
@@ -55,6 +111,61 @@ import { siteConfig } from '../config/site';
     linear-gradient(180deg,rgba(5,6,7,.2) 0%,rgba(5,6,7,.16) 24%,rgba(5,6,7,.48) 68%,rgba(5,6,7,.94) 100%),
     radial-gradient(circle at 50% 50%,rgba(5,6,7,.08) 0%,rgba(5,6,7,.24) 52%,rgba(5,6,7,.5) 100%);
 }
+.hero-route-drawer{
+  --route-handle:42px;
+  position:absolute;
+  z-index:7;
+  left:0;
+  top:50%;
+  width:min(760px,calc(100vw - 28px));
+  display:grid;
+  grid-template-columns:minmax(0,1fr) var(--route-handle);
+  align-items:center;
+  transform:translate(calc(-100% + var(--route-handle)),-50%);
+  transition:transform .34s cubic-bezier(.22,.78,.18,1);
+  filter:drop-shadow(18px 24px 42px rgba(0,0,0,.38));
+}
+.hero-route-drawer.is-open{transform:translate(0,-50%)}
+.hero-route-panel{
+  max-height:min(78svh,650px);
+  overflow:auto;
+  visibility:hidden;
+  opacity:0;
+  pointer-events:none;
+  border:1px solid rgba(255,255,255,.12);
+  border-left:0;
+  border-radius:0 18px 18px 0;
+  background:#080a0b;
+  transition:opacity .2s ease,visibility 0s linear .34s;
+}
+.hero-route-drawer.is-open .hero-route-panel{
+  visibility:visible;
+  opacity:1;
+  pointer-events:auto;
+  transition:opacity .22s ease .08s,visibility 0s linear 0s;
+}
+.hero-route-toggle{
+  width:var(--route-handle);
+  height:clamp(82px,10svh,106px);
+  padding:8px 0;
+  border:1px solid rgba(215,180,106,.62);
+  border-left:0;
+  border-radius:0 12px 12px 0;
+  background:rgba(8,10,11,.92);
+  color:#f2eee5;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  cursor:pointer;
+  pointer-events:auto;
+  backdrop-filter:blur(12px);
+}
+.hero-route-toggle:hover{background:rgba(19,20,20,.96);color:var(--accent)}
+.hero-route-toggle-text{writing-mode:vertical-rl;transform:rotate(180deg);font-size:.62rem;font-weight:850;letter-spacing:.18em}
+.hero-route-toggle-arrow{font-size:1.35rem;line-height:.8;color:var(--accent);transition:transform .28s ease}
+.hero-route-drawer.is-open .hero-route-toggle-arrow{transform:rotate(180deg)}
 .hero-content{
   position:relative;
   z-index:2;
@@ -190,9 +301,7 @@ import { siteConfig } from '../config/site';
     flex-direction:column;
     align-items:flex-end;
   }
-  .hero-title-line--one{
-    transform:none;
-  }
+  .hero-title-line--one{transform:none}
   .hero-title-line--two{
     margin-top:2px;
     font-size:clamp(3.05rem,calc(4.1vw - 5px),3.95rem);
@@ -200,19 +309,8 @@ import { siteConfig } from '../config/site';
     letter-spacing:-.045em;
     transform:translate(-5px,-4px);
   }
-  .hero-support{
-    display:block;
-    width:100%;
-    margin-top:clamp(24px,3vh,32px);
-  }
-  .hero-actions{
-    display:flex;
-    width:max-content;
-    max-width:100%;
-    margin-inline:auto;
-    justify-content:center;
-    transform:none;
-  }
+  .hero-support{display:block;width:100%;margin-top:clamp(24px,3vh,32px)}
+  .hero-actions{display:flex;width:max-content;max-width:100%;margin-inline:auto;justify-content:center;transform:none}
 }
 
 @media(max-width:1180px){
@@ -225,6 +323,7 @@ import { siteConfig } from '../config/site';
 
 @media(max-width:900px){
   .hero{min-height:100svh}
+  .hero-route-drawer{width:min(690px,calc(100vw - 18px))}
   .hero-content{min-height:100svh;padding-top:calc(var(--header-height) + 42px);padding-bottom:154px}
   .hero-stage{width:min(100%,780px)}
   .hero-title-line--one{grid-column:1 / -1;font-size:clamp(3rem,8.2vw,4.8rem)}
@@ -238,6 +337,9 @@ import { siteConfig } from '../config/site';
 }
 
 @media(max-width:620px){
+  .hero-route-drawer{--route-handle:38px;width:calc(100vw - 10px)}
+  .hero-route-panel{max-height:76svh;border-radius:0 14px 14px 0}
+  .hero-route-toggle{border-radius:0 10px 10px 0;height:clamp(78px,10svh,94px)}
   .hero-bg{object-position:64% center}
   .hero-overlay{
     background:
