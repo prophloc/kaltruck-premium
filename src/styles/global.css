@@ -73,6 +73,42 @@ button, a { -webkit-tap-highlight-color: transparent; }
   outline-offset: 2px;
 }
 
+/* Keep the thumbnail rail movable by the gallery code without exposing a manual horizontal scrollbar. */
+.project-lightbox[data-project-lightbox] .project-lightbox-thumbs {
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-thumbs::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Font chevrons sit off-center because of their baseline. Draw geometric arrows instead. */
+.project-lightbox[data-project-lightbox] .project-lightbox-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-nav::before {
+  content: "";
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-style: solid;
+  border-color: currentColor;
+  border-width: 0 2px 2px 0;
+  flex: 0 0 auto;
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-prev::before {
+  transform: rotate(135deg);
+}
+.project-lightbox[data-project-lightbox] .project-lightbox-next::before {
+  transform: rotate(-45deg);
+}
+
 @media (max-width: 900px) {
   :root { --page-gutter: clamp(20px, 4.5vw, 36px); --section-space: clamp(72px, 10vw, 104px); --section-space-compact: clamp(56px, 8vw, 80px); --grid-gap: clamp(18px, 3vw, 28px); }
   .section-title { max-width: 14ch; font-size: clamp(2.35rem, 8vw, 4.5rem); }
