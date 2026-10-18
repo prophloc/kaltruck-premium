@@ -129,3 +129,52 @@ test('reviews drawer renders Google rating and review author attribution from Pl
   await expect(reviews.locator('[data-google-review-card]')).toContainText('Szybko, sprawnie i profesjonalnie.');
   await expect(reviews.locator('.google-reviews-third-party')).toContainText('Dane testowe partnera');
 });
+
+test('social tabs display supplied-style Facebook and Instagram icons and valid links', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const tabs = page.locator('.hero-social-tabs a');
+  await expect(tabs).toHaveCount(2);
+  const facebook = tabs.first();
+  const instagram = tabs.last();
+  await expect(facebook).toHaveAttribute('href', 'https://www.facebook.com/profile.php?id=61561070733012');
+  await expect(instagram).toHaveAttribute('href', 'https://www.instagram.com/transporthdsplock/');
+  await expect(facebook).toHaveAttribute('target', '_blank');
+  await expect(instagram).toHaveAttribute('target', '_blank');
+  await expect(facebook.locator('img')).toHaveAttribute('src', '/brand/facebook-icon.svg');
+  await expect(instagram.locator('img')).toHaveAttribute('src', '/brand/instagram-icon.svg');
+  const start = await facebook.boundingBox();
+  expect(start).not.toBeNull();
+  await facebook.hover({ force: true });
+  const reveal = await facebook.boundingBox();
+  expect(reveal).not.toBeNull();
+  expect(reveal!.x).toBeGreaterThan(start!.x + 50);
+});
+
+test('social footer and favicon/Open Graph previews are configured', async ({ page }) => {
+  for (const route of ['/', '/transport-hds/', '/transport-kontenerow/']) {
+    await page.goto(route, { waitUntil: 'domcontentloaded' });
+    const fb = page.locator('.footer-socials a').filter({ hasText: 'Facebook' });
+    const ig = page.locator('.footer-socials a').filter({ hasText: 'Instagram' });
+    await expect(fb).toHaveAttribute('href', 'https://www.facebook.com/profile.php?id=61561070733012');
+    await expect(ig).toHaveAttribute('href', 'https://www.instagram.com/transporthdsplock/');
+    await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg');
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://hdsplock.pl/og-image-v02.jpg');
+    await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', 'https://hdsplock.pl/og-image-v02.jpg');
+  }
+  for (const path of ['/favicon.svg', '/brand/facebook-icon.svg', '/brand/instagram-icon.svg', '/site.webmanifest']) {
+    const response = await page.request.get(path);
+    expect(response.ok(), path).toBeTruthy();
+  }
+});
+
+test('Google review attribution is more compact on desktop', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await page.locator('[data-hero-reviews-toggle]').click();
+  const logo = page.locator('.google-reviews-attribution-logo');
+  await expect(logo).toBeVisible();
+  const width = await logo.evaluate((el) => el.getBoundingClientRect().width);
+  expect(width).toBeLessThanOrEqual(96);
+  expect(width).toBeGreaterThanOrEqual(90);
+});
