@@ -8,11 +8,22 @@ const absolute = (path: string) => new URL(path, siteConfig.siteUrl).toString();
 export function organizationSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': 'Organization',
+    '@type': 'LocalBusiness',
+    '@id': absolute('/#firma'),
     name: siteConfig.legalName,
     url: siteConfig.siteUrl,
     email: siteConfig.email,
     telephone: [siteConfig.phone, siteConfig.secondaryPhone],
+    image: siteConfig.socialImage,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Tokarska 40',
+      postalCode: '09-401',
+      addressLocality: 'Płock',
+      addressRegion: 'mazowieckie',
+      addressCountry: 'PL',
+    },
+    hasMap: siteConfig.googleMapsUrl,
     areaServed: [...siteConfig.serviceArea],
   };
 }
@@ -24,7 +35,7 @@ export function serviceSchema(input: { name: string; description: string; path: 
     name: input.name,
     description: input.description,
     url: absolute(input.path),
-    provider: { '@type': 'Organization', name: siteConfig.legalName, url: siteConfig.siteUrl },
+    provider: { '@id': absolute('/#firma') },
     areaServed: [...siteConfig.serviceArea],
   };
 }
