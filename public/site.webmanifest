@@ -7,7 +7,7 @@
   "theme_color": "#090b0c",
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "/favicon.svg?v=kaltruck-monogram-2",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"

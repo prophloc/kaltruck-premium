@@ -147,7 +147,7 @@ test('social footer and favicon/Open Graph previews are configured', async ({ pa
     const ig = page.locator('.footer-socials a').filter({ hasText: 'Instagram' });
     await expect(fb).toHaveAttribute('href', 'https://www.facebook.com/profile.php?id=61561070733012');
     await expect(ig).toHaveAttribute('href', 'https://www.instagram.com/transporthdsplock/');
-    await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg');
+    await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg?v=kaltruck-monogram-2');
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://hdsplock.pl/og-image-v02.jpg');
     await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', 'https://hdsplock.pl/og-image-v02.jpg');
   }
@@ -166,4 +166,17 @@ test('Google review attribution is more compact on desktop', async ({ page }) =>
   const width = await logo.evaluate((el) => el.getBoundingClientRect().width);
   expect(width).toBeLessThanOrEqual(96);
   expect(width).toBeGreaterThanOrEqual(90);
+});
+
+test('Kaltruck favicon is a high-contrast K and HDS hook monogram, not a tiny truck drawing', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const response = await page.request.get('/favicon.svg?v=kaltruck-monogram-2');
+  expect(response.ok()).toBeTruthy();
+  const svg = await response.text();
+  expect(svg).toContain('viewBox="0 0 64 64"');
+  expect(svg).toContain('#d7b46a');
+  expect(svg).toContain('#f5f2eb');
+  expect(svg).toContain('M16 12v40');
+  expect(svg).toContain('M27 32 45 14h9');
+  expect(svg).toContain('M51 17v12c0 3-2 5-5 5');
 });
