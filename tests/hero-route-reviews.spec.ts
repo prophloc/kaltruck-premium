@@ -145,10 +145,8 @@ test('social tabs display supplied-style Facebook and Instagram icons and valid 
   await expect(instagram.locator('img')).toHaveAttribute('src', '/brand/instagram-icon.svg');
   const start = await facebook.boundingBox();
   expect(start).not.toBeNull();
-  await facebook.hover({ force: true });
-  const reveal = await facebook.boundingBox();
-  expect(reveal).not.toBeNull();
-  expect(reveal!.x).toBeGreaterThan(start!.x + 50);
+  await facebook.locator('.hero-social-tab-icon').hover();
+  await expect.poll(() => facebook.evaluate((el) => el.getBoundingClientRect().left)).toBeGreaterThan(start!.x + 50);
 });
 
 test('social footer and favicon/Open Graph previews are configured', async ({ page }) => {
