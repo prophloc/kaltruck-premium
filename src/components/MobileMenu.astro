@@ -20,8 +20,10 @@ const { activeHref } = Astro.props;
     </nav>
     <a class="btn btn-primary" href="/wycena/">Wyceń transport</a>
     <div class="mobile-contact" aria-label="Kontakt">
-      <a class="mobile-contact__phone" href={`tel:${siteConfig.phone}`}>514 948 373</a>
-      <a class="mobile-contact__phone" href={`tel:${siteConfig.secondaryPhone}`}>784 430 022</a>
+      <div class="mobile-contact__callrow">
+        <a class="mobile-contact__call-btn" href={`tel:${siteConfig.phone}`}>Zadzwoń</a>
+        <a class="mobile-contact__phone" href={`tel:${siteConfig.phone}`}>784 430 022</a>
+      </div>
       <a class="mobile-contact__email" href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
     </div>
   </div>
@@ -40,6 +42,8 @@ const { activeHref } = Astro.props;
   nav a { font-size: clamp(2rem, 8vw, 3.1rem); font-weight: 760; line-height: 1.05; letter-spacing: -.04em; padding: 5px 0; }
   nav a[aria-current="page"] { color: var(--accent-strong); }
   .mobile-contact { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 12px; align-items:center; margin-top:28px; padding-top:22px; border-top:1px solid var(--line); }
+  .mobile-contact__callrow { grid-column:1 / -1; display:flex; gap:10px; align-items:center; flex-wrap:nowrap; }
+  .mobile-contact__call-btn { display:inline-flex; min-height:38px; padding:8px 12px; align-items:center; justify-content:center; border:1px solid var(--accent); border-radius:999px; color:var(--accent)!important; }
   .mobile-contact__email { grid-column:1 / -1; }
   .mobile-contact a { width:fit-content; max-width:100%; color:rgba(255,255,255,.78); font-size:clamp(.79rem,2.75vw,.95rem); font-weight:680; letter-spacing:.01em; white-space:nowrap; }
   .mobile-contact a:hover { color: var(--accent-strong); }
