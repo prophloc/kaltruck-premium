@@ -35,65 +35,50 @@ test('service catalog controls switch the visible document panel', async ({ page
   await expect(panels.nth(1).getByRole('heading', { name: 'Budownictwo i infrastruktura' })).toBeVisible();
 });
 
-test('desktop keeps the original left hero placement and centers a frameless catalog in the right half', async ({ page }) => {
+test('desktop centers the cinematic heading and places catalog underneath it', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
 
   const metrics = await page.evaluate(() => {
-    const viewport = document.documentElement.clientWidth;
-    const copy = document.querySelector('.service-copy')?.getBoundingClientRect();
     const heading = document.querySelector('.service-copy h1')?.getBoundingClientRect();
     const catalog = document.querySelector('[data-service-catalog]')?.getBoundingClientRect();
     const panel = document.querySelector('[data-service-panel][data-active="true"]');
     const style = panel ? getComputedStyle(panel) : null;
-    const catalogCenter = catalog ? catalog.left + catalog.width / 2 : 0;
     return {
-      viewport,
-      copyLeft: copy?.left ?? 0,
-      headingWidth: heading?.width ?? 9999,
-      catalogLeft: catalog?.left ?? 0,
-      catalogRight: catalog?.right ?? 0,
-      catalogCenter,
+      centerDelta: heading ? Math.abs(heading.left + heading.width / 2 - innerWidth / 2) : 9999,
+      catalogCenterDelta: catalog ? Math.abs(catalog.left + catalog.width / 2 - innerWidth / 2) : 9999,
+      catalogBelowHeading: Boolean(heading && catalog && catalog.top > heading.bottom + 100),
       panelBackgroundImage: style?.backgroundImage ?? '',
       panelBackgroundColor: style?.backgroundColor ?? '',
       panelBorderTopWidth: style?.borderTopWidth ?? '',
       panelBoxShadow: style?.boxShadow ?? '',
     };
   });
-
-  expect(metrics.copyLeft).toBeGreaterThanOrEqual(40);
-  expect(metrics.headingWidth).toBeLessThan(metrics.viewport * 0.55);
-  expect(metrics.catalogLeft).toBeGreaterThanOrEqual(metrics.viewport / 2);
-  expect(metrics.catalogRight).toBeLessThanOrEqual(metrics.viewport + 1);
-  expect(Math.abs(metrics.catalogCenter - metrics.viewport * 0.75)).toBeLessThanOrEqual(90);
+  expect(metrics.centerDelta).toBeLessThanOrEqual(8);
+  expect(metrics.catalogCenterDelta).toBeLessThanOrEqual(8);
+  expect(metrics.catalogBelowHeading).toBeTruthy();
   expect(metrics.panelBackgroundImage).toBe('none');
   expect(metrics.panelBackgroundColor).toBe('rgba(0, 0, 0, 0)');
   expect(metrics.panelBorderTopWidth).toBe('0px');
   expect(metrics.panelBoxShadow).toBe('none');
 });
 
-test('desktop aligns the right category label with the left eyebrow and uses a darker blurred backdrop', async ({ page }) => {
+test('catalog retains its premium blurred stage backdrop', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
 
   const metrics = await page.evaluate(() => {
-    const leftEyebrow = document.querySelector('.service-copy .eyebrow')?.getBoundingClientRect();
-    const rightMeta = document.querySelector('[data-service-panel][data-active="true"] .service-document__meta')?.getBoundingClientRect();
     const stage = document.querySelector('.service-catalog__stage');
-    const stageBackdrop = stage ? getComputedStyle(stage, '::before') : null;
-    const background = stageBackdrop?.backgroundColor ?? '';
+    const style = stage ? getComputedStyle(stage, '::before') : null;
+    const background = style?.backgroundColor ?? '';
     const alphaMatch = background.match(/rgba?\([^,]+,[^,]+,[^,]+(?:,\s*([\d.]+))?\)/);
     return {
-      leftEyebrowTop: leftEyebrow?.top ?? 0,
-      rightMetaTop: rightMeta?.top ?? 9999,
-      stageBackdropFilter: stageBackdrop?.backdropFilter ?? 'none',
-      stageWebkitBackdropFilter: stageBackdrop?.getPropertyValue('-webkit-backdrop-filter') ?? 'none',
+      backdropFilter: style?.backdropFilter ?? 'none',
+      webkitBackdropFilter: style?.getPropertyValue('-webkit-backdrop-filter') ?? 'none',
       backdropAlpha: alphaMatch?.[1] ? Number.parseFloat(alphaMatch[1]) : 1,
     };
   });
-
-  expect(Math.abs(metrics.rightMetaTop - metrics.leftEyebrowTop)).toBeLessThanOrEqual(8);
-  expect(`${metrics.stageBackdropFilter} ${metrics.stageWebkitBackdropFilter}`).toContain('blur(');
+  expect(`${metrics.backdropFilter} ${metrics.webkitBackdropFilter}`).toContain('blur(');
   expect(metrics.backdropAlpha).toBeGreaterThanOrEqual(0.2);
 });
 
