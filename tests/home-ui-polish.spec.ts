@@ -17,7 +17,7 @@ test('FAQ changes the active plus into a minus and restores it when closed', asy
   await expect(icon).toHaveText('+');
 });
 
-test('process cards use consistent number and title anchors', async ({ page }) => {
+test('process cards keep their numbers top-left and center titles Studio-style', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 1000 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -42,8 +42,8 @@ test('process cards use consistent number and title anchors', async ({ page }) =
         height: cardRect.height,
         numberLeft: numberRect.left - cardRect.left,
         numberTop: numberRect.top - cardRect.top,
-        titleLeft: titleRect.left - cardRect.left,
-        titleBottom: cardRect.bottom - titleRect.bottom,
+        titleCenterX: titleRect.left + titleRect.width / 2 - (cardRect.left + cardRect.width / 2),
+        titleCenterY: titleRect.top + titleRect.height / 2 - (cardRect.top + cardRect.height / 2),
       };
     });
   });
@@ -55,8 +55,12 @@ test('process cards use consistent number and title anchors', async ({ page }) =
   expect(spread(rows.map((row) => row.height))).toBeLessThanOrEqual(1);
   expect(spread(rows.map((row) => row.numberLeft))).toBeLessThanOrEqual(1);
   expect(spread(rows.map((row) => row.numberTop))).toBeLessThanOrEqual(1);
-  expect(spread(rows.map((row) => row.titleLeft))).toBeLessThanOrEqual(1);
-  expect(spread(rows.map((row) => row.titleBottom))).toBeLessThanOrEqual(2);
+  expect(spread(rows.map((row) => row.titleCenterX))).toBeLessThanOrEqual(1);
+  expect(spread(rows.map((row) => row.titleCenterY))).toBeLessThanOrEqual(2);
+  for (const row of rows) {
+    expect(Math.abs(row.titleCenterX)).toBeLessThanOrEqual(2);
+    expect(Math.abs(row.titleCenterY)).toBeLessThanOrEqual(25);
+  }
 });
 
 test('footer brand is centered in the whole free row between route and copyright line', async ({ page }) => {
