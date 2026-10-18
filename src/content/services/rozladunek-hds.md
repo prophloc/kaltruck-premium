@@ -2,10 +2,13 @@
 slug: rozladunek-hds
 title: Rozładunek HDS i precyzyjne ustawianie | KALTRUCK
 metaDescription: Rozładunek HDS, przenoszenie i ustawianie kontenerów, prefabrykatów, maszyn i innych ciężkich elementów w miejscu docelowym.
-h1: Rozładunek HDS tam, gdzie centymetry mają znaczenie
+h1: Rozładunek HDS z pełną precyzją
+heroLineOne: Rozładunek HDS
+heroLineTwo: z pełną precyzją
+heroAccent: precyzją
 intro: Dowiezienie ładunku to połowa pracy. Druga połowa to bezpieczne podniesienie i ustawienie go dokładnie w przygotowanym miejscu.
 serviceType: Rozładunek HDS
-heroImage: https://hdsplock.pl/zdj/realizacje/stacje-transformatorowe-07.jpg
+heroImage: https://hdsplock.pl/zdj/realizacje/stacje-transformatorowe-05.jpg
 ---
 ## Rozładunek HDS i precyzyjne ustawianie ciężkich elementów
 
