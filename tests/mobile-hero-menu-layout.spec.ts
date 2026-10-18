@@ -55,7 +55,7 @@ test('mobile menu closes with a centered X and keeps the call action and phone n
   const second = await page.locator('.mobile-contact__phone').boundingBox();
   expect(first).not.toBeNull();
   expect(second).not.toBeNull();
-  expect(Math.abs(first!.y - second!.y)).toBeLessThan(3);
+  expect(Math.abs((first!.y + first!.height / 2) - (second!.y + second!.height / 2))).toBeLessThan(3);
   expect(second!.x).toBeGreaterThan(first!.x + first!.width);
   await close.click();
   await expect(page.locator('[data-mobile-menu]')).not.toBeVisible();
