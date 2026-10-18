@@ -42,17 +42,6 @@ import GoogleReviews from './GoogleReviews.astro';
     </div>
   </div>
 
-  <nav class="hero-social-tabs" aria-label="Profile społecznościowe KALTRUCK">
-    <a class="hero-social-tab hero-social-tab--facebook" href={siteConfig.facebook} target="_blank" rel="noopener noreferrer" aria-label="Otwórz profil KALTRUCK na Facebooku">
-      <span class="hero-social-tab-label">Facebook</span>
-      <span class="hero-social-tab-icon"><img src="/brand/facebook-icon.svg" width="28" height="28" alt="" /></span>
-    </a>
-    <a class="hero-social-tab hero-social-tab--instagram" href={siteConfig.instagram} target="_blank" rel="noopener noreferrer" aria-label="Otwórz profil KALTRUCK na Instagramie">
-      <span class="hero-social-tab-label">Instagram</span>
-      <span class="hero-social-tab-icon"><img src="/brand/instagram-icon.svg" width="28" height="28" alt="" /></span>
-    </a>
-  </nav>
-
   <div class="container hero-content">
     <div class="hero-stage">
       <div class="hero-lockup">
@@ -176,15 +165,6 @@ import GoogleReviews from './GoogleReviews.astro';
     linear-gradient(180deg,rgba(5,6,7,.2) 0%,rgba(5,6,7,.16) 24%,rgba(5,6,7,.48) 68%,rgba(5,6,7,.94) 100%),
     radial-gradient(circle at 50% 50%,rgba(5,6,7,.08) 0%,rgba(5,6,7,.24) 52%,rgba(5,6,7,.5) 100%);
 }
-/* Collapsed social tabs under the route handle, expanding on hover or keyboard focus. */
-.hero-social-tabs{position:absolute;z-index:8;top:calc(50% + 91px);left:0;display:grid;gap:9px;pointer-events:none}
-.hero-social-tab{display:grid;grid-template-columns:minmax(0,1fr) 48px;align-items:center;width:170px;height:48px;border:1px solid rgba(215,180,106,.55);border-left:0;border-radius:0 11px 11px 0;background:rgba(248,245,239,.97);color:#151514;box-shadow:0 10px 24px rgba(0,0,0,.25);transform:translateX(calc(-100% + 48px));transition:transform .26s ease,background .2s ease;pointer-events:auto;overflow:hidden}
-.hero-social-tab:hover,.hero-social-tab:focus-visible{transform:translateX(0);background:#fff}
-.hero-social-tab-label{padding-left:17px;font-size:.82rem;font-weight:800;letter-spacing:.01em;white-space:nowrap}
-.hero-social-tab-icon{display:grid;place-items:center;width:48px;height:48px}
-.hero-social-tab-icon img{width:28px;height:28px;object-fit:contain;display:block}
-@media(max-width:620px){.hero-social-tabs{top:calc(50% + 79px);gap:7px}.hero-social-tab{width:154px;height:42px;grid-template-columns:minmax(0,1fr) 42px;transform:translateX(calc(-100% + 42px))}.hero-social-tab-icon{width:42px;height:42px}.hero-social-tab-icon img{width:25px;height:25px}.hero-social-tab-label{padding-left:14px;font-size:.76rem}}
-@media(prefers-reduced-motion:reduce){.hero-social-tab{transition:none}}
 .hero-route-drawer,
 .hero-reviews-drawer{
   --hero-drawer-handle:62px;
