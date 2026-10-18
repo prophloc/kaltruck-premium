@@ -2,10 +2,13 @@
 slug: transport-hds
 title: Transport HDS Płock i Polska | KALTRUCK
 metaDescription: Transport HDS z załadunkiem i rozładunkiem w Płocku, na Mazowszu i w całej Polsce. Kontenery, maszyny, prefabrykaty i ładunki specjalistyczne.
-h1: Transport HDS bez zbędnych przeładunków
+h1: Transport HDS bez kompromisów
+heroLineOne: Transport HDS
+heroLineTwo: bez kompromisów
+heroAccent: kompromisów
 intro: Jeden zestaw może przyjechać po ładunek, podnieść go, przewieźć i ustawić w miejscu docelowym.
 serviceType: Transport HDS
-heroImage: https://hdsplock.pl/zdj/realizacje/transport-przemys-owy-03.jpg
+heroImage: /images/home/hero-hds-original.png
 ---
 ## Transport HDS z załadunkiem i rozładunkiem
 
