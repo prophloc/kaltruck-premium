@@ -34,7 +34,8 @@ import GoogleReviews from './GoogleReviews.astro';
       aria-controls="hero-reviews-panel"
       aria-label="Pokaż opinie klientów Google"
     >
-      <span>OPINIE</span>
+      <span class="hero-reviews-toggle-star" data-reviews-handle-star aria-hidden="true">★</span>
+      <span class="hero-reviews-toggle-label">OPINIE</span>
     </button>
     <div id="hero-reviews-panel" class="hero-reviews-panel" data-hero-reviews-panel aria-hidden="true">
       <GoogleReviews />
@@ -226,11 +227,14 @@ import GoogleReviews from './GoogleReviews.astro';
   backdrop-filter:blur(12px);
 }
 .hero-route-toggle{flex-direction:column;gap:8px;border-left:0;border-radius:0 12px 12px 0}
-.hero-reviews-toggle{border-right:0;border-radius:12px 0 0 12px}
+.hero-reviews-toggle{border-right:0;border-radius:12px 0 0 12px;flex-direction:column;gap:8px}
+.hero-reviews-toggle-star{display:block;font-size:24px;line-height:1;color:#8e784d;transition:color .2s ease,transform .2s ease}
+.hero-reviews-drawer.is-open .hero-reviews-toggle-star,
+.hero-reviews-toggle[aria-expanded="true"] .hero-reviews-toggle-star{color:var(--accent);transform:scale(1.12)}
 .hero-route-toggle:hover,.hero-reviews-toggle:hover{background:#fff}
 .hero-route-toggle-pin{display:block;width:25px;height:25px;object-fit:contain;transform:rotate(-90deg);filter:drop-shadow(0 2px 4px rgba(0,0,0,.16))}
-.hero-route-toggle-label,.hero-reviews-toggle span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:.68rem;font-weight:900;letter-spacing:.16em;line-height:1}
-.hero-reviews-toggle span{font-size:.72rem;letter-spacing:.18em}
+.hero-route-toggle-label,.hero-reviews-toggle-label{writing-mode:vertical-rl;transform:rotate(180deg);font-size:.68rem;font-weight:900;letter-spacing:.16em;line-height:1}
+.hero-reviews-toggle-label{font-size:.72rem;letter-spacing:.18em}
 .hero-content{
   position:relative;
   z-index:2;
@@ -407,9 +411,10 @@ import GoogleReviews from './GoogleReviews.astro';
   .hero-route-panel{max-height:76svh;border-radius:0 14px 14px 0}
   .hero-reviews-panel{max-height:76svh;border-radius:14px 0 0 14px}
   .hero-route-toggle{border-radius:0 10px 10px 0;height:clamp(88px,11svh,102px);padding:8px 6px;gap:6px}
-  .hero-reviews-toggle{border-radius:10px 0 0 10px;height:clamp(88px,11svh,102px);padding:8px 6px}
+  .hero-reviews-toggle{border-radius:10px 0 0 10px;height:clamp(88px,11svh,102px);padding:8px 6px;gap:5px}
+  .hero-reviews-toggle-star{font-size:19px}
   .hero-route-toggle-pin{width:22px;height:22px}
-  .hero-route-toggle-label,.hero-reviews-toggle span{font-size:.61rem;letter-spacing:.13em}
+  .hero-route-toggle-label,.hero-reviews-toggle-label{font-size:.61rem;letter-spacing:.13em}
   .hero-bg{object-position:64% center}
   .hero-overlay{
     background:
