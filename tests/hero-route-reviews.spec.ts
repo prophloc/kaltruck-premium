@@ -42,8 +42,12 @@ test('right-side OPINIE drawer opens, closes the route drawer and keeps Google M
 
   await expect(reviewsDrawer).toHaveCount(1);
   await expect(reviewsToggle).toHaveText(/OPINIE/);
+  const star = reviewsToggle.locator('[data-reviews-handle-star]');
+  await expect(star).toHaveText('★');
+  await expect(star).toBeVisible();
   await expect(reviewsToggle).toHaveAttribute('aria-expanded', 'false');
   await expect(reviewsPanel).toBeHidden();
+  const collapsedColor = await star.evaluate((node) => getComputedStyle(node).color);
 
   await routeToggle.click();
   await expect(routeToggle).toHaveAttribute('aria-expanded', 'true');
@@ -52,6 +56,8 @@ test('right-side OPINIE drawer opens, closes the route drawer and keeps Google M
   await expect(reviewsToggle).toHaveAttribute('aria-expanded', 'true');
   await expect(reviewsPanel).toBeVisible();
   await expect(routeToggle).toHaveAttribute('aria-expanded', 'false');
+  await expect.poll(() => star.evaluate((node) => getComputedStyle(node).color)).not.toBe(collapsedColor);
+  await expect(star).toBeVisible();
   const reviews = page.locator('[data-google-reviews]');
   await expect(reviews.locator('.google-reviews-kicker')).toHaveText('OPINIE KLIENTÓW');
   await expect(reviews.locator('.google-reviews-brand')).toHaveAttribute('src', '/brand/kaltruck-logo.svg');
@@ -65,6 +71,7 @@ test('right-side OPINIE drawer opens, closes the route drawer and keeps Google M
   await page.keyboard.press('Escape');
   await expect(reviewsToggle).toHaveAttribute('aria-expanded', 'false');
   await expect(reviewsPanel).toBeHidden();
+  await expect.poll(() => star.evaluate((node) => getComputedStyle(node).color)).toBe(collapsedColor);
 });
 
 test('reviews drawer renders Google rating and review author attribution from Places when configured', async ({ page }) => {
