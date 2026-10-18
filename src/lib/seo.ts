@@ -13,7 +13,8 @@ export function organizationSchema() {
     name: siteConfig.legalName,
     url: siteConfig.siteUrl,
     email: siteConfig.email,
-    telephone: [siteConfig.phone, siteConfig.secondaryPhone],
+    telephone: siteConfig.phone,
+    vatID: `PL${siteConfig.nip}`,
     image: siteConfig.socialImage,
     address: {
       '@type': 'PostalAddress',
