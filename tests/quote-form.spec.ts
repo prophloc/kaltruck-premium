@@ -17,7 +17,7 @@ test('missing submit endpoint is explicit instead of silently dropping leads', a
   const form = page.locator('form[data-quote-form]');
   const endpoint = await form.getAttribute('action');
   if (!endpoint) {
-    await expect(page.getByText(/formularz nie jest jeszcze połączony|zadzwoń|e-mail/i).first()).toBeVisible();
+    await expect(page.locator('.quote-shell .fallback')).toBeVisible();
     await expect(page.getByRole('button', { name: /Wyślij/i })).toBeDisabled();
   }
 });
