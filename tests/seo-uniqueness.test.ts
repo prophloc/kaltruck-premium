@@ -38,12 +38,12 @@ describe('service SEO content', () => {
     ]);
     for (const name of files) {
       const raw = readFileSync(join(dir, name), 'utf8');
-      const body = raw.replace(/^---\\n[\\s\\S]*?\\n---\\s*/, '');
-      const words = body.replace(/\\[[^\\]]+\\]\\([^)]+\\)/g, ' słowo ').trim().split(/\\s+/);
+      const body = raw.replace(/^---\n[\s\S]*?\n---\s*/, '');
+      const words = body.replace(/\[[^\]]+\]\([^)]+\)/g, ' słowo ').trim().split(/\s+/);
       expect(words.length, name).toBeGreaterThan(280);
       expect(body, name).toMatch(/## Najczęstsze pytania/);
       expect(body, name).toContain('](/wycena/)');
-      const targets = [...body.matchAll(/\\]\\((\\/[^)]+)\\)/g)].map((match) => match[1]);
+      const targets = [...body.matchAll(/\]\((\/[^)]+)\)/g)].map((match) => match[1]);
       expect(targets.length, name).toBeGreaterThanOrEqual(3);
       for (const target of targets) expect(allowedRoutes.has(target), name + ' -> ' + target).toBe(true);
     }
