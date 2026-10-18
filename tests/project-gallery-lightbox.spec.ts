@@ -1,5 +1,18 @@
 import { test, expect } from '@playwright/test';
 
+// Gallery geometry/keyboard tests should not depend on hdsplock.pl network
+// availability. Preserve the real image URLs and dimensions in the markup;
+// respond with a deterministic in-memory image only inside this test suite.
+test.beforeEach(async ({ page }) => {
+  await page.route('https://hdsplock.pl/zdj/realizacje/**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'image/svg+xml',
+      body: '<svg xmlns="http://www.w3.org/2000/svg" width="1435" height="1080" viewBox="0 0 1435 1080"><rect width="1435" height="1080" fill="#243b47"/></svg>',
+    });
+  });
+});
+
 test('clicking a realization photo opens a fullscreen lightbox with its description', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
