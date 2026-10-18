@@ -1,9 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="favicon-title favicon-desc"><title id="favicon-title">KALTRUCK</title><desc id="favicon-desc">Samochód transportowy HDS z łamanym wysięgnikiem i hakiem</desc><rect width="64" height="64" rx="13" fill="#080d11"/>
-<path d="M34 37 39 23 15 16" fill="none" stroke="#E1B967" stroke-width="7" stroke-linecap="square" stroke-linejoin="bevel"/>
-<path d="M15 19V32" stroke="#E1B967" stroke-width="3.4" stroke-linecap="round"/>
-<path d="M15 32q0 6 6 3" fill="none" stroke="#E1B967" stroke-width="3.7" stroke-linecap="round"/>
-<path d="M11 43h29l2-9h8l8 10v7H7v-7h4Z" fill="#F7F3EA"/>
-<path d="M46 38v7h8l-5-7Z" fill="#080d11"/>
-<path d="M11 41h21" stroke="#080d11" stroke-width="2"/>
-<circle cx="17" cy="51" r="5.1" fill="#E1B967" stroke="#080d11" stroke-width="2.4"/><circle cx="47" cy="51" r="5.1" fill="#E1B967" stroke="#080d11" stroke-width="2.4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="favicon-title">
+  <title id="favicon-title">H - KALTRUCK HDS</title>
+  <rect width="64" height="64" rx="13" fill="#090C10"/>
+  <path fill="#E1B967" d="M13 12h11v15h16V12h11v40H40V37H24v15H13Z"/>
 </svg>
