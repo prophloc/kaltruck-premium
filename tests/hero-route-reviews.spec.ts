@@ -130,23 +130,14 @@ test('reviews drawer renders Google rating and review author attribution from Pl
   await expect(reviews.locator('.google-reviews-third-party')).toContainText('Dane testowe partnera');
 });
 
-test('social tabs display supplied-style Facebook and Instagram icons and valid links', async ({ page }) => {
+test('social links appear only in the footer, not in the hero', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  const tabs = page.locator('.hero-social-tabs a');
-  await expect(tabs).toHaveCount(2);
-  const facebook = tabs.first();
-  const instagram = tabs.last();
-  await expect(facebook).toHaveAttribute('href', 'https://www.facebook.com/profile.php?id=61561070733012');
-  await expect(instagram).toHaveAttribute('href', 'https://www.instagram.com/transporthdsplock/');
-  await expect(facebook).toHaveAttribute('target', '_blank');
-  await expect(instagram).toHaveAttribute('target', '_blank');
-  await expect(facebook.locator('img')).toHaveAttribute('src', '/brand/facebook-icon.svg');
-  await expect(instagram.locator('img')).toHaveAttribute('src', '/brand/instagram-icon.svg');
-  const start = await facebook.boundingBox();
-  expect(start).not.toBeNull();
-  await facebook.locator('.hero-social-tab-icon').hover();
-  await expect.poll(() => facebook.evaluate((el) => el.getBoundingClientRect().left)).toBeGreaterThan(start!.x + 50);
+  await expect(page.locator('.hero-social-tabs, .hero-social-tab')).toHaveCount(0);
+  const footerSocials = page.locator('.footer-socials a');
+  await expect(footerSocials).toHaveCount(2);
+  await expect(footerSocials.nth(0)).toHaveAttribute('href', 'https://www.facebook.com/profile.php?id=61561070733012');
+  await expect(footerSocials.nth(1)).toHaveAttribute('href', 'https://www.instagram.com/transporthdsplock/');
 });
 
 test('social footer and favicon/Open Graph previews are configured', async ({ page }) => {
