@@ -1,0 +1,50 @@
+name: Prepare plockhds.pl cPanel package
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-cpanel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Check site
+        run: npm run test:run
+      - name: Build for plockhds.pl
+        run: npm run build
+        env:
+          PUBLIC_SITE_URL: https://plockhds.pl
+          PUBLIC_FORM_ENDPOINT: ${{ vars.KALTRUCK_FORM_ENDPOINT }}
+          PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.KALTRUCK_GOOGLE_MAPS_API_KEY }}
+          PUBLIC_GOOGLE_PLACE_ID: ChIJhbMF0yh3HEcRVTtOsPxz9eM
+      - name: Create HTTPS canonical redirect
+        run: |
+          cat > dist/.htaccess <<'HTACCESS'
+          RewriteEngine On
+          RewriteCond %{HTTPS} !=on [OR]
+          RewriteCond %{HTTP_HOST} ^www\.plockhds\.pl$ [NC]
+          RewriteRule ^ https://plockhds.pl%{REQUEST_URI} [L,R=301,NE]
+          HTACCESS
+      - name: Package only the compiled site
+        run: |
+          cd dist
+          zip -q -r ../kaltruck-plockhds-upload.zip .
+      - name: Upload cPanel ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: plockhds-cpanel-ready
+          path: kaltruck-plockhds-upload.zip
+          retention-days: 30
+          if-no-files-found: error
