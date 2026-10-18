@@ -12,8 +12,16 @@ test('homepage communicates the premium HDS offer without invented data', async 
     await expect(page.getByText(theme, { exact: false }).first()).toBeVisible();
   }
 
-  for (const step of ['Kontakt', 'Ocena ładunku', 'Wycena i termin', 'Transport i ustawienie']) {
-    await expect(page.getByText(step, { exact: false }).first()).toBeVisible();
+  // Deliberately broken visual lines must retain accessible, natural heading text.
+  const processHeadings = page.locator('[data-process-step] h3');
+  await expect(processHeadings).toHaveCount(4);
+  for (const [index, [first, second]] of [
+    ['Kontakt', 'zapytanie'],
+    ['Ocena ładunku', 'i warunków'],
+    ['Wycena', 'i termin'],
+    ['Transport', 'i ustawienie'],
+  ].entries()) {
+    await expect(processHeadings.nth(index).locator('span')).toHaveText([first, second]);
   }
 });
 
