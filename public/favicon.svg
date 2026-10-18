@@ -1,13 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
-  <title id="title">KALTRUCK</title>
-  <desc id="desc">Monogram K połączony z ramieniem i hakiem żurawia HDS</desc>
-  <rect width="64" height="64" rx="13" fill="#090c0f"/>
-  <!-- Maszt K: litera pozostaje czytelna nawet w ikonie przeglądarki 16 px. -->
-  <path d="M16 12v40" stroke="#f5f2eb" stroke-width="9" stroke-linecap="square"/>
-  <!-- Górna ukośna belka staje się złotym ramieniem HDS. -->
-  <path d="M27 32 45 14h9" fill="none" stroke="#d7b46a" stroke-width="8" stroke-linecap="square" stroke-linejoin="bevel"/>
-  <!-- Druga noga monogramu w kontrastowej bieli. -->
-  <path d="M27 34 48 53" fill="none" stroke="#f5f2eb" stroke-width="9" stroke-linecap="square"/>
-  <!-- Lina i hak pod końcówką wysięgnika. -->
-  <path d="M51 17v12c0 3-2 5-5 5" fill="none" stroke="#d7b46a" stroke-width="3" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="favicon-title favicon-desc"><title id="favicon-title">KALTRUCK</title><desc id="favicon-desc">Samochód transportowy HDS z łamanym wysięgnikiem i hakiem</desc><rect width="64" height="64" rx="13" fill="#080d11"/>
+<path d="M34 37 39 23 15 16" fill="none" stroke="#E1B967" stroke-width="7" stroke-linecap="square" stroke-linejoin="bevel"/>
+<path d="M15 19V32" stroke="#E1B967" stroke-width="3.4" stroke-linecap="round"/>
+<path d="M15 32q0 6 6 3" fill="none" stroke="#E1B967" stroke-width="3.7" stroke-linecap="round"/>
+<path d="M11 43h29l2-9h8l8 10v7H7v-7h4Z" fill="#F7F3EA"/>
+<path d="M46 38v7h8l-5-7Z" fill="#080d11"/>
+<path d="M11 41h21" stroke="#080d11" stroke-width="2"/>
+<circle cx="17" cy="51" r="5.1" fill="#E1B967" stroke="#080d11" stroke-width="2.4"/><circle cx="47" cy="51" r="5.1" fill="#E1B967" stroke="#080d11" stroke-width="2.4"/>
 </svg>
