@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('desktop header keeps the service rotator text-only and exposes both phones plus email', async ({ page }) => {
+test('desktop header keeps the service rotator text-only and exposes the primary phone plus email', async ({ page }) => {
   await page.setViewportSize({ width: 1800, height: 900 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -8,19 +8,17 @@ test('desktop header keeps the service rotator text-only and exposes both phones
   await expect(page.locator('.service-rotator-mark')).toHaveCount(0);
 
   const contacts = page.locator('.header-actions');
-  await expect(contacts.locator('a[href="tel:+48514948373"]')).toBeVisible();
   await expect(contacts.locator('a[href="tel:+48784430022"]')).toBeVisible();
   await expect(contacts.locator('a[href="mailto:hds.plock@gmail.com"]')).toBeVisible();
 });
 
-test('mobile menu exposes both phones and email', async ({ page }) => {
+test('mobile menu exposes the primary phone and email', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await page.locator('[data-menu-open]').click();
 
   const menu = page.locator('[data-mobile-menu]');
-  await expect(menu.locator('a[href="tel:+48514948373"]')).toBeVisible();
-  await expect(menu.locator('a[href="tel:+48784430022"]')).toBeVisible();
+  await expect(menu.locator('a.mobile-contact__phone[href="tel:+48784430022"]')).toBeVisible();
   await expect(menu.locator('a[href="mailto:hds.plock@gmail.com"]')).toBeVisible();
 });
 
