@@ -2,10 +2,13 @@
 slug: transport-maszyn
 title: Transport maszyn i urządzeń HDS | KALTRUCK
 metaDescription: Transport maszyn, urządzeń technicznych i nietypowych ładunków z wykorzystaniem HDS. Załadunek i rozładunek w ramach jednej usługi.
-h1: Maszyny i urządzenia pod kontrolą od podniesienia do rozładunku
+h1: Transport maszyn pod pełną kontrolą
+heroLineOne: Transport maszyn
+heroLineTwo: pod pełną kontrolą
+heroAccent: kontrolą
 intro: Łączymy przewóz z pracą HDS, dzięki czemu urządzenie może zostać podjęte i ustawione bez dodatkowej ekipy dźwigowej.
 serviceType: Transport maszyn HDS
-heroImage: https://hdsplock.pl/zdj/realizacje/suwnice-przemys-owe-04.jpg
+heroImage: https://hdsplock.pl/zdj/realizacje/transport-przemys-owy-01.jpg
 ---
 ## Transport maszyn i urządzeń z wykorzystaniem HDS
 
