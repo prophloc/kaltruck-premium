@@ -1,6 +1,6 @@
 ---
 const steps=[
-  ['01', 'Kontakt', 'zapytanie'],
+  ['01', 'Kontakt /', 'zapytanie'],
   ['02', 'Ocena ładunku', 'i warunków'],
   ['03', 'Wycena', 'i termin'],
   ['04', 'Transport', 'i ustawienie'],
@@ -32,16 +32,28 @@ const steps=[
   .process-heading .eyebrow{margin:0 0 16px}
   .process-heading h2{font-size:clamp(2.75rem,4.25vw,4.75rem);line-height:.96;letter-spacing:-.05em;margin:0;max-width:9ch;text-wrap:balance}
   .steps{grid-column:6 / -1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:1fr;gap:12px}
+  /* Studio positioning: number and rule pinned at the top, text centered in the card. */
   .step{
-    min-height:158px;
-    padding:21px 24px 23px;
+    position:relative;
+    min-height:205px;
+    padding:54px 22px 24px;
     display:grid;
-    grid-template-rows:auto 1fr;
+    place-items:center;
+    text-align:center;
     border:1px solid rgba(255,255,255,.08);
     border-radius:12px;
     background:linear-gradient(145deg,rgba(255,255,255,.026),rgba(255,255,255,.008));
   }
-  .step-top{display:flex;align-items:center;gap:12px;min-width:0}
+  .step-top{
+    position:absolute;
+    top:20px;
+    left:22px;
+    right:22px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+  }
   .step-number{
     display:inline-grid;
     place-items:center;
@@ -57,18 +69,33 @@ const steps=[
     line-height:1;
   }
   .step-rule{height:1px;flex:1;background:linear-gradient(90deg,rgba(215,180,106,.28),rgba(255,255,255,.035))}
-  .step h3{align-self:end;font-size:clamp(1.25rem,1.55vw,1.72rem);line-height:1.04;margin:28px 0 0;max-width:none;letter-spacing:-.025em;text-wrap:normal}
-  .step h3 span{display:block}
-  @media(max-width:900px){.process-heading{grid-column:1 / span 5}.steps{grid-column:6 / -1}.step{min-height:148px;padding:20px 21px 22px}}
+  .step h3{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    justify-self:center;
+    text-align:center;
+    font-size:clamp(1.2rem,1.5vw,1.55rem);
+    font-weight:750;
+    line-height:1.22;
+    margin:0;
+    max-width:100%;
+    letter-spacing:-.025em;
+    text-wrap:normal;
+  }
+  .step h3 span{display:block;white-space:nowrap}
+  @media(max-width:900px){.process-heading{grid-column:1 / span 5}.steps{grid-column:6 / -1}.step{min-height:190px;padding:51px 16px 19px}.step-top{left:16px;right:16px;top:17px}.step h3{font-size:clamp(1.05rem,1.7vw,1.38rem)}}
   @media(max-width:760px){
     .process{padding:52px 0}
     .process-shell{grid-template-columns:1fr;gap:30px}
     .process-heading,.steps{grid-column:auto}
     .process-heading h2{max-width:11ch;font-size:clamp(2.55rem,11vw,4rem)}
     .steps{grid-template-columns:1fr 1fr;gap:10px}
-    .step{min-height:138px;padding:18px 19px 20px;border-radius:10px}
-    .step h3{margin-top:22px;font-size:clamp(1.12rem,5vw,1.5rem);max-width:15ch}
+    .step{min-height:180px;padding:49px 14px 18px;border-radius:10px}
+    .step-top{left:14px;right:14px;top:15px}
+    .step h3{font-size:clamp(1.02rem,3.1vw,1.35rem)}
     .step-number{min-width:32px;height:24px}
   }
-  @media(max-width:460px){.steps{grid-template-columns:1fr}.step{min-height:124px}}
+  @media(max-width:460px){.steps{grid-template-columns:1fr}.step{min-height:175px}.step h3{font-size:1.3rem}}
 </style>

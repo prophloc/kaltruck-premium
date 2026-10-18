@@ -16,12 +16,22 @@ test('homepage communicates the premium HDS offer without invented data', async 
   const processHeadings = page.locator('[data-process-step] h3');
   await expect(processHeadings).toHaveCount(4);
   for (const [index, [first, second]] of [
-    ['Kontakt', 'zapytanie'],
+    ['Kontakt /', 'zapytanie'],
     ['Ocena ładunku', 'i warunków'],
     ['Wycena', 'i termin'],
     ['Transport', 'i ustawienie'],
   ].entries()) {
     await expect(processHeadings.nth(index).locator('span')).toHaveText([first, second]);
+  }
+
+  // Studio-style card copy is horizontally centered, not bottom-left.
+  for (const heading of await processHeadings.all()) {
+    const centerDelta = await heading.evaluate((node) => {
+      const card = node.closest('[data-process-step]')?.getBoundingClientRect();
+      const title = node.getBoundingClientRect();
+      return card ? Math.abs(title.left + title.width / 2 - (card.left + card.width / 2)) : 1000;
+    });
+    expect(centerDelta).toBeLessThanOrEqual(3);
   }
 });
 

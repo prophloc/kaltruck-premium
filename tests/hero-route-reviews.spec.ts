@@ -52,7 +52,15 @@ test('right-side OPINIE drawer opens, closes the route drawer and keeps Google M
   await expect(reviewsToggle).toHaveAttribute('aria-expanded', 'true');
   await expect(reviewsPanel).toBeVisible();
   await expect(routeToggle).toHaveAttribute('aria-expanded', 'false');
-  await expect(page.locator('[data-google-reviews] .google-reviews-attribution')).toHaveText('Google Maps');
+  const reviews = page.locator('[data-google-reviews]');
+  await expect(reviews.locator('.google-reviews-kicker')).toHaveText('OPINIE KLIENTÓW');
+  await expect(reviews.locator('.google-reviews-brand')).toHaveAttribute('src', '/brand/kaltruck-logo.svg');
+  await expect(reviews.locator('.google-reviews-attribution')).toHaveAttribute('aria-label', /Google Maps/);
+  await expect(reviews.locator('.google-reviews-attribution-logo')).toHaveAttribute('src', '/brand/google-reviews-stars.svg');
+  const googleBadge = await page.request.get('/brand/google-reviews-stars.svg');
+  expect(googleBadge.ok()).toBeTruthy();
+  await expect(reviews.locator('.google-reviews-brand')).toBeVisible();
+  await expect(reviews.locator('.google-reviews-attribution-logo')).toBeVisible();
 
   await page.keyboard.press('Escape');
   await expect(reviewsToggle).toHaveAttribute('aria-expanded', 'false');
