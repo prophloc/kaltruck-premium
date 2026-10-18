@@ -434,4 +434,86 @@ import GoogleReviews from './GoogleReviews.astro';
   .hero-bottom-copy-inner{padding:21px var(--page-gutter) 24px}
   .hero-lead{text-align:left;max-width:34ch;font-size:.98rem;line-height:1.5}
 }
+
+/* Compact mobile hero controls: side by side below the header, not over the CTA. */
+@media(max-width:620px){
+  .hero{
+    min-height:max(100svh,680px);
+  }
+  .hero-route-drawer,
+  .hero-reviews-drawer{
+    top:calc(var(--header-height) + 12px);
+    --hero-drawer-handle:auto;
+    z-index:8;
+    display:flex;
+    flex-direction:column;
+    width:max-content;
+    max-width:calc(50vw - var(--page-gutter) - 6px);
+    transform:none;
+    filter:drop-shadow(0 6px 15px rgba(0,0,0,.24));
+    transition:none;
+  }
+  .hero-route-drawer{left:var(--page-gutter)}
+  .hero-reviews-drawer{right:var(--page-gutter)}
+  .hero-route-drawer.is-open,
+  .hero-reviews-drawer.is-open{transform:none}
+  .hero-route-toggle,
+  .hero-reviews-toggle{
+    width:auto;
+    max-width:100%;
+    height:44px;
+    min-height:44px;
+    padding:8px 12px;
+    gap:8px;
+    flex-direction:row;
+    border:1px solid rgba(215,180,106,.72);
+    border-radius:999px;
+    box-shadow:0 6px 18px rgba(0,0,0,.24);
+  }
+  .hero-route-toggle-pin{width:18px;height:18px}
+  .hero-reviews-toggle-star{font-size:17px}
+  .hero-route-toggle-label,
+  .hero-reviews-toggle-label{
+    writing-mode:horizontal-tb;
+    transform:none;
+    font-size:.68rem;
+    line-height:1;
+    letter-spacing:.1em;
+  }
+  .hero-route-panel,
+  .hero-reviews-panel{
+    position:absolute;
+    top:calc(100% + 10px);
+    width:min(440px,calc(100vw - 2 * var(--page-gutter)));
+    max-height:min(60svh,520px);
+    overflow:auto;
+    border:1px solid rgba(20,20,18,.12);
+    border-radius:16px;
+    box-shadow:0 20px 54px rgba(0,0,0,.48);
+  }
+  .hero-route-panel{left:0}
+  .hero-reviews-panel{right:0}
+  .hero-content{
+    min-height:max(100svh,680px);
+    padding-top:calc(var(--header-height) + 95px);
+    padding-bottom:158px;
+  }
+  .hero-actions{
+    display:grid;
+    width:100%;
+    grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+    gap:8px;
+    align-items:stretch;
+  }
+  .hero-actions .btn{
+    width:100%;
+    min-width:0;
+    min-height:54px;
+    padding-inline:6px;
+    font-size:clamp(.72rem,2.8vw,.9rem);
+    line-height:1.18;
+    white-space:nowrap;
+  }
+  .hero-phone{min-width:0}
+}
 </style>
