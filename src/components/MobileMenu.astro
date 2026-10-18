@@ -7,12 +7,16 @@ const links = [
   ['O nas', '/o-nas/'],
   ['Kontakt', '/kontakt/'],
 ] as const;
+interface Props {
+  activeHref?: string;
+}
+const { activeHref } = Astro.props;
 ---
 <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
   <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Menu główne">
     <button class="mobile-menu__close" type="button" aria-label="Zamknij menu" data-menu-close>×</button>
     <nav aria-label="Nawigacja mobilna">
-      {links.map(([label, href]) => <a href={href}>{label}</a>)}
+      {links.map(([label, href]) => <a href={href} aria-current={activeHref === href ? 'page' : undefined}>{label}</a>)}
     </nav>
     <a class="btn btn-primary" href="/wycena/">Wyceń transport</a>
     <div class="mobile-contact" aria-label="Kontakt">
@@ -30,6 +34,7 @@ const links = [
   .mobile-menu__close { position: absolute; top: 20px; right: clamp(20px, 4vw, 28px); width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--text); font-size: 2rem; line-height: 1; }
   nav { display: grid; gap: 6px; margin-bottom: 30px; }
   nav a { font-size: clamp(2rem, 8vw, 3.1rem); font-weight: 760; line-height: 1.05; letter-spacing: -.04em; padding: 5px 0; }
+  nav a[aria-current="page"] { color: var(--accent-strong); }
   .mobile-contact { display: grid; gap: 8px; margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); }
   .mobile-contact a { width: fit-content; color: rgba(255,255,255,.78); font-size: .95rem; font-weight: 680; letter-spacing: .01em; }
   .mobile-contact a:hover { color: var(--accent-strong); }

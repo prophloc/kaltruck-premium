@@ -1,0 +1,239 @@
+---
+import { siteConfig } from '../config/site';
+
+const mapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY || '';
+const placeId = import.meta.env.PUBLIC_GOOGLE_PLACE_ID || 'ChIJhbMF0yh3HEcRVTtOsPxz9eM';
+---
+<section
+  class="google-reviews"
+  data-google-reviews
+  data-api-key={mapsApiKey}
+  data-place-id={placeId}
+>
+  <div class="google-reviews-head">
+    <div>
+      <p class="google-reviews-kicker">OPINIE KLIENTÓW</p>
+      <h2>Co mówią o KALTRUCK</h2>
+    </div>
+    <a class="google-reviews-attribution" href={siteConfig.googleMapsUrl} target="_blank" rel="noreferrer" translate="no">Google Maps</a>
+  </div>
+
+  <div class="google-reviews-summary" data-google-reviews-summary hidden>
+    <strong data-google-reviews-rating></strong>
+    <span class="google-reviews-summary-stars" aria-hidden="true">★★★★★</span>
+    <span data-google-reviews-count></span>
+  </div>
+
+  <p class="google-reviews-status" data-google-reviews-status aria-live="polite">Otwórz panel, aby pobrać aktualne opinie z Google.</p>
+  <div class="google-reviews-list" data-google-reviews-list></div>
+  <div class="google-reviews-third-party" data-google-reviews-third-party></div>
+
+  <a class="google-reviews-fallback" data-google-reviews-fallback href={siteConfig.googleMapsUrl} target="_blank" rel="noreferrer">
+    Zobacz opinie w Google Maps
+  </a>
+</section>
+
+<script is:inline>
+  (() => {
+    const getLoader = (apiKey) => {
+      if (window.google?.maps?.importLibrary) return Promise.resolve();
+      if (window.__kaltruckGoogleMapsPlacesLoader) return window.__kaltruckGoogleMapsPlacesLoader;
+
+      window.__kaltruckGoogleMapsPlacesLoader = new Promise((resolve, reject) => {
+        const existing = document.querySelector('script[data-kaltruck-google-maps-places]');
+        if (existing instanceof HTMLScriptElement) {
+          if (window.google?.maps?.importLibrary) {
+            resolve();
+            return;
+          }
+          existing.addEventListener('load', resolve, { once: true });
+          existing.addEventListener('error', () => reject(new Error('Google Maps JavaScript API nie załadowało się.')), { once: true });
+          return;
+        }
+
+        const params = new URLSearchParams({
+          key: apiKey,
+          v: 'weekly',
+          libraries: 'places',
+          language: 'pl',
+          region: 'PL',
+        });
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?${params.toString()}`;
+        script.async = true;
+        script.defer = true;
+        script.dataset.kaltruckGoogleMapsPlaces = 'true';
+        script.addEventListener('load', resolve, { once: true });
+        script.addEventListener('error', () => reject(new Error('Google Maps JavaScript API nie załadowało się.')), { once: true });
+        document.head.append(script);
+      });
+
+      return window.__kaltruckGoogleMapsPlacesLoader;
+    };
+
+    const setText = (node, value) => {
+      if (node) node.textContent = value;
+    };
+
+    const createStars = (rating) => {
+      const stars = document.createElement('span');
+      stars.className = 'google-review-stars';
+      stars.setAttribute('aria-label', `${rating || 0} na 5 gwiazdek`);
+      stars.textContent = '★★★★★';
+      return stars;
+    };
+
+    const renderReview = (review) => {
+      const article = document.createElement('article');
+      article.className = 'google-review-card';
+      article.setAttribute('data-google-review-card', '');
+
+      const header = document.createElement('div');
+      header.className = 'google-review-author';
+      const attribution = review?.authorAttribution;
+
+      if (attribution?.photoURI) {
+        const image = document.createElement('img');
+        image.src = attribution.photoURI;
+        image.alt = '';
+        image.width = 38;
+        image.height = 38;
+        image.loading = 'lazy';
+        image.referrerPolicy = 'no-referrer';
+        header.append(image);
+      }
+
+      const authorMeta = document.createElement('div');
+      const author = attribution?.uri ? document.createElement('a') : document.createElement('strong');
+      author.textContent = attribution?.displayName || 'Użytkownik Google';
+      if (author instanceof HTMLAnchorElement) {
+        author.href = attribution.uri;
+        author.target = '_blank';
+        author.rel = 'noreferrer';
+      }
+      authorMeta.append(author);
+
+      if (review?.relativePublishTimeDescription) {
+        const time = document.createElement('span');
+        time.textContent = review.relativePublishTimeDescription;
+        authorMeta.append(time);
+      }
+
+      header.append(authorMeta);
+      article.append(header);
+      article.append(createStars(review?.rating));
+
+      if (review?.text) {
+        const copy = document.createElement('p');
+        copy.textContent = review.text;
+        article.append(copy);
+      }
+
+      return article;
+    };
+
+    const initReviews = async (root) => {
+      if (!(root instanceof HTMLElement) || root.dataset.reviewsLoading === 'true' || root.dataset.reviewsLoaded === 'true') return;
+
+      const status = root.querySelector('[data-google-reviews-status]');
+      const list = root.querySelector('[data-google-reviews-list]');
+      const summary = root.querySelector('[data-google-reviews-summary]');
+      const ratingNode = root.querySelector('[data-google-reviews-rating]');
+      const countNode = root.querySelector('[data-google-reviews-count]');
+      const fallback = root.querySelector('[data-google-reviews-fallback]');
+      const thirdParty = root.querySelector('[data-google-reviews-third-party]');
+      const apiKey = root.getAttribute('data-api-key') || '';
+      const placeId = root.getAttribute('data-place-id') || '';
+
+      if (!apiKey || !placeId) {
+        setText(status, 'Opinie Google są dostępne po skonfigurowaniu klucza Maps JavaScript API.');
+        if (fallback instanceof HTMLElement) fallback.hidden = false;
+        return;
+      }
+
+      root.dataset.reviewsLoading = 'true';
+      setText(status, 'Pobieramy aktualne opinie z Google…');
+
+      try {
+        await getLoader(apiKey);
+        if (!window.google?.maps?.importLibrary) throw new Error('Brak biblioteki Google Maps.');
+
+        const { Place } = await window.google.maps.importLibrary('places');
+        const place = new Place({ id: placeId, requestedLanguage: 'pl', requestedRegion: 'PL' });
+        await place.fetchFields({ fields: ['displayName', 'rating', 'userRatingCount', 'reviews', 'googleMapsURI'] });
+
+        const rating = Number(place.rating || 0);
+        const count = Number(place.userRatingCount || 0);
+        const reviews = Array.isArray(place.reviews) ? place.reviews.slice(0, 5) : [];
+
+        setText(ratingNode, rating ? rating.toFixed(1) : '—');
+        setText(countNode, count ? `${count} opinii` : 'Opinie Google');
+        if (summary instanceof HTMLElement) summary.hidden = false;
+
+        if (list instanceof HTMLElement) {
+          list.replaceChildren(...reviews.map(renderReview));
+        }
+
+        if (thirdParty instanceof HTMLElement) {
+          thirdParty.replaceChildren();
+          if (Array.isArray(place.attributions)) {
+            place.attributions.forEach((attribution) => {
+              const line = document.createElement('span');
+              line.textContent = attribution;
+              thirdParty.append(line);
+            });
+          }
+        }
+
+        const mapsUri = place.googleMapsURI || root.querySelector('.google-reviews-attribution')?.getAttribute('href') || '';
+        root.querySelectorAll('.google-reviews-attribution, [data-google-reviews-fallback]').forEach((link) => {
+          if (link instanceof HTMLAnchorElement && mapsUri) link.href = mapsUri;
+        });
+
+        if (fallback instanceof HTMLElement) fallback.hidden = reviews.length > 0;
+        setText(status, reviews.length ? '' : 'Google nie zwróciło opinii do wyświetlenia.');
+        root.dataset.reviewsLoaded = 'true';
+      } catch (error) {
+        console.error('[KALTRUCK GOOGLE REVIEWS]', error);
+        setText(status, 'Nie udało się pobrać opinii. Możesz otworzyć je bezpośrednio w Google Maps.');
+        if (fallback instanceof HTMLElement) fallback.hidden = false;
+      } finally {
+        root.dataset.reviewsLoading = 'false';
+      }
+    };
+
+    document.querySelectorAll('[data-google-reviews]').forEach((root) => {
+      root.addEventListener('kaltruck:reviews-activate', () => initReviews(root));
+    });
+  })();
+</script>
+
+<style>
+  .google-reviews{display:grid;gap:16px;padding:24px;color:#151514;background:#f7f4ee}
+  .google-reviews-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;border-bottom:1px solid rgba(20,20,18,.12);padding-bottom:15px}
+  .google-reviews-kicker{margin:0 0 7px;color:#8a651e;font-size:.68rem;font-weight:900;letter-spacing:.18em}
+  .google-reviews-head h2{margin:0;font-size:clamp(1.55rem,2.3vw,2rem);line-height:.98;letter-spacing:-.04em;color:#151514}
+  .google-reviews-attribution{flex:0 0 auto;color:#5e5e5e;font-family:Roboto,Arial,sans-serif;font-size:13px;font-style:normal;font-weight:400;letter-spacing:normal;text-decoration:none;white-space:nowrap}
+  .google-reviews-attribution:hover{text-decoration:underline}
+  .google-reviews-summary{display:flex;align-items:center;gap:9px;min-height:32px}
+  .google-reviews-summary strong{font-size:1.75rem;line-height:1;color:#151514}
+  .google-reviews-summary-stars,.google-review-stars{color:#e1aa2f;letter-spacing:.08em}
+  .google-reviews-summary [data-google-reviews-count]{color:#5f5b54;font-size:.82rem}
+  .google-reviews-status{min-height:1em;margin:0;color:#68645e;font-size:.78rem;line-height:1.4}
+  .google-reviews-status:empty{display:none}
+  .google-reviews-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .google-review-card{min-width:0;padding:14px;border:1px solid rgba(20,20,18,.11);border-radius:14px;background:#fff;box-shadow:0 8px 20px rgba(20,20,18,.05)}
+  .google-review-author{display:flex;align-items:center;gap:9px;margin-bottom:9px;min-width:0}
+  .google-review-author img{width:38px;height:38px;flex:0 0 auto;border-radius:50%;object-fit:cover}
+  .google-review-author>div{display:grid;gap:2px;min-width:0}
+  .google-review-author a,.google-review-author strong{overflow:hidden;color:#171715;font-size:.82rem;font-weight:800;text-overflow:ellipsis;text-decoration:none;white-space:nowrap}
+  .google-review-author a:hover{text-decoration:underline}
+  .google-review-author span{color:#7a766f;font-size:.67rem}
+  .google-review-stars{display:block;margin-bottom:7px;font-size:.74rem}
+  .google-review-card p{display:-webkit-box;overflow:hidden;margin:0;color:#3f3c37;font-size:.78rem;line-height:1.48;-webkit-box-orient:vertical;-webkit-line-clamp:4}
+  .google-reviews-third-party{display:grid;gap:2px;color:#69655f;font-size:.67rem;line-height:1.35}
+  .google-reviews-third-party:empty{display:none}
+  .google-reviews-fallback{width:max-content;max-width:100%;color:#765a1d;font-size:.78rem;font-weight:750;text-decoration:none}
+  .google-reviews-fallback:hover{text-decoration:underline}
+  @media(max-width:620px){.google-reviews{padding:18px}.google-reviews-head{align-items:flex-start}.google-reviews-list{grid-template-columns:1fr}.google-review-card p{-webkit-line-clamp:3}}
+</style>

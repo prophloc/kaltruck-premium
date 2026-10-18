@@ -1,9 +1,45 @@
 ---
 import { siteConfig } from '../config/site';
+import DistanceEstimator from './DistanceEstimator.astro';
+import GoogleMapsPin from './GoogleMapsPin.astro';
+import GoogleReviews from './GoogleReviews.astro';
 ---
 <section class="hero" data-commercial-hero>
   <img class="hero-bg" src="/images/home/hero-hds-original.png" width="1672" height="941" alt="Czerwony samochód HDS KALTRUCK z żurawiem podnoszącym kontener" fetchpriority="high" />
   <div class="hero-overlay"></div>
+
+  <div class="hero-route-drawer" data-hero-route-drawer>
+    <div id="hero-route-panel" class="hero-route-panel" data-hero-route-panel aria-hidden="true">
+      <DistanceEstimator instanceId="hero-route" variant="drawer" deferMap={true} />
+    </div>
+    <button
+      class="hero-route-toggle"
+      type="button"
+      data-hero-route-toggle
+      aria-expanded="false"
+      aria-controls="hero-route-panel"
+      aria-label="Sprawdź trasę transportu"
+    >
+      <GoogleMapsPin class="hero-route-toggle-pin" />
+      <span class="hero-route-toggle-label" data-route-handle-label>TRASA</span>
+    </button>
+  </div>
+
+  <div class="hero-reviews-drawer" data-hero-reviews-drawer>
+    <button
+      class="hero-reviews-toggle"
+      type="button"
+      data-hero-reviews-toggle
+      aria-expanded="false"
+      aria-controls="hero-reviews-panel"
+      aria-label="Pokaż opinie klientów Google"
+    >
+      <span>OPINIE</span>
+    </button>
+    <div id="hero-reviews-panel" class="hero-reviews-panel" data-hero-reviews-panel aria-hidden="true">
+      <GoogleReviews />
+    </div>
+  </div>
 
   <div class="container hero-content">
     <div class="hero-stage">
@@ -32,6 +68,79 @@ import { siteConfig } from '../config/site';
   <div class="hero-scroll">PRZEWIŃ <span>↓</span></div>
 </section>
 
+<script is:inline>
+  (() => {
+    const routeDrawer = document.querySelector('[data-hero-route-drawer]');
+    const routeToggle = routeDrawer?.querySelector('[data-hero-route-toggle]');
+    const routePanel = routeDrawer?.querySelector('[data-hero-route-panel]');
+    const route = routeDrawer?.querySelector('[data-google-route]');
+    const routeInput = routeDrawer?.querySelector('[data-google-route-origin]');
+
+    const reviewsDrawer = document.querySelector('[data-hero-reviews-drawer]');
+    const reviewsToggle = reviewsDrawer?.querySelector('[data-hero-reviews-toggle]');
+    const reviewsPanel = reviewsDrawer?.querySelector('[data-hero-reviews-panel]');
+    const reviews = reviewsDrawer?.querySelector('[data-google-reviews]');
+
+    if (
+      !(routeDrawer instanceof HTMLElement) ||
+      !(routeToggle instanceof HTMLButtonElement) ||
+      !(routePanel instanceof HTMLElement) ||
+      !(reviewsDrawer instanceof HTMLElement) ||
+      !(reviewsToggle instanceof HTMLButtonElement) ||
+      !(reviewsPanel instanceof HTMLElement)
+    ) return;
+
+    const setRouteOpen = (open) => {
+      routeDrawer.classList.toggle('is-open', open);
+      routeToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      routePanel.setAttribute('aria-hidden', open ? 'false' : 'true');
+
+      if (open) {
+        setReviewsOpen(false);
+        if (route instanceof HTMLElement) route.dispatchEvent(new CustomEvent('kaltruck:route-activate'));
+        window.setTimeout(() => {
+          if (routeInput instanceof HTMLInputElement) routeInput.focus({ preventScroll: true });
+        }, 320);
+      }
+    };
+
+    const setReviewsOpen = (open) => {
+      reviewsDrawer.classList.toggle('is-open', open);
+      reviewsToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      reviewsPanel.setAttribute('aria-hidden', open ? 'false' : 'true');
+
+      if (open) {
+        if (routeToggle.getAttribute('aria-expanded') === 'true') {
+          routeDrawer.classList.remove('is-open');
+          routeToggle.setAttribute('aria-expanded', 'false');
+          routePanel.setAttribute('aria-hidden', 'true');
+        }
+        if (reviews instanceof HTMLElement) reviews.dispatchEvent(new CustomEvent('kaltruck:reviews-activate'));
+      }
+    };
+
+    routeToggle.addEventListener('click', () => {
+      setRouteOpen(routeToggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    reviewsToggle.addEventListener('click', () => {
+      setReviewsOpen(reviewsToggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      setRouteOpen(false);
+      setReviewsOpen(false);
+    });
+
+    document.addEventListener('pointerdown', (event) => {
+      if (!(event.target instanceof Node)) return;
+      if (routeToggle.getAttribute('aria-expanded') === 'true' && !routeDrawer.contains(event.target)) setRouteOpen(false);
+      if (reviewsToggle.getAttribute('aria-expanded') === 'true' && !reviewsDrawer.contains(event.target)) setReviewsOpen(false);
+    });
+  })();
+</script>
+
 <style>
 .hero{
   min-height:100svh;
@@ -55,6 +164,73 @@ import { siteConfig } from '../config/site';
     linear-gradient(180deg,rgba(5,6,7,.2) 0%,rgba(5,6,7,.16) 24%,rgba(5,6,7,.48) 68%,rgba(5,6,7,.94) 100%),
     radial-gradient(circle at 50% 50%,rgba(5,6,7,.08) 0%,rgba(5,6,7,.24) 52%,rgba(5,6,7,.5) 100%);
 }
+.hero-route-drawer,
+.hero-reviews-drawer{
+  --hero-drawer-handle:62px;
+  position:absolute;
+  z-index:7;
+  top:50%;
+  width:min(760px,calc(100vw - 28px));
+  align-items:center;
+  transition:transform .34s cubic-bezier(.22,.78,.18,1);
+  filter:drop-shadow(18px 24px 42px rgba(0,0,0,.38));
+}
+.hero-route-drawer{
+  left:0;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) var(--hero-drawer-handle);
+  transform:translate(calc(-100% + var(--hero-drawer-handle)),-50%);
+}
+.hero-route-drawer.is-open{transform:translate(0,-50%)}
+.hero-reviews-drawer{
+  right:0;
+  display:grid;
+  grid-template-columns:var(--hero-drawer-handle) minmax(0,1fr);
+  width:min(700px,calc(100vw - 28px));
+  transform:translate(calc(100% - var(--hero-drawer-handle)),-50%);
+}
+.hero-reviews-drawer.is-open{transform:translate(0,-50%)}
+.hero-route-panel,
+.hero-reviews-panel{
+  max-height:min(78svh,680px);
+  overflow:auto;
+  visibility:hidden;
+  opacity:0;
+  pointer-events:none;
+  border:1px solid rgba(20,20,18,.12);
+  background:#f7f4ee;
+  transition:opacity .2s ease,visibility 0s linear .34s;
+}
+.hero-route-panel{border-left:0;border-radius:0 18px 18px 0}
+.hero-reviews-panel{border-right:0;border-radius:18px 0 0 18px}
+.hero-route-drawer.is-open .hero-route-panel,
+.hero-reviews-drawer.is-open .hero-reviews-panel{
+  visibility:visible;
+  opacity:1;
+  pointer-events:auto;
+  transition:opacity .22s ease .08s,visibility 0s linear 0s;
+}
+.hero-route-toggle,
+.hero-reviews-toggle{
+  width:var(--hero-drawer-handle);
+  height:clamp(92px,11svh,116px);
+  padding:9px 7px;
+  border:1px solid rgba(215,180,106,.72);
+  background:rgba(248,245,239,.97);
+  color:#151514;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  pointer-events:auto;
+  backdrop-filter:blur(12px);
+}
+.hero-route-toggle{flex-direction:column;gap:8px;border-left:0;border-radius:0 12px 12px 0}
+.hero-reviews-toggle{border-right:0;border-radius:12px 0 0 12px}
+.hero-route-toggle:hover,.hero-reviews-toggle:hover{background:#fff}
+.hero-route-toggle-pin{display:block;width:25px;height:25px;object-fit:contain;transform:rotate(-90deg);filter:drop-shadow(0 2px 4px rgba(0,0,0,.16))}
+.hero-route-toggle-label,.hero-reviews-toggle span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:.68rem;font-weight:900;letter-spacing:.16em;line-height:1}
+.hero-reviews-toggle span{font-size:.72rem;letter-spacing:.18em}
 .hero-content{
   position:relative;
   z-index:2;
@@ -190,9 +366,7 @@ import { siteConfig } from '../config/site';
     flex-direction:column;
     align-items:flex-end;
   }
-  .hero-title-line--one{
-    transform:none;
-  }
+  .hero-title-line--one{transform:none}
   .hero-title-line--two{
     margin-top:2px;
     font-size:clamp(3.05rem,calc(4.1vw - 5px),3.95rem);
@@ -200,19 +374,8 @@ import { siteConfig } from '../config/site';
     letter-spacing:-.045em;
     transform:translate(-5px,-4px);
   }
-  .hero-support{
-    display:block;
-    width:100%;
-    margin-top:clamp(24px,3vh,32px);
-  }
-  .hero-actions{
-    display:flex;
-    width:max-content;
-    max-width:100%;
-    margin-inline:auto;
-    justify-content:center;
-    transform:none;
-  }
+  .hero-support{display:block;width:100%;margin-top:clamp(24px,3vh,32px)}
+  .hero-actions{display:flex;width:max-content;max-width:100%;margin-inline:auto;justify-content:center;transform:none}
 }
 
 @media(max-width:1180px){
@@ -225,6 +388,8 @@ import { siteConfig } from '../config/site';
 
 @media(max-width:900px){
   .hero{min-height:100svh}
+  .hero-route-drawer{width:min(690px,calc(100vw - 18px))}
+  .hero-reviews-drawer{width:min(650px,calc(100vw - 18px))}
   .hero-content{min-height:100svh;padding-top:calc(var(--header-height) + 42px);padding-bottom:154px}
   .hero-stage{width:min(100%,780px)}
   .hero-title-line--one{grid-column:1 / -1;font-size:clamp(3rem,8.2vw,4.8rem)}
@@ -238,6 +403,13 @@ import { siteConfig } from '../config/site';
 }
 
 @media(max-width:620px){
+  .hero-route-drawer,.hero-reviews-drawer{--hero-drawer-handle:50px;width:calc(100vw - 10px)}
+  .hero-route-panel{max-height:76svh;border-radius:0 14px 14px 0}
+  .hero-reviews-panel{max-height:76svh;border-radius:14px 0 0 14px}
+  .hero-route-toggle{border-radius:0 10px 10px 0;height:clamp(88px,11svh,102px);padding:8px 6px;gap:6px}
+  .hero-reviews-toggle{border-radius:10px 0 0 10px;height:clamp(88px,11svh,102px);padding:8px 6px}
+  .hero-route-toggle-pin{width:22px;height:22px}
+  .hero-route-toggle-label,.hero-reviews-toggle span{font-size:.61rem;letter-spacing:.13em}
   .hero-bg{object-position:64% center}
   .hero-overlay{
     background:

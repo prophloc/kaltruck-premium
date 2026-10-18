@@ -8,6 +8,11 @@ const nav = [
   ['O nas', '/o-nas/'],
   ['Kontakt', '/kontakt/'],
 ] as const;
+const pathname = Astro.url.pathname;
+const isServicePath = pathname.startsWith('/transport-') || pathname.startsWith('/rozladunek-hds') || pathname.startsWith('/wynajem-hds');
+const activeHref = isServicePath
+  ? '/transport-hds/'
+  : nav.find(([, href]) => pathname === href || pathname === href.slice(0, -1))?.[1];
 const headerServices = [
   'Kontenery i magazynowanie',
   'Suwnice przemysłowe',
@@ -68,11 +73,11 @@ const headerServices = [
     </div>
 
     <nav class="desktop-nav" aria-label="Nawigacja główna">
-      {nav.map(([label, href]) => <a href={href}>{label}</a>)}
+      {nav.map(([label, href]) => <a href={href} aria-current={activeHref === href ? 'page' : undefined}>{label}</a>)}
     </nav>
   </div>
 </header>
-<MobileMenu />
+<MobileMenu activeHref={activeHref} />
 <noscript>
   <nav class="nojs-nav" aria-label="Nawigacja bez JavaScript">
     <a href="/transport-hds/">Usługi</a>
@@ -279,7 +284,8 @@ const headerServices = [
     text-shadow: 0 2px 18px rgba(0,0,0,.82);
     transition: color .2s ease, opacity .2s ease;
   }
-  .desktop-nav a:hover { color: var(--accent-strong); }
+  .desktop-nav a:hover,
+  .desktop-nav a[aria-current="page"] { color: var(--accent-strong); }
   .menu-button { display: none; width: 46px; height: 46px; flex: 0 0 auto; border: 1px solid rgba(255,255,255,.26); border-radius: 50%; background: rgba(0,0,0,.24); padding: 0 12px; color: var(--text); }
   .menu-button span { display: block; height: 1px; background: currentColor; margin: 6px 0; }
 

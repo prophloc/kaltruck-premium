@@ -11,12 +11,12 @@ const sourceCategories = [
 test('transport HDS page exposes all 31 services grouped under the five original source categories', async ({ page }) => {
   await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
 
-  const article = page.locator('.body-grid article');
-  const groups = article.locator('h3');
+  const catalog = page.locator('[data-service-catalog]');
+  const groups = catalog.locator('[data-service-panel] h2');
   await expect(groups).toHaveCount(5);
   await expect(groups).toHaveText(sourceCategories);
 
-  const services = article.locator('li');
+  const services = catalog.locator('[data-service-item]');
   await expect(services).toHaveCount(31);
   await expect(services).toContainText([
     'Magazynowanie i konserwacja kontenerów',

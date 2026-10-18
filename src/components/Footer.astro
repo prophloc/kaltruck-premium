@@ -1,11 +1,13 @@
 ---
 import { siteConfig } from '../config/site';
+import DistanceEstimator from './DistanceEstimator.astro';
 ---
 <footer class="site-footer">
+  <div class="container footer-route-wrap"><DistanceEstimator instanceId="footer-route" /></div>
   <div class="container footer-grid">
     <div class="footer-brand">
       <img src="/brand/kaltruck-logo.svg" width="2548" height="1305" alt="KALTRUCK Transport HDS" />
-      <p>Ciężki ładunek. Precyzyjna robota.</p>
+      <p>CIĘŻKI ŁADUNEK... PRECYZYJNA ROBOTA.</p>
     </div>
     <div class="footer-links-wrap">
       <p class="footer-label">Nawigacja</p>
@@ -17,34 +19,44 @@ import { siteConfig } from '../config/site';
       <p class="footer-label">Kontakt</p>
       <a class="footer-phone" href={`tel:${siteConfig.phone}`}>+48 514 948 373</a>
       <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
-      <span>Płock • Mazowsze • Polska</span>
+      <a class="footer-address" href={siteConfig.googleMapsUrl} target="_blank" rel="noreferrer">{siteConfig.baseAddress}</a>
     </div>
   </div>
   <div class="container footer-bottom"><span>© {new Date().getFullYear()} {siteConfig.legalName}</span><span>Transport HDS</span></div>
 </footer>
 <style>
-  .site-footer{border-top:1px solid var(--line);background:#060708;padding:clamp(54px,5.5vw,76px) 0 24px}
-  .footer-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:start}
-  .footer-brand{grid-column:1 / span 5;max-width:27rem}
-  .footer-brand img{display:block;width:clamp(150px,12vw,196px);height:auto;filter:invert(1);margin-bottom:22px}
-  .footer-brand p{margin:0;color:#bbb7af;font-size:clamp(1.15rem,1.55vw,1.42rem);line-height:1.5;max-width:24ch}
-  .footer-links-wrap{grid-column:7 / span 2}
-  .footer-contact{grid-column:9 / -1}
-  .footer-label{margin:0 0 16px;color:var(--accent);font-size:.72rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
-  .footer-links,.footer-contact{display:grid;align-content:start;gap:11px}
+  .site-footer{border-top:1px solid var(--line);background:#060708;padding:0 0 18px}
+  .footer-route-wrap{margin-bottom:0}
+  .footer-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:stretch;min-height:220px;padding:18px 0}
+  .footer-brand{grid-column:1/span 5;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;align-self:stretch}
+  .footer-brand img{display:block;width:clamp(280px,19vw,320px);height:auto;filter:invert(1)}
+  .footer-brand p{margin:10px 0 0;color:#bbb7af;font-size:clamp(.72rem,.82vw,.82rem);font-weight:800;line-height:1.2;letter-spacing:.1em;white-space:nowrap}
+  .footer-links-wrap{grid-column:6/span 2;align-self:center}
+  .footer-contact{grid-column:9/-1;align-self:center}
+  .footer-label{margin:0 0 10px;color:var(--accent);font-size:.68rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+  .footer-links,.footer-contact{display:grid;align-content:start;gap:7px}
   .footer-links a{width:max-content;color:#e7e4de}
   .footer-links a:hover{color:var(--accent)}
   .footer-contact{color:#9d9992}
   .footer-contact a{overflow-wrap:anywhere}
-  .footer-phone{color:#fff!important;font-size:clamp(1.25rem,1.8vw,1.55rem);font-weight:800;letter-spacing:-.02em}
-  .footer-bottom{border-top:1px solid var(--line);margin-top:clamp(42px,4.5vw,58px);padding-top:20px;display:flex;justify-content:space-between;gap:20px;color:#777;font-size:.78rem}
-  @media(max-width:900px){.footer-brand{grid-column:1/span 5}.footer-links-wrap{grid-column:7/span 2}.footer-contact{grid-column:9/-1}}
+  .footer-address{color:#9d9992;text-decoration:none}
+  .footer-address:hover{color:var(--accent)}
+  .footer-phone{color:#fff!important;font-size:clamp(1.1rem,1.45vw,1.32rem);font-weight:800;letter-spacing:-.02em}
+  .footer-bottom{border-top:1px solid var(--line);margin-top:0;padding-top:13px;display:flex;justify-content:space-between;gap:20px;color:#777;font-size:.74rem}
+  @media(max-width:900px){
+    .footer-grid{min-height:210px}
+    .footer-brand{grid-column:1/span 5}
+    .footer-links-wrap{grid-column:7/span 2}
+    .footer-contact{grid-column:9/-1}
+    .footer-brand img{width:clamp(250px,31vw,290px)}
+    .footer-brand p{font-size:clamp(.64rem,1.45vw,.76rem)}
+  }
   @media(max-width:760px){
-    .site-footer{padding-top:44px}
-    .footer-grid{grid-template-columns:1fr 1fr;gap:38px 24px}
-    .footer-brand{grid-column:1/-1}
-    .footer-links-wrap,.footer-contact{grid-column:auto}
-    .footer-brand p{max-width:28ch}
-    .footer-bottom{margin-top:38px;flex-direction:column;gap:8px}
+    .footer-grid{grid-template-columns:1fr 1fr;gap:28px 22px;min-height:0;padding:22px 0}
+    .footer-brand{grid-column:1/-1;padding:6px 0 8px}
+    .footer-links-wrap,.footer-contact{grid-column:auto;align-self:start}
+    .footer-brand img{width:clamp(230px,62vw,280px)}
+    .footer-brand p{font-size:clamp(.62rem,2.4vw,.74rem);letter-spacing:.07em;white-space:normal}
+    .footer-bottom{margin-top:0;flex-direction:column;gap:7px}
   }
 </style>

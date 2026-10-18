@@ -8,7 +8,15 @@ const steps=[['01','Kontakt / zapytanie'],['02','Ocena ładunku i warunków'],['
       <h2>Od telefonu do ustawienia ładunku.</h2>
     </div>
     <div class="steps">
-      {steps.map(([n,t])=><div class="step"><span>{n}</span><h3>{t}</h3></div>)}
+      {steps.map(([n,t]) => (
+        <div class="step" data-process-step>
+          <div class="step-top">
+            <span class="step-number" data-step-number>{n}</span>
+            <span class="step-rule" aria-hidden="true"></span>
+          </div>
+          <h3 data-step-title>{t}</h3>
+        </div>
+      ))}
     </div>
   </div>
 </section>
@@ -18,28 +26,43 @@ const steps=[['01','Kontakt / zapytanie'],['02','Ocena ładunku i warunków'],['
   .process-heading{grid-column:1 / span 5}
   .process-heading .eyebrow{margin:0 0 16px}
   .process-heading h2{font-size:clamp(2.75rem,4.25vw,4.75rem);line-height:.96;letter-spacing:-.05em;margin:0;max-width:9ch;text-wrap:balance}
-  .steps{grid-column:6 / -1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .steps{grid-column:6 / -1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:1fr;gap:12px}
   .step{
-    min-height:150px;
-    padding:22px 22px 24px;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
+    min-height:158px;
+    padding:21px 24px 23px;
+    display:grid;
+    grid-template-rows:auto 1fr;
     border:1px solid rgba(255,255,255,.08);
     border-radius:12px;
-    background:linear-gradient(145deg,rgba(255,255,255,.025),rgba(255,255,255,.008));
+    background:linear-gradient(145deg,rgba(255,255,255,.026),rgba(255,255,255,.008));
   }
-  .step span{color:var(--accent);font-size:.72rem;font-weight:700;letter-spacing:.14em}
-  .step h3{font-size:clamp(1.25rem,1.55vw,1.72rem);line-height:1.08;margin:34px 0 0;max-width:12ch;letter-spacing:-.02em}
-  @media(max-width:900px){.process-heading{grid-column:1 / span 5}.steps{grid-column:6 / -1}.step{min-height:140px;padding:20px}}
+  .step-top{display:flex;align-items:center;gap:12px;min-width:0}
+  .step-number{
+    display:inline-grid;
+    place-items:center;
+    min-width:34px;
+    height:26px;
+    padding:0 8px;
+    border:1px solid rgba(215,180,106,.28);
+    border-radius:999px;
+    color:var(--accent);
+    font-size:.68rem;
+    font-weight:800;
+    letter-spacing:.12em;
+    line-height:1;
+  }
+  .step-rule{height:1px;flex:1;background:linear-gradient(90deg,rgba(215,180,106,.28),rgba(255,255,255,.035))}
+  .step h3{align-self:end;font-size:clamp(1.25rem,1.55vw,1.72rem);line-height:1.04;margin:28px 0 0;max-width:16ch;letter-spacing:-.025em;text-wrap:balance}
+  @media(max-width:900px){.process-heading{grid-column:1 / span 5}.steps{grid-column:6 / -1}.step{min-height:148px;padding:20px 21px 22px}}
   @media(max-width:760px){
     .process{padding:52px 0}
     .process-shell{grid-template-columns:1fr;gap:30px}
     .process-heading,.steps{grid-column:auto}
     .process-heading h2{max-width:11ch;font-size:clamp(2.55rem,11vw,4rem)}
     .steps{grid-template-columns:1fr 1fr;gap:10px}
-    .step{min-height:132px;padding:18px;border-radius:10px}
-    .step h3{margin-top:24px;font-size:clamp(1.12rem,5vw,1.5rem)}
+    .step{min-height:138px;padding:18px 19px 20px;border-radius:10px}
+    .step h3{margin-top:22px;font-size:clamp(1.12rem,5vw,1.5rem);max-width:15ch}
+    .step-number{min-width:32px;height:24px}
   }
-  @media(max-width:460px){.steps{grid-template-columns:1fr}.step{min-height:116px}}
+  @media(max-width:460px){.steps{grid-template-columns:1fr}.step{min-height:124px}}
 </style>
