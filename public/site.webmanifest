@@ -1,0 +1,16 @@
+{
+  "name": "KALTRUCK – Transport HDS",
+  "short_name": "KALTRUCK",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#090b0c",
+  "theme_color": "#090b0c",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

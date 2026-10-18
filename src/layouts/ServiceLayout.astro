@@ -16,7 +16,7 @@ const relatedLinks = [
 ].filter((link) => link.href !== canonicalPath);
 const jsonLd=[serviceSchema({ name:serviceType, description:metaDescription, path:canonicalPath }), breadcrumbSchema([{name:'Start',path:'/'},{name:serviceType,path:canonicalPath}])];
 ---
-<BaseLayout title={title} description={metaDescription} canonicalPath={canonicalPath} image={heroImage} jsonLd={jsonLd}>
+<BaseLayout title={title} description={metaDescription} canonicalPath={canonicalPath} jsonLd={jsonLd}>
   <section class:list={['service-hero', showServiceCatalog && 'service-hero--catalog']}>
     <img src={heroImage} alt="" width="1440" height="1080" />
     <div class="shade"></div>

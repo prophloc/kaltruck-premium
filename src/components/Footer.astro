@@ -20,6 +20,14 @@ import DistanceEstimator from './DistanceEstimator.astro';
       <a class="footer-phone" href={`tel:${siteConfig.phone}`}>+48 514 948 373</a>
       <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
       <a class="footer-address" href={siteConfig.googleMapsUrl} target="_blank" rel="noreferrer">{siteConfig.baseAddress}</a>
+      <nav class="footer-socials" aria-label="Profile społecznościowe KALTRUCK">
+        <a class="footer-social" href={siteConfig.facebook} target="_blank" rel="noopener noreferrer" aria-label="KALTRUCK na Facebooku">
+          <img src="/brand/facebook-icon.svg" width="22" height="22" alt="" loading="lazy" /> <span>Facebook</span>
+        </a>
+        <a class="footer-social" href={siteConfig.instagram} target="_blank" rel="noopener noreferrer" aria-label="KALTRUCK na Instagramie">
+          <img src="/brand/instagram-icon.svg" width="22" height="22" alt="" loading="lazy" /> <span>Instagram</span>
+        </a>
+      </nav>
     </div>
   </div>
   <div class="container footer-bottom"><span>© {new Date().getFullYear()} {siteConfig.legalName}</span><span>Transport HDS</span></div>
@@ -41,6 +49,11 @@ import DistanceEstimator from './DistanceEstimator.astro';
   .footer-contact a{overflow-wrap:anywhere}
   .footer-address{color:#9d9992;text-decoration:none}
   .footer-address:hover{color:var(--accent)}
+  .footer-socials{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-top:17px}
+  .footer-social{display:inline-flex;align-items:center;gap:8px;min-height:37px;padding:6px 10px;border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#eeeae3;font-size:.79rem;font-weight:700;transition:border-color .2s ease,background .2s ease}
+  .footer-social img{display:block;width:22px;height:22px;flex:none}
+  .footer-social:hover{border-color:rgba(215,180,106,.65);background:rgba(215,180,106,.08);color:#fff}
+  .footer-social:focus-visible{outline:2px solid var(--accent)}
   .footer-phone{color:#fff!important;font-size:clamp(1.1rem,1.45vw,1.32rem);font-weight:800;letter-spacing:-.02em}
   .footer-bottom{border-top:1px solid var(--line);margin-top:0;padding-top:13px;display:flex;justify-content:space-between;gap:20px;color:#777;font-size:.74rem}
   @media(max-width:900px){
