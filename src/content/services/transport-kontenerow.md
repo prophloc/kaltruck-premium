@@ -2,10 +2,13 @@
 slug: transport-kontenerow
 title: Transport kontenerów HDS | Załadunek i ustawienie | KALTRUCK
 metaDescription: Transport kontenerów mieszkalnych, biurowych i magazynowych HDS wraz z załadunkiem, przewozem i precyzyjnym ustawieniem na miejscu.
-h1: Kontener z miejsca odbioru prosto na docelowe ustawienie
+h1: Transport kontenerów prosto na miejsce
+heroLineOne: Transport kontenerów
+heroLineTwo: prosto na miejsce
+heroAccent: miejsce
 intro: Organizujemy przewóz kontenera wraz z jego podniesieniem i rozładunkiem, bez konieczności zamawiania oddzielnego dźwigu.
 serviceType: Transport kontenerów HDS
-heroImage: https://hdsplock.pl/zdj/realizacje/transport-kontenerow-07.jpg
+heroImage: https://hdsplock.pl/zdj/realizacje/transport-kontenerow-03.jpg
 ---
 ## Transport kontenerów HDS z ustawieniem na miejscu
 
