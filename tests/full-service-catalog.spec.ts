@@ -37,7 +37,7 @@ test('realizations keep the complete five-category structure from the original s
   await expect(filters).toHaveText(['Wszystkie', ...sourceCategories]);
 });
 
-test('desktop contact order is phones, quote pill, then email', async ({ page }) => {
+test('desktop contact order is primary phone, quote pill, then email', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1000 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -45,8 +45,7 @@ test('desktop contact order is phones, quote pill, then email', async ({ page })
     nodes.map((node) => (node as HTMLAnchorElement).getAttribute('href')),
   );
 
-  expect(hrefs.slice(0, 4)).toEqual([
-    'tel:+48514948373',
+  expect(hrefs.slice(0, 3)).toEqual([
     'tel:+48784430022',
     '/wycena/',
     'mailto:hds.plock@gmail.com',
