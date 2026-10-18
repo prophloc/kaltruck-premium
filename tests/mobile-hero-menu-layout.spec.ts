@@ -34,7 +34,7 @@ for (const width of [320, 390, 620]) {
   });
 }
 
-test('mobile menu closes with a centered X and keeps both phone numbers side by side', async ({ page }) => {
+test('mobile menu closes with a centered X and keeps the call action and phone number side by side', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await page.locator('[data-menu-open]').click();
@@ -51,9 +51,8 @@ test('mobile menu closes with a centered X and keeps both phone numbers side by 
   expect(Math.abs(position.dx)).toBeLessThan(1);
   expect(Math.abs(position.dy)).toBeLessThan(1);
 
-  const numbers = page.locator('.mobile-contact__phone');
-  const first = await numbers.nth(0).boundingBox();
-  const second = await numbers.nth(1).boundingBox();
+  const first = await page.locator('.mobile-contact__call-btn').boundingBox();
+  const second = await page.locator('.mobile-contact__phone').boundingBox();
   expect(first).not.toBeNull();
   expect(second).not.toBeNull();
   expect(Math.abs(first!.y - second!.y)).toBeLessThan(3);
