@@ -2,10 +2,13 @@
 slug: wynajem-hds
 title: Wynajem HDS z operatorem | KALTRUCK Płock
 metaDescription: Wynajem samochodu HDS z doświadczoną obsługą do załadunku, rozładunku, ustawiania i prac montażowych. Płock, Mazowsze i zlecenia krajowe.
-h1: HDS z operatorem tam, gdzie potrzebujesz podniesienia
+h1: HDS z operatorem gotowy do działania
+heroLineOne: HDS z operatorem
+heroLineTwo: gotowy do działania
+heroAccent: działania
 intro: Gdy transport nie jest potrzebny, HDS może wykonać sam załadunek, rozładunek albo precyzyjne ustawienie elementu.
 serviceType: Wynajem HDS
-heroImage: https://hdsplock.pl/zdj/realizacje/stacje-transformatorowe-07.jpg
+heroImage: https://hdsplock.pl/zdj/realizacje/montaz-latarni-03.jpg
 ---
 ## Wynajem HDS z operatorem do pracy na miejscu
 
