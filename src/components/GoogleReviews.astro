@@ -3,6 +3,12 @@ import { siteConfig } from '../config/site';
 
 const mapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY || '';
 const placeId = import.meta.env.PUBLIC_GOOGLE_PLACE_ID || 'ChIJhbMF0yh3HEcRVTtOsPxz9eM';
+
+// The production origin must never be published with an unconfigured reviews drawer.
+// Astro embeds PUBLIC_* variables at build time; .env on cPanel cannot fix a built site.
+if (import.meta.env.PROD && siteConfig.siteUrl === 'https://plockhds.pl' && !mapsApiKey.trim()) {
+  throw new Error('Brak PUBLIC_GOOGLE_MAPS_API_KEY: nie publikuj plockhds.pl bez dzialajacych opinii Google.');
+}
 ---
 <section
   class="google-reviews"
