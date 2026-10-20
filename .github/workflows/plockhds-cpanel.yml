@@ -35,13 +35,15 @@ jobs:
             echo "::error title=Nieprawidlowy klucz Google Maps::Sprawdz sekret KALTRUCK_GOOGLE_MAPS_API_KEY (oczekiwany klucz przegladarkowy Google Maps API)."
             exit 1
           fi
+      - name: Validate PHP contact handler syntax
+        run: php -l public/wycena-wyslij.php
       - name: Build for plockhds.pl
         run: npm run build
         env:
           PUBLIC_SITE_URL: https://plockhds.pl
-          PUBLIC_FORM_ENDPOINT: ${{ vars.KALTRUCK_FORM_ENDPOINT }}
+          PUBLIC_FORM_ENDPOINT: /wycena-wyslij.php
           PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.KALTRUCK_GOOGLE_MAPS_API_KEY }}
-          PUBLIC_GOOGLE_PLACE_ID: ChIJhbMF0yh3HEcRVTtOsPxz9eM
+          PUBLIC_GOOGLE_PLACE_ID: ChIJhbMF0yh3HEcRVtTOsPxz9eM
       - name: Verify Google Reviews configuration in generated HTML
         shell: bash
         run: |
@@ -50,12 +52,17 @@ jobs:
           const html = readFileSync('dist/index.html', 'utf8');
           const section = html.match(/<section\b[^>]*\bdata-google-reviews\b[^>]*>/i)?.[0] || '';
           const hasKey = /\bdata-api-key="AIza[^"]+"/.test(section);
-          const hasPlaceId = /\bdata-place-id="ChIJ[^"]+"/.test(section);
+          const hasPlaceId = section.includes('data-place-id="ChIJhbMF0yh3HEcRVtTOsPxz9eM"');
           if (!hasKey || !hasPlaceId) {
             console.error('::error title=Brak konfiguracji opinii w dist::Paczka nie zawiera prawidlowej konfiguracji Google Reviews. Sprawdz sekrety i proces budowania.');
             process.exitCode = 1;
           }
           NODE
+      - name: Verify cPanel form handler and public form endpoint
+        shell: bash
+        run: |
+          test -s dist/wycena-wyslij.php
+          grep -R -q 'action="/wycena-wyslij.php"' dist/wycena/index.html
       - name: Create HTTPS canonical redirect
         run: |
           cat > dist/.htaccess <<'HTACCESS'

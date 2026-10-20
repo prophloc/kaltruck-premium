@@ -9,26 +9,31 @@ const { layout = 'default' } = Astro.props;
 <div class:list={["quote-shell", { "quote-shell--stacked": layout === "stacked" }]}>
   <form data-quote-form method={formConfig.method} action={formConfig.endpoint || undefined}>
     <div class="field-grid two">
-      <label><span>Imię / firma</span><input name="name" autocomplete="name" /></label>
-      <label><span>Telefon</span><input name="phone" type="tel" autocomplete="tel" required /></label>
+      <label><span>Imię / firma</span><input name="name" autocomplete="name" maxlength="120" /></label>
+      <label><span>Telefon</span><input name="phone" type="tel" autocomplete="tel" maxlength="50" required /></label>
     </div>
     <div class="field-grid two">
-      <label><span>E-mail</span><input name="email" type="email" autocomplete="email" /></label>
-      <label><span>Co przewozimy?</span><input name="cargo" required /></label>
+      <label><span>E-mail</span><input name="email" type="email" autocomplete="email" maxlength="254" /></label>
+      <label><span>Co przewozimy?</span><input name="cargo" maxlength="250" required /></label>
     </div>
     <div class="field-grid two">
-      <label><span>Skąd</span><input name="origin" required /></label>
-      <label><span>Dokąd</span><input name="destination" required /></label>
+      <label><span>Skąd</span><input name="origin" maxlength="200" required /></label>
+      <label><span>Dokąd</span><input name="destination" maxlength="200" required /></label>
     </div>
     <div class="field-grid two">
-      <label><span>Wymiary / waga</span><input name="dimensions_weight" placeholder="np. 6 × 2,5 m, ok. 4 t" /></label>
+      <label><span>Wymiary / waga</span><input name="dimensions_weight" maxlength="250" placeholder="np. 6 × 2,5 m, ok. 4 t" /></label>
       <label><span>Preferowany termin</span><input name="preferred_date" type="date" /></label>
     </div>
-    <label><span>Wiadomość</span><textarea name="message" rows="5" placeholder="Dojazd, miejsce ustawienia, dodatkowe informacje..."></textarea></label>
+    <label><span>Wiadomość</span><textarea name="message" rows="5" maxlength="4000" placeholder="Dojazd, miejsce ustawienia, dodatkowe informacje..."></textarea></label>
+    <div class="quote-honeypot" aria-hidden="true">
+      <label for="quote-website">Strona internetowa</label>
+      <input id="quote-website" name="website" tabindex="-1" autocomplete="off" />
+    </div>
     <div class="form-bottom">
       <button class="btn btn-primary" type="submit" disabled={!formConfig.canSubmit}>Wyślij zapytanie</button>
       <p>Wysyłając zapytanie, podajesz dane wyłącznie w celu kontaktu w sprawie wyceny.</p>
     </div>
+    <p class="quote-form-status" data-quote-status role="status" aria-live="polite"></p>
   </form>
   {!formConfig.canSubmit && (
     <aside class="fallback" role="status">
@@ -37,6 +42,63 @@ const { layout = 'default' } = Astro.props;
     </aside>
   )}
 </div>
+<script>
+  document.querySelectorAll<HTMLFormElement>('form[data-quote-form]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('[data-quote-status]');
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const queryStatus = new URLSearchParams(window.location.search).get('status');
+    if (queryStatus === 'sent' && status) {
+      status.textContent = 'Zapytanie zostało przyjęte do wysyłki. Dziękujemy!';
+      status.dataset.state = 'success';
+    } else if (queryStatus === 'error' && status) {
+      status.textContent = 'Wysyłka nie powiodła się. Spróbuj ponownie lub zadzwoń do nas.';
+      status.dataset.state = 'error';
+    }
+    if (!form.action || !button || button.disabled) return;
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity() || button.disabled) return;
+      button.disabled = true;
+      const label = button.textContent || 'Wyślij zapytanie';
+      button.textContent = 'Wysyłanie…';
+      if (status) {
+        status.dataset.state = '';
+        status.textContent = 'Wysyłamy zapytanie…';
+      }
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          credentials: 'same-origin',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        });
+        const result: { success?: boolean; message?: string } = await response.json();
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || 'Nie udało się wysłać wiadomości.');
+        }
+        if (status) {
+          status.dataset.state = 'success';
+          status.textContent = 'Zapytanie zostało przyjęte do wysyłki. Dziękujemy!';
+        }
+        form.reset();
+      } catch (error) {
+        if (status) {
+          status.dataset.state = 'error';
+          status.textContent = error instanceof Error ? error.message : 'Wysyłka nie powiodła się. Spróbuj ponownie.';
+        }
+      } finally {
+        button.disabled = false;
+        button.textContent = label;
+      }
+    });
+  });
+</script>
+
 <style>
 .quote-shell{display:grid;grid-template-columns:minmax(0,8fr) minmax(280px,4fr);gap:clamp(28px,4vw,56px);align-items:start}.quote-shell--stacked{grid-template-columns:minmax(0,1fr);gap:28px}.quote-shell--stacked .fallback{position:static}form{display:grid;gap:22px;min-width:0}.field-grid{display:grid;gap:22px}.field-grid.two{grid-template-columns:1fr 1fr}label{display:grid;gap:9px;min-width:0}label span{font-size:.76rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:700}input,textarea{width:100%;border:1px solid var(--line);background:#111315;color:var(--text);border-radius:14px;padding:17px 18px;min-height:58px;outline:none;transition:border-color .2s ease,background .2s ease}input:focus,textarea:focus{border-color:rgba(215,180,106,.72);background:#14171a}textarea{resize:vertical;min-height:150px}.form-bottom{display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding-top:4px}.form-bottom p{max-width:48ch;font-size:.78rem;line-height:1.55;color:#818181}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}.fallback{border:1px solid var(--line);border-radius:var(--radius-md);padding:clamp(22px,3vw,30px);background:linear-gradient(180deg,#121416,#0d0f11);position:sticky;top:120px}.fallback strong{display:block;margin-bottom:12px;font-size:1.05rem}.fallback p{color:var(--muted);line-height:1.6}.fallback a{color:var(--accent);font-weight:750}@media(max-width:900px){.quote-shell{grid-template-columns:1fr}.fallback{position:static}}@media(max-width:620px){.field-grid.two{grid-template-columns:1fr}.field-grid,form{gap:18px}input,textarea{font-size:16px;min-height:56px}.form-bottom{align-items:flex-start;flex-direction:column}}
+.quote-honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+.quote-form-status{min-height:1.3em;margin:0;color:var(--muted);font-size:.88rem;line-height:1.5}
+.quote-form-status[data-state="success"]{color:#96d9ad;font-weight:700}
+.quote-form-status[data-state="error"]{color:#f5a39a;font-weight:700}
 </style>

@@ -21,3 +21,9 @@ test('missing submit endpoint is explicit instead of silently dropping leads', a
     await expect(page.getByRole('button', { name: /Wyślij/i })).toBeDisabled();
   }
 });
+
+test('quote form has an accessible outcome area and anti-spam field', async ({ page }) => {
+  await page.goto('/wycena/');
+  await expect(page.locator('[data-quote-status]')).toHaveCount(1);
+  await expect(page.locator('form[data-quote-form] input[name="website"]')).toHaveCount(1);
+});

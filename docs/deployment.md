@@ -18,7 +18,7 @@ Astro generates the static website into `dist/`. Upload the contents of `dist/` 
 
 Set `PUBLIC_SITE_URL` to the final HTTPS origin before the production build. This single value drives canonical URLs, Open Graph URLs, structured data, robots and sitemap references.
 
-Set `PUBLIC_FORM_ENDPOINT` only after the receiving endpoint is tested end-to-end. Until it is configured, the quote form intentionally disables its submit button and shows the verified KALTRUCK phone/e-mail fallback so enquiries cannot be silently lost.
+The production cPanel workflow now builds the quote form with `PUBLIC_FORM_ENDPOINT=/wycena-wyslij.php`, and ships `public/wycena-wyslij.php` into `dist/`. The form sends POST requests directly to the plockhds.pl server and attempts delivery to `hds.plock@gmail.com` using the host's PHP `mail()` transport. Local/preview builds without a configured endpoint keep the disabled-button fallback. On the production hosting, PHP must be available and configured to send mail; a positive `mail()` return value does **not** guarantee Gmail inbox delivery.
 
 ## Google Reviews on plockhds.pl (required for the cPanel ZIP)
 
@@ -49,8 +49,10 @@ A `true` result confirms only that a key was compiled into the page, not that Go
 1. Run `npm install && npm run build` locally or in CI.
 2. Upload the contents of `dist/` to the target domain's public directory.
 3. Ensure directory-index routing is enabled so `/kontakt/` serves `/kontakt/index.html`.
-4. Configure the form endpoint (PHP or external HTTPS form endpoint) and rebuild with `PUBLIC_FORM_ENDPOINT`.
-5. Verify `robots.txt`, `sitemap-index.xml`, canonical tags and one real form delivery on the public host.
+4. Confirm `/wycena-wyslij.php` is deployed as a **PHP file** to the document root, not served as a static download. A GET request should be rejected (HTTP 405), while POST from `/wycena/` should return JSON and not expose a PHP stack trace.
+5. In cPanel verify the domain can send outbound PHP mail using `formularz@plockhds.pl` as the From address. Configure SPF/DKIM and the mail transport; if the host disables `mail()`, replace server-side delivery with authenticated SMTP, keeping credentials outside `public_html` and out of GitHub.
+6. Send a real form test and check `hds.plock@gmail.com` Inbox and Spam. A success notice on the form indicates submission was queued, not confirmed inbox delivery.
+7. Verify `robots.txt`, sitemap, canonical tags, and test the same form on desktop/mobile.
 
 ## Pre-launch content check
 
