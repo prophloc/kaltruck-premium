@@ -15,6 +15,7 @@ jobs:
           node-version: 22
       - run: npm install
       - run: npm run test:run
+      - run: php -l public/wycena-wyslij.php
       - run: npm run build
         env:
           PUBLIC_SITE_URL: https://preview.invalid
