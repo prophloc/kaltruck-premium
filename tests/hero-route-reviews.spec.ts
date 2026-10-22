@@ -148,8 +148,10 @@ test('social footer and favicon/Open Graph previews are configured', async ({ pa
     await expect(fb).toHaveAttribute('href', 'https://www.facebook.com/profile.php?id=61561070733012');
     await expect(ig).toHaveAttribute('href', 'https://www.instagram.com/transporthdsplock/');
     await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg?v=kaltruck-h-4');
-    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://plockhds.pl/og-image-v02.jpg');
-    await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', 'https://plockhds.pl/og-image-v02.jpg');
+    const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
+    const expectedOG = new URL('/og-image-v02.jpg', canonical || 'https://plockhds.pl').toString();
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', expectedOG);
+    await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', expectedOG);
   }
   for (const path of ['/favicon.svg', '/brand/facebook-icon.svg', '/brand/instagram-icon.svg', '/site.webmanifest']) {
     const response = await page.request.get(path);

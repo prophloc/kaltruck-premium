@@ -16,7 +16,9 @@ jobs:
       - run: npm install
       - run: npm run test:run
       - run: php -l public/wycena-wyslij.php
-      - run: npm run build
+      # Preview tests must not depend on the original website serving OG artwork.
+      # Production cPanel builds still download AND verify the exact image.
+      - run: node scripts/optimize-hero.mjs && npx astro build
         env:
           PUBLIC_SITE_URL: https://preview.invalid
       - run: npx playwright install --with-deps chromium
