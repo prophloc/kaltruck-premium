@@ -44,6 +44,24 @@ jobs:
           PUBLIC_FORM_ENDPOINT: /wycena-wyslij.php
           PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.KALTRUCK_GOOGLE_MAPS_API_KEY }}
           PUBLIC_GOOGLE_PLACE_ID: ChIJhbMF0yh3HEcRVtTOsPxz9eM
+      - name: Verify the original OG image is bundled and referenced locally
+        shell: bash
+        run: |
+          test -s dist/og-image-v02.jpg
+          test "$(file -b --mime-type dist/og-image-v02.jpg)" = "image/jpeg"
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          const html = readFileSync('dist/index.html', 'utf8');
+          const expected = 'https://plockhds.pl/og-image-v02.jpg';
+          for (const property of ['og:image', 'og:image:secure_url']) {
+            if (!html.includes(`property="${property}" content="${expected}"`)) {
+              throw new Error(`Missing locally served ${property}: ${expected}`);
+            }
+          }
+          if (!html.includes(`name="twitter:image" content="${expected}"`)) {
+            throw new Error('Twitter image does not use the bundled OG artwork.');
+          }
+          NODE
       - name: Verify Google Reviews configuration in generated HTML
         shell: bash
         run: |

@@ -15,7 +15,7 @@ export function organizationSchema() {
     email: siteConfig.email,
     telephone: siteConfig.phone,
     vatID: `PL${siteConfig.nip}`,
-    image: siteConfig.socialImage,
+    image: absolute(siteConfig.socialImage),
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'Tokarska 40',

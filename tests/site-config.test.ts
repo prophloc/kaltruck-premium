@@ -7,6 +7,11 @@ describe('siteConfig', () => {
     expect(() => new URL(siteConfig.siteUrl)).not.toThrow();
   });
 
+  it('serves the original OG artwork from Premium instead of hotlinking it', () => {
+    expect(siteConfig.socialImage).toBe('/og-image-v02.jpg');
+    expect(new URL(siteConfig.socialImage, 'https://plockhds.pl').origin).toBe('https://plockhds.pl');
+  });
+
   it('does not expose fake sentinel values as company facts', () => {
     const values = Object.values(siteConfig).filter((value): value is string => typeof value === 'string');
     const banned = /\b(?:TODO|123|example\.com)\b/i;

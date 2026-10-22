@@ -8,3 +8,6 @@ playwright-report/
 test-results/
 .superpowers/
 .DS_Store
+
+# Exact OG asset is copied from the official site during prebuild.
+/public/og-image-v02.jpg

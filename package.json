@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node scripts/copy-og-image.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "test": "vitest",
