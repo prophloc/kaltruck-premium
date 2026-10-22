@@ -4,7 +4,7 @@ const { eyebrow,title,text,href,image,alt,reverse=false,width=1440,height=1080 }
 ---
 <section class:list={['story', reverse && 'reverse']}>
   <div class="container story-inner">
-    <div class="story-media"><img src={image} alt={alt} width={width} height={height} loading="lazy" /></div>
+    <div class="story-media"><img src={image} alt={alt} width={width} height={height} loading="lazy" decoding="async" /></div>
     <div class="story-copy">
       <p class="eyebrow">{eyebrow}</p>
       <h2>{title}</h2>

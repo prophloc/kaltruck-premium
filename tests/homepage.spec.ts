@@ -35,28 +35,29 @@ test('homepage communicates the premium HDS offer without invented data', async 
   }
 });
 
-test('homepage hero uses the exact supplied PNG artwork', async ({ page }) => {
+test('homepage preserves original PNG but serves lightweight responsive WebP', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  const expectedSrc = '/images/home/hero-hds-original.png';
-  const heroImage = page.locator('.hero-bg');
-  await expect(heroImage).toHaveAttribute('src', expectedSrc);
-
-  const assetResponse = await page.request.get(expectedSrc);
-  expect(assetResponse.ok()).toBeTruthy();
-  expect(assetResponse.headers()['content-type']).toContain('image/png');
-  const assetBytes = await assetResponse.body();
-  expect(assetBytes.byteLength).toBe(3_113_888);
-  expect(createHash('sha256').update(assetBytes).digest('hex')).toBe('e50fe7b925406797a309348ccbcd463598e0b4e3514c131641c6db78e7a74f2b');
-
-  const decoded = await heroImage.evaluate((img: HTMLImageElement) => ({
-    width: img.naturalWidth,
-    height: img.naturalHeight,
-  }));
-
-  expect(decoded.width).toBe(1672);
-  expect(decoded.height).toBe(941);
+  const png = await page.request.get('/images/home/hero-hds-original.png');
+  expect(png.ok()).toBeTruthy();
+  const bytes = await png.body();
+  expect(bytes.byteLength).toBe(3_113_888);
+  expect(createHash('sha256').update(bytes).digest('hex')).toBe('e50fe7b925406797a309348ccbcd463598e0b4e3514c131641c6db78e7a74f2b');
+  const hero = page.locator('.hero-bg');
+  await expect(hero).toHaveAttribute('src', '/images/home/hero-hds-desktop.webp');
+  await expect(hero).toHaveAttribute('fetchpriority', 'high');
+  await expect(hero).toHaveAttribute('loading', 'eager');
+  await expect(page.locator('link[rel="preload"][as="image"]')).toHaveCount(2);
+  for (const file of ['hero-hds-desktop.webp', 'hero-hds-mobile.webp']) {
+    const response = await page.request.get(`/images/home/${file}`);
+    expect(response.ok(), file).toBeTruthy();
+    expect(response.headers()['content-type']).toContain('image/webp');
+    expect((await response.body()).byteLength).toBeLessThan(bytes.byteLength);
+  }
+  const dimensions = await hero.evaluate((img: HTMLImageElement) => ({ width: img.naturalWidth, height: img.naturalHeight }));
+  expect(dimensions).toEqual({ width: 1672, height: 941 });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(hero).toHaveJSProperty('currentSrc', 'http://127.0.0.1:4321/images/home/hero-hds-mobile.webp');
 });
 
 test('capability strip centers clean data without decorative indexes', async ({ page }) => {

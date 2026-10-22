@@ -11,3 +11,7 @@ test-results/
 
 # Exact OG asset is copied from the official site during prebuild.
 /public/og-image-v02.jpg
+
+# Generated locally from the unmodified original hero PNG.
+/public/images/home/hero-hds-desktop.webp
+/public/images/home/hero-hds-mobile.webp

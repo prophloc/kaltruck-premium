@@ -44,6 +44,17 @@ jobs:
           PUBLIC_FORM_ENDPOINT: /wycena-wyslij.php
           PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.KALTRUCK_GOOGLE_MAPS_API_KEY }}
           PUBLIC_GOOGLE_PLACE_ID: ChIJhbMF0yh3HEcRVtTOsPxz9eM
+      - name: Verify optimized hero assets are inside the package
+        shell: bash
+        run: |
+          test -s dist/images/home/hero-hds-desktop.webp
+          test -s dist/images/home/hero-hds-mobile.webp
+          test "$(file -b --mime-type dist/images/home/hero-hds-desktop.webp)" = "image/webp"
+          test "$(file -b --mime-type dist/images/home/hero-hds-mobile.webp)" = "image/webp"
+          test "$(stat -c%s dist/images/home/hero-hds-desktop.webp)" -lt 800000
+          test "$(stat -c%s dist/images/home/hero-hds-mobile.webp)" -lt 800000
+          grep -q 'hero-hds-desktop.webp' dist/index.html
+          grep -q 'hero-hds-mobile.webp' dist/index.html
       - name: Verify the original OG image is bundled and referenced locally
         shell: bash
         run: |
