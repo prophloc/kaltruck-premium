@@ -1,14 +1,46 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import HeavyTransportLanding from '../components/HeavyTransportLanding.astro';
+import { siteConfig } from '../config/site';
+import { organizationSchema } from '../lib/seo';
+import HeavyTransportReference from '../components/HeavyTransportReference.astro';
+const title = 'Transport HDS Płock i cała Polska | KALTRUCK';
+const description = 'KALTRUCK — transport z żurawiem HDS, przewóz i ustawianie kontenerów, prefabrykatów i maszyn. Baza Płock, realizacje w całej Polsce.';
+const canonical = new URL('/',siteConfig.siteUrl).toString();
+const image = new URL(siteConfig.socialImage,siteConfig.siteUrl).toString();
 ---
-<BaseLayout
-  title="Transport HDS KALTRUCK | Płock, Mazowsze i cała Polska"
-  description="KALTRUCK — transport HDS, załadunek, rozładunek i precyzyjne ustawianie kontenerów, prefabrykatów i maszyn. Płock i cała Polska."
-  canonicalPath="/"
->
-  <link slot="head" rel="preload" as="image" href="/images/home/hero-hds-desktop.webp" media="(min-width: 621px)" fetchpriority="high" />
-  <link slot="head" rel="preload" as="image" href="/images/home/hero-hds-mobile.webp" media="(max-width: 620px)" fetchpriority="high" />
-  <link slot="head" rel="stylesheet" href="/heavytransport-layout.css" />
-  <HeavyTransportLanding />
-</BaseLayout>
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#25292c"/>
+    <title>{title}</title>
+    <meta name="description" content={description}/>
+    <link rel="canonical" href={canonical}/>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=kaltruck-h-4"/>
+    <link rel="manifest" href="/site.webmanifest"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:locale" content="pl_PL"/>
+    <meta property="og:site_name" content={siteConfig.brandName}/>
+    <meta property="og:title" content={title}/>
+    <meta property="og:description" content={description}/>
+    <meta property="og:url" content={canonical}/>
+    <meta property="og:image" content={image}/>
+    <meta property="og:image:secure_url" content={image}/>
+    <meta property="og:image:type" content="image/jpeg"/>
+    <meta property="og:image:width" content="1000"/>
+    <meta property="og:image:height" content="525"/>
+    <meta property="og:image:alt" content="KALTRUCK — transport i usługi HDS"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content={title}/>
+    <meta name="twitter:description" content={description}/>
+    <meta name="twitter:image" content={image}/>
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema())}/>
+    <link rel="preload" as="image" href="/images/home/hero-hds-desktop.webp" media="(min-width: 541px)" fetchpriority="high"/>
+    <link rel="preload" as="image" href="/images/home/hero-hds-mobile.webp" media="(max-width: 540px)" fetchpriority="high"/>
+    <link rel="stylesheet" href="/heavytransport-layout.css"/>
+  </head>
+  <body>
+    <a href="#main-content" class="sht-skip-link" style="position:absolute;left:-9999px;top:0;z-index:99;background:white;padding:12px;" onfocus="this.style.left='12px'" onblur="this.style.left='-9999px'">Przejdź do treści</a>
+    <HeavyTransportReference/>
+  </body>
+</html>
