@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('desktop header rotates through the full source-backed HDS service range', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 900 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
 
   const rotator = page.locator('[data-service-rotator]');
   await expect(rotator).toBeVisible();
@@ -35,6 +35,6 @@ test('desktop header rotates through the full source-backed HDS service range', 
 
 test('service rotator stays out of compressed navigation widths', async ({ page }) => {
   await page.setViewportSize({ width: 1170, height: 900 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-service-rotator]')).toBeHidden();
 });
