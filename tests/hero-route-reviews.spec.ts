@@ -17,7 +17,7 @@ test('source-like article links preserve site information architecture',async({p
 test('inner service pages retain footer Google route and social links',async({page})=>{
  await page.goto('/transport-hds/',{waitUntil:'domcontentloaded'});
  await expect(page.locator('.site-footer [data-google-route]')).toHaveCount(1);
- await expect(page.locator('.footer-socials a')).toHaveCount(2);
+ await expect(page.locator('.sht-footer .sht-socials a')).toHaveCount(2);
 });
 
 test('favicon and social metadata remain configured for landing and inner pages',async({page})=>{
