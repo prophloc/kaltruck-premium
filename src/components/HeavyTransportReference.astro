@@ -1,6 +1,7 @@
 ---
 import { siteConfig } from '../config/site';
 import ReferenceHeader from './ReferenceHeader.astro';
+import ReferenceSideDrawers from './ReferenceSideDrawers.astro';
 import ReferenceFooter from './ReferenceFooter.astro';
 
 const stats = [
@@ -21,6 +22,7 @@ const gallery = [
 
   <main id="main-content">
     <section class="sht-banner" aria-labelledby="sht-hero-title">
+      <ReferenceSideDrawers />
       <div class="sht-banner-photo" aria-hidden="true"></div>
       <div class="sht-shell sht-banner-content">
         <p class="sht-breadcrumb">STRONA GŁÓWNA <span>/</span> TRANSPORT HDS</p>
