@@ -1,40 +1,14 @@
-import { test, expect } from '@playwright/test';
-
-test('desktop header rotates through the full source-backed HDS service range', async ({ page }) => {
-  await page.setViewportSize({ width: 1600, height: 900 });
-  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
-
-  const rotator = page.locator('[data-service-rotator]');
-  await expect(rotator).toBeVisible();
-
-  const services = await rotator.evaluate((node) => {
-    const raw = node.getAttribute('data-services') || '[]';
-    return JSON.parse(raw) as string[];
-  });
-
-  expect(services.length).toBeGreaterThanOrEqual(30);
-  expect(services).toEqual(expect.arrayContaining([
-    'Suwnice przemysłowe',
-    'Domki holenderskie',
-    'Stacje transformatorowe',
-    'Prefabrykaty',
-    'Maszyny rolnicze',
-    'Łodzie i jachty',
-    'Reklamy, billboardy i paczkomaty',
-  ]));
-
-  const label = rotator.locator('[data-service-rotator-label]');
-  const first = (await label.textContent())?.trim();
-  expect(first).toBeTruthy();
-
-  await page.waitForTimeout(3200);
-  const second = (await label.textContent())?.trim();
-  expect(second).toBeTruthy();
-  expect(second).not.toBe(first);
+import {test,expect} from '@playwright/test';
+test('shared header labels lead to five core pages',async({page})=>{
+ await page.goto('/');
+ const links=await page.locator('.sht-nav a').evaluateAll(nodes=>nodes.map(n=>(n as HTMLAnchorElement).getAttribute('href')));
+ expect(links).toEqual(['/transport-hds/','/realizacje/','/sprzet/','/o-nas/','/kontakt/']);
 });
-
-test('service rotator stays out of compressed navigation widths', async ({ page }) => {
-  await page.setViewportSize({ width: 1170, height: 900 });
-  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('[data-service-rotator]')).toBeHidden();
+test('small-screen header stays compact and horizontal without a carousel',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto('/');
+ await expect(page.locator('.sht-nav a')).toHaveCount(5);
+ await expect(page.locator('[data-service-rotator]')).toHaveCount(0);
+ const top=await page.locator('.sht-header').boundingBox();
+ expect(top!.height).toBeLessThan(190);
 });
