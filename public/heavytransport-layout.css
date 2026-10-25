@@ -335,3 +335,124 @@ body:has(.sht){background:#fff;color:#34393b}
 .sht-review-wrapper .google-reviews{max-width:100%;background:#f6f6f4;color:#333;margin:0 0 25px}
 .sht-review-wrapper .google-reviews-kicker{color:#be4530}
 @media(max-width:540px){.sht-review-wrapper .google-reviews-head{grid-template-columns:1fr 1fr;gap:12px}.sht-review-wrapper .google-reviews-brand{display:none}.sht-review-wrapper .google-reviews-list{grid-template-columns:1fr}}
+
+
+/* KALTRUCK HEAVY V3 / visual polish, approved layout only */
+.sht .sht-navinner{min-height:105px;gap:clamp(16px,2.4vw,38px)}
+.sht .sht-logo{width:clamp(186px,18.5vw,238px);min-width:0;flex:0 0 auto}
+.sht .sht-logo img{display:block;width:100%;height:99px;max-height:99px;object-fit:contain;object-position:left center}
+.sht .sht-nav{gap:clamp(12px,1.6vw,29px)}
+.sht .sht-nav a{font-size:12px}
+.sht .sht-nav a[aria-current="page"]{color:#d94831}
+.sht .sht-nav-phone{flex-shrink:0}
+.sht .sht-article-title{margin-bottom:33px}
+.sht .sht-article{padding-block:clamp(60px,5.8vw,88px)}
+.sht .sht-article-text>p{line-height:1.86}
+.sht .sht-photo-grid{gap:22px}
+.sht .sht-contact-grid{column-gap:36px}
+.sht .sht-article-cta{gap:20px 32px}
+.sht .sht-contact-bottom{margin-top:42px}
+
+/* Slide-out route + Google review tabs, left/right at the top of the page */
+.sht-drawer-tab{position:fixed;z-index:150;top:clamp(175px,22vh,255px);display:flex;align-items:center;justify-content:center;gap:13px;width:43px;min-height:155px;padding:17px 9px;background:#f5f5f4;border:1px solid #cfd1d2;box-shadow:0 10px 25px rgba(18,22,24,.18);color:#34383b;cursor:pointer;writing-mode:vertical-rl;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;font-weight:800;transition:background .2s,color .2s,transform .2s}
+.sht-drawer-tab:hover,.sht-drawer-tab[aria-expanded="true"]{background:#e94f32;border-color:#e94f32;color:#fff}
+.sht-drawer-tab--left{left:0;border-left:0;border-radius:0 7px 7px 0}
+.sht-drawer-tab--right{right:0;border-right:0;border-radius:7px 0 0 7px;writing-mode:vertical-rl;transform:rotate(180deg)}
+.sht-drawer-tab--right:hover,.sht-drawer-tab--right[aria-expanded="true"]{transform:rotate(180deg)}
+.sht-drawer-tab-symbol{font-size:21px;line-height:1;color:#e94f32}
+.sht-drawer-tab:hover .sht-drawer-tab-symbol,.sht-drawer-tab[aria-expanded="true"] .sht-drawer-tab-symbol{color:#fff}
+.sht-drawer-backdrop{position:fixed;z-index:180;inset:0;background:rgba(24,29,32,.48);backdrop-filter:blur(2px)}
+.sht-drawer-backdrop[hidden]{display:none}
+.sht-drawer-panel{position:fixed;z-index:200;top:0;bottom:0;width:min(650px,calc(100vw - 18px));overflow:auto;overscroll-behavior:contain;background:#f7f7f5;box-shadow:0 18px 66px rgba(0,0,0,.33);padding:clamp(22px,3vw,38px);transition:transform .3s cubic-bezier(.2,.76,.25,1);visibility:hidden}
+.sht-drawer-panel--left{left:0;transform:translateX(-102%)}
+.sht-drawer-panel--right{right:0;transform:translateX(102%)}
+.sht-drawers[data-active-drawer="route"] .sht-drawer-panel--left,
+.sht-drawers[data-active-drawer="reviews"] .sht-drawer-panel--right{transform:translateX(0);visibility:visible}
+.sht-drawer-head{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;border-bottom:1px solid #ddd;padding:8px 0 22px;margin-bottom:20px}
+.sht-drawer-head small{color:#ca5039;font-size:11px;font-weight:800;letter-spacing:.12em}
+.sht-drawer-head h2{font-size:clamp(26px,3vw,37px);line-height:1.15;margin:9px 0 0;color:#2e3335}
+.sht-drawer-close{width:43px;height:43px;display:grid;place-items:center;flex:none;background:#fff;border:1px solid #d4d6d6;border-radius:50%;font-size:27px;line-height:1;color:#282e30;cursor:pointer}
+.sht-drawer-close:hover{background:#e94f32;color:#fff;border-color:#e94f32}
+.sht-drawer-panel .google-route--drawer{padding:10px 0 0;background:transparent;gap:18px}
+.sht-drawer-panel .google-route-form button{background:#e94f32;color:#fff;border-color:#e94f32}
+.sht-drawer-panel .google-route-point{background:#fbe0da;color:#bc4834}
+.sht-drawer-panel .google-route-map-shell{border-radius:3px;background:#f1f1f1;border:1px solid #d7d9da;box-shadow:none}
+.sht-drawer-panel .google-route-map-shell,.sht-drawer-panel .google-route-map-shell iframe{min-height:320px}
+.sht-drawer-panel .google-route-meta a{color:#b13c29}
+.sht-drawer-panel .google-route-meta span{color:#6f7678}
+.sht-drawer-panel .google-reviews{background:transparent;color:#303638;padding:0}
+.sht-drawer-panel .google-reviews-head{min-height:104px}
+.sht-drawer-panel .google-reviews-kicker{color:#cb5037}
+.sht-drawer-panel .google-reviews-brand{max-height:94px}
+.sht-drawer-panel .google-review-card{background:#fff;border:1px solid #e1e2e2;border-radius:3px}
+.sht-drawer-panel .google-reviews-fallback{color:#c3422c}
+.sht-drawer-panel .google-reviews-list{grid-template-columns:1fr}
+.sht-drawer-panel :focus-visible{outline:2px solid #e94f32;outline-offset:3px}
+
+/* Footer map open, spread across significantly larger width */
+.sht .sht-route-wrapper{width:calc(100% - 80px);max-width:1510px;margin-inline:auto}
+.sht .sht-route-details--wide{padding-block:25px 39px}
+.sht .sht-route-details--wide summary{font-size:14px;color:#f8f8f7;letter-spacing:.08em;padding:0 0 23px}
+.sht .sht-route-details--wide .google-route{display:grid;grid-template-columns:minmax(280px,.31fr) minmax(0,.69fr);gap:clamp(22px,3vw,55px);margin:0;border-top:1px solid #454a4c;border-bottom:0;padding:29px 0 0}
+.sht .sht-route-details--wide .google-route-panel{align-self:start;padding-top:20px}
+.sht .sht-route-details--wide .google-route-map-shell{min-height:385px;background:#e9eaeb;border:2px solid #666;border-radius:4px}
+.sht .sht-route-details--wide .google-route-map-shell iframe{min-height:385px}
+.sht .sht-route-details--wide .google-route-heading h2{color:#f1f1ef;font-size:clamp(23px,2.3vw,31px)}
+.sht .sht-route-details--wide .google-route-form{grid-template-columns:1fr}
+.sht .sht-route-details--wide .google-route-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sht .sht-route-details--wide .google-route-form input{background:#f5f5f4;color:#323638;border:1px solid #85898b;border-radius:3px}
+.sht .sht-route-details--wide .google-route-form input::placeholder{color:#757c7e}
+.sht .sht-route-details--wide .google-route-form button{max-width:210px;border-radius:3px}
+
+/* Contact map: larger panel with a greater share devoted to the map */
+.sht .sht-contact-page .sht-route-page{width:min(1510px,calc(100vw - 64px));max-width:none;position:relative;left:50%;transform:translateX(-50%);margin-top:75px}
+.sht .sht-contact-page .sht-route-page .google-route{display:grid;grid-template-columns:minmax(250px,.3fr) minmax(0,.7fr);gap:clamp(20px,3vw,45px);padding:25px;background:#f6f6f5}
+.sht .sht-contact-page .sht-route-page .google-route-panel{align-self:start;padding-top:22px}
+.sht .sht-contact-page .sht-route-page .google-route-map-shell,
+.sht .sht-contact-page .sht-route-page .google-route-map-shell iframe{min-height:390px;border-radius:4px}
+.sht .sht-contact-page .sht-route-page .google-route-form{grid-template-columns:1fr}
+.sht .sht-contact-page .sht-route-page .google-route-fields{grid-template-columns:1fr}
+.sht .sht-contact-page .sht-route-page .google-route-form button{max-width:220px}
+.sht .sht-contact-page .sht-route-page .google-route-heading h2{color:#33393b!important}
+
+/* Vertical center of equipment's right image against the left text group */
+.sht .sht-equipment-page .sht-article-layout{align-items:center}
+.sht .sht-equipment-page .sht-article-aside{align-self:center}
+
+@media(max-width:1070px){
+ .sht .sht-navinner{gap:16px}
+ .sht .sht-logo{width:clamp(165px,20vw,210px)}
+ .sht .sht-logo img{height:89px}
+ .sht .sht-nav a{font-size:11px}
+ .sht .sht-nav{gap:12px}
+ .sht .sht-nav-phone{font-size:11px}
+}
+@media(max-width:790px){
+ .sht .sht-navinner{min-height:0;padding-block:10px 0}
+ .sht .sht-logo{width:185px}
+ .sht .sht-logo img{height:80px}
+ .sht .sht-route-details--wide .google-route,
+ .sht .sht-contact-page .sht-route-page .google-route{grid-template-columns:1fr}
+ .sht .sht-route-details--wide .google-route-panel{padding-top:0}
+ .sht .sht-contact-page .sht-route-page{width:calc(100vw - 42px)}
+ .sht .sht-contact-page .sht-route-page .google-route-panel{padding-top:0}
+ .sht .sht-route-details--wide .google-route-map-shell,
+ .sht .sht-route-details--wide .google-route-map-shell iframe{min-height:310px}
+}
+@media(max-width:540px){
+ .sht .sht-logo{width:154px}
+ .sht .sht-logo img{height:64px}
+ .sht .sht-navinner{padding-top:6px}
+ .sht-drawer-tab{top:195px;min-height:118px;width:35px;font-size:9px;padding:10px 6px;gap:8px}
+ .sht-drawer-tab-symbol{font-size:16px}
+ .sht-drawer-panel{width:calc(100vw - 10px);padding:18px 15px}
+ .sht-drawer-panel .google-route-map-shell,.sht-drawer-panel .google-route-map-shell iframe{min-height:240px}
+ .sht .sht-route-wrapper{width:calc(100% - 32px)}
+ .sht .sht-route-details--wide .google-route-fields{grid-template-columns:1fr}
+ .sht .sht-route-details--wide .google-route-map-shell,
+ .sht .sht-route-details--wide .google-route-map-shell iframe{min-height:255px}
+ .sht .sht-contact-page .sht-route-page{width:calc(100vw - 32px)}
+ .sht .sht-contact-page .sht-route-page .google-route-map-shell,
+ .sht .sht-contact-page .sht-route-page .google-route-map-shell iframe{min-height:275px}
+}
+@media(prefers-reduced-motion:reduce){.sht-drawer-panel,.sht-drawer-tab{transition:none!important}}
