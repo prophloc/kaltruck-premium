@@ -20,8 +20,8 @@ test('new footer layout keeps logo, navigation and copyright separated', async (
  await page.goto('/o-nas/',{waitUntil:'domcontentloaded'});
  const footer=page.locator('.sht-footer');
  await expect(footer).toHaveCount(1);
- await expect(footer.locator('.sht-footer-logo')).toContainText('KALTRUCK');
- await expect(footer.locator('.sht-footer-top nav a')).toHaveCount(4);
+ await expect(footer.locator('.sht-footer-logo img')).toHaveAttribute('src','/brand/kaltruck-logo.svg');
+ await expect(footer.locator('.sht-footer-top nav a')).toHaveCount(5);
  await expect(footer.locator('.sht-footer-bottom')).toContainText('NIP:');
- await expect(footer.locator('.sht-route-details')).toHaveCount(2);
+ await expect(footer.locator('.sht-footer-map [data-google-route]')).toHaveCount(1);
 });
