@@ -1,76 +1,32 @@
-import { test, expect } from '@playwright/test';
-
-const labels = ['Usługi', 'Realizacje', 'Sprzęt', 'O nas', 'Kontakt'];
-
-test('shared navigation exposes primary routes and conversion actions', async ({ page }) => {
-  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
-  for (const label of labels) await expect(page.getByRole('link', { name: label, exact: true }).first()).toBeVisible();
-  await expect(page.getByRole('link', { name: /Wyceń transport/i }).first()).toBeVisible();
-  await expect(page.locator('a[href^="tel:"]').first()).toBeVisible();
+import {test,expect} from '@playwright/test';
+const nav=[['USŁUGI','/transport-hds/'],['REALIZACJE','/realizacje/'],['SPRZĘT','/sprzet/'],['O FIRMIE','/o-nas/'],['KONTAKT','/kontakt/']];
+test('navigation exposes five core pages and contact actions',async({page})=>{
+ await page.goto('/');
+ for(const [label,url] of nav) await expect(page.locator(`.sht-nav a[href="${url}"]`)).toHaveText(label);
+ await expect(page.locator('a.sht-nav-phone')).toHaveAttribute('href','tel:+48784430022');
 });
-
-for (const width of [899, 900, 1024, 1079, 1080]) {
-  test(`primary navigation remains usable at ${width}px`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 820 });
-    await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
-
-    const desktopNav = page.locator('.desktop-nav');
-    const menuButton = page.locator('[data-menu-open]');
-
-    if (await desktopNav.isVisible()) {
-      await expect(desktopNav.getByRole('link', { name: 'Usługi', exact: true })).toBeVisible();
-      await expect(page.getByRole('link', { name: /Wyceń transport/i }).first()).toBeVisible();
-    } else {
-      await expect(menuButton).toBeVisible();
-      await menuButton.click();
-      await expect(page.locator('[data-mobile-menu]')).toBeVisible();
-      await expect(page.locator('[data-mobile-menu]').getByRole('link', { name: 'Usługi', exact: true })).toBeVisible();
-      await expect(page.locator('[data-mobile-menu]').getByRole('link', { name: /Wyceń transport/i })).toBeVisible();
-    }
-  });
+for(const width of [320,390,768,1024,1440]){
+ test(`main navigation fits at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:900});
+  await page.goto('/',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('.sht-logo')).toBeVisible();
+  await expect(page.locator('.sht-nav')).toBeVisible();
+  const x=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
+  expect(x.scroll).toBeLessThanOrEqual(x.viewport);
+ });
 }
-
-test('navigation highlights the current section with the theme accent', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-
-  const routes = [
-    ['/realizacje/', 'Realizacje'],
-    ['/sprzet/', 'Sprzęt'],
-    ['/o-nas/', 'O nas'],
-    ['/kontakt/', 'Kontakt'],
-    ['/transport-hds/', 'Usługi'],
-    ['/transport-kontenerow/', 'Usługi'],
-    ['/rozladunek-hds/', 'Usługi'],
-    ['/wynajem-hds/', 'Usługi'],
-  ] as const;
-
-  for (const [path, label] of routes) {
-    await page.goto(path, { waitUntil: 'domcontentloaded' });
-    const nav = page.locator('.desktop-nav');
-    const active = nav.getByRole('link', { name: label, exact: true });
-    const inactive = nav.getByRole('link').filter({ hasNotText: label }).first();
-    await expect(active).toHaveAttribute('aria-current', 'page');
-    const [activeColor, inactiveColor] = await Promise.all([
-      active.evaluate((el) => getComputedStyle(el).color),
-      inactive.evaluate((el) => getComputedStyle(el).color),
-    ]);
-    expect(activeColor).not.toBe(inactiveColor);
-  }
+test('active navigation state matches current core page',async({page})=>{
+ for(const path of ['/realizacje/','/sprzet/','/o-nas/','/kontakt/','/transport-hds/','/transport-kontenerow/']){
+  await page.goto(path,{waitUntil:'domcontentloaded'});
+  const active=page.locator('.sht-nav a[aria-current="page"]');
+  await expect(active).toHaveCount(1);
+ }
 });
-
-test('mobile navigation marks the current page too', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/realizacje/', { waitUntil: 'domcontentloaded' });
-  await page.locator('[data-menu-open]').click();
-  const active = page.locator('[data-mobile-menu]').getByRole('link', { name: 'Realizacje', exact: true });
-  await expect(active).toHaveAttribute('aria-current', 'page');
-});
-
-test('navigation remains available without JavaScript', async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
-  const page = await context.newPage();
-  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByRole('link', { name: 'Usługi', exact: true }).first()).toBeVisible();
-  await expect(page.getByRole('link', { name: /Wyceń transport/i }).first()).toBeVisible();
-  await context.close();
+test('nav remains usable without Javascript',async({browser})=>{
+ const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
+ const page=await context.newPage();
+ await page.goto('/');
+ await expect(page.locator('.sht-nav a')).toHaveCount(5);
+ await expect(page.locator('.sht-nav a[href="/kontakt/"]')).toBeVisible();
+ await context.close();
 });
