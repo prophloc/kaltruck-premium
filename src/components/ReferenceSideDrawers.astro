@@ -1,0 +1,73 @@
+---
+import DistanceEstimator from './DistanceEstimator.astro';
+import GoogleReviews from './GoogleReviews.astro';
+---
+<div class="sht-drawers" data-sht-drawers>
+  <button type="button" class="sht-drawer-tab sht-drawer-tab--left" data-sht-drawer-toggle="route" aria-controls="sht-drawer-route" aria-expanded="false">
+    <span class="sht-drawer-tab-symbol" aria-hidden="true">⌖</span><span>MAPA / TRASA</span>
+  </button>
+  <button type="button" class="sht-drawer-tab sht-drawer-tab--right" data-sht-drawer-toggle="reviews" aria-controls="sht-drawer-reviews" aria-expanded="false">
+    <span class="sht-drawer-tab-symbol" aria-hidden="true">★</span><span>OPINIE GOOGLE</span>
+  </button>
+  <div class="sht-drawer-backdrop" data-sht-drawer-backdrop hidden></div>
+  <aside class="sht-drawer-panel sht-drawer-panel--left" id="sht-drawer-route" aria-label="Mapa i wyznaczanie trasy" data-sht-drawer="route" aria-hidden="true" inert>
+    <div class="sht-drawer-head">
+      <div><small>KALTRUCK / DOJAZD</small><h2>Sprawdź trasę</h2></div>
+      <button type="button" class="sht-drawer-close" data-sht-drawer-close aria-label="Zamknij mapę">×</button>
+    </div>
+    <DistanceEstimator instanceId="side-route" variant="drawer" deferMap={true} />
+  </aside>
+  <aside class="sht-drawer-panel sht-drawer-panel--right" id="sht-drawer-reviews" aria-label="Opinie Google o KALTRUCK" data-sht-drawer="reviews" aria-hidden="true" inert>
+    <div class="sht-drawer-head">
+      <div><small>KALTRUCK / GOOGLE</small><h2>Opinie klientów</h2></div>
+      <button type="button" class="sht-drawer-close" data-sht-drawer-close aria-label="Zamknij opinie">×</button>
+    </div>
+    <GoogleReviews />
+  </aside>
+</div>
+<script is:inline>
+  (() => {
+    const root = document.querySelector('[data-sht-drawers]');
+    if (!(root instanceof HTMLElement)) return;
+    const panels = [...root.querySelectorAll('[data-sht-drawer]')];
+    const toggles = [...root.querySelectorAll('[data-sht-drawer-toggle]')];
+    const backdrop = root.querySelector('[data-sht-drawer-backdrop]');
+    let current = '';
+    let returnFocus = null;
+
+    const setOpen = (name) => {
+      const next = current === name ? '' : name;
+      const isOpen = Boolean(next);
+      root.dataset.activeDrawer = next;
+      panels.forEach(panel => {
+        const active = panel.getAttribute('data-sht-drawer') === next;
+        panel.setAttribute('aria-hidden', String(!active));
+        panel.inert = !active;
+        if (active) {
+          if (next === 'route') panel.querySelector('[data-google-route]')?.dispatchEvent(new CustomEvent('kaltruck:route-activate'));
+          if (next === 'reviews') panel.querySelector('[data-google-reviews]')?.dispatchEvent(new CustomEvent('kaltruck:reviews-activate'));
+        }
+      });
+      toggles.forEach(toggle => toggle.setAttribute('aria-expanded',
+        String(toggle.getAttribute('data-sht-drawer-toggle') === next)));
+      if (backdrop) backdrop.hidden = !isOpen;
+      current = next;
+      if (isOpen) {
+        const pane = panels.find(panel => panel.getAttribute('data-sht-drawer') === next);
+        pane?.querySelector('[data-sht-drawer-close]')?.focus();
+      } else if (returnFocus instanceof HTMLElement) {
+        returnFocus.focus();
+      }
+    };
+
+    toggles.forEach(toggle => toggle.addEventListener('click', () => {
+      returnFocus = toggle;
+      setOpen(toggle.getAttribute('data-sht-drawer-toggle') || '');
+    }));
+    root.querySelectorAll('[data-sht-drawer-close]').forEach(button => button.addEventListener('click', () => setOpen('')));
+    backdrop?.addEventListener('click', () => setOpen(''));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && current) setOpen('');
+    });
+  })();
+</script>
