@@ -15,32 +15,13 @@ test('editorial article has compact heading and restrained conversion links',asy
  await expect(page.locator('.sht-contact-bottom a[href="/wycena/"]')).toBeVisible();
 });
 
-test('footer brand is centered in the whole free row between route and copyright line', async ({ page }) => {
-  await page.setViewportSize({ width: 1600, height: 1000 });
-  await page.goto('/o-nas/', { waitUntil: 'domcontentloaded' });
-
-  const geometry = await page.evaluate(() => {
-    const route = document.querySelector<HTMLElement>('[data-google-route]');
-    const footerBottom = document.querySelector<HTMLElement>('.footer-bottom');
-    const logo = document.querySelector<HTMLElement>('.footer-brand img');
-    const tagline = document.querySelector<HTMLElement>('.footer-brand p');
-    if (!route || !footerBottom || !logo || !tagline) return null;
-
-    const routeRect = route.getBoundingClientRect();
-    const bottomRect = footerBottom.getBoundingClientRect();
-    const logoRect = logo.getBoundingClientRect();
-    const taglineRect = tagline.getBoundingClientRect();
-
-    const contentTop = Math.min(logoRect.top, taglineRect.top);
-    const contentBottom = Math.max(logoRect.bottom, taglineRect.bottom);
-    const topSpace = contentTop - routeRect.bottom;
-    const bottomSpace = bottomRect.top - contentBottom;
-
-    return { topSpace, bottomSpace, delta: Math.abs(topSpace - bottomSpace) };
-  });
-
-  expect(geometry).not.toBeNull();
-  expect(geometry!.topSpace).toBeGreaterThanOrEqual(16);
-  expect(geometry!.bottomSpace).toBeGreaterThanOrEqual(16);
-  expect(geometry!.delta).toBeLessThanOrEqual(8);
+test('new footer layout keeps logo, navigation and copyright separated', async ({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('/o-nas/',{waitUntil:'domcontentloaded'});
+ const footer=page.locator('.sht-footer');
+ await expect(footer).toHaveCount(1);
+ await expect(footer.locator('.sht-footer-logo')).toContainText('KALTRUCK');
+ await expect(footer.locator('.sht-footer-top nav a')).toHaveCount(4);
+ await expect(footer.locator('.sht-footer-bottom')).toContainText('NIP:');
+ await expect(footer.locator('.sht-route-details')).toHaveCount(2);
 });
