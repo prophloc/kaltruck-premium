@@ -1,5 +1,7 @@
 ---
 import { siteConfig } from '../config/site';
+import ReferenceHeader from './ReferenceHeader.astro';
+import ReferenceFooter from './ReferenceFooter.astro';
 
 const stats = [
   { value: '10+', label: 'LAT\nDOŚWIADCZENIA' },
@@ -15,30 +17,7 @@ const gallery = [
 ];
 ---
 <div class="sht">
-  <header class="sht-header" aria-label="Nagłówek witryny">
-    <div class="sht-topline">
-      <div class="sht-shell sht-topline-inner">
-        <span>TRANSPORT SPECJALISTYCZNY I USŁUGI HDS</span>
-        <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
-      </div>
-    </div>
-    <div class="sht-navband">
-      <div class="sht-shell sht-navinner">
-        <a href="/" class="sht-logo" aria-label="KALTRUCK — strona główna">
-          <img src="/brand/kaltruck-logo.svg" alt="KALTRUCK" width="2548" height="1305" />
-          <span>KALTRUCK<small>TRANSPORT HDS</small></span>
-        </a>
-        <nav class="sht-nav" aria-label="Nawigacja główna">
-          <a href="/transport-hds/">USŁUGI</a>
-          <a href="/realizacje/">REALIZACJE</a>
-          <a href="/sprzet/">SPRZĘT</a>
-          <a href="/o-nas/">O FIRMIE</a>
-          <a href="/kontakt/">KONTAKT</a>
-        </nav>
-        <a class="sht-nav-phone" href={`tel:${siteConfig.phone}`} aria-label="Zadzwoń do KALTRUCK">+48 784 430 022</a>
-      </div>
-    </div>
-  </header>
+  <ReferenceHeader />
 
   <main id="main-content">
     <section class="sht-banner" aria-labelledby="sht-hero-title">
@@ -123,23 +102,5 @@ const gallery = [
     </section>
   </main>
 
-  <footer class="sht-footer">
-    <div class="sht-shell sht-footer-top">
-      <a href="/" class="sht-footer-logo">KALTRUCK <span>TRANSPORT HDS</span></a>
-      <nav aria-label="Nawigacja w stopce">
-        <a href="/transport-hds/">Usługi</a>
-        <a href="/realizacje/">Realizacje</a>
-        <a href="/o-nas/">O nas</a>
-        <a href="/kontakt/">Kontakt</a>
-      </nav>
-      <div class="sht-socials">
-        <a href={siteConfig.facebook} target="_blank" rel="noopener noreferrer">Facebook</a>
-        <a href={siteConfig.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
-      </div>
-    </div>
-    <div class="sht-shell sht-footer-bottom">
-      <span>© {new Date().getFullYear()} {siteConfig.legalName} · NIP: {siteConfig.nip}</span>
-      <span>prophloc</span>
-    </div>
-  </footer>
+  <ReferenceFooter />
 </div>
