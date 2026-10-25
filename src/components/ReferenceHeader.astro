@@ -13,7 +13,6 @@ const current = Astro.url.pathname;
       <div class="sht-shell sht-navinner">
         <a href="/" class="sht-logo" aria-label="KALTRUCK — strona główna">
           <img src="/brand/kaltruck-logo.svg" alt="KALTRUCK" width="2548" height="1305" />
-          <span>KALTRUCK<small>TRANSPORT HDS</small></span>
         </a>
         <nav class="sht-nav" aria-label="Nawigacja główna">
           <a href="/transport-hds/" aria-current={current.startsWith("/transport-") || current.startsWith("/rozladunek-") || current.startsWith("/wynajem-") ? "page" : undefined}>USŁUGI</a>
