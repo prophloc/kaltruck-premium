@@ -1,5 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="favicon-title">
-  <title id="favicon-title">H - KALTRUCK HDS</title>
-  <rect width="64" height="64" rx="13" fill="#090C10"/>
-  <path fill="#E1B967" d="M13 12h11v15h16V12h11v40H40V37H24v15H13Z"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="favicon-title"><title id="favicon-title">KALTRUCK HDS — Heavy</title><rect width="64" height="64" rx="9" fill="#25292C"/><path fill="#E94F32" d="M13 12h11v15h16V12h11v40H40V37H24v15H13Z"/><path fill="#FFFFFF" opacity=".85" d="M13 55h38v2H13z"/></svg>
