@@ -31,7 +31,13 @@ const routeId = 'site-footer-route';
     </div>
     <script is:inline>
       (() => {
-        document.querySelectorAll('[data-reference-reviews]').forEach((details) => {
+        document.querySelectorAll('.sht-route-details:not(.sht-review-details)').forEach((details) => {
+        details.addEventListener('toggle', () => {
+          if (!details.open) return;
+          details.querySelector('[data-google-route]')?.dispatchEvent(new CustomEvent('kaltruck:route-activate'));
+        });
+      });
+      document.querySelectorAll('[data-reference-reviews]').forEach((details) => {
           details.addEventListener('toggle', () => {
             if (!details.open) return;
             const reviews = details.querySelector('[data-google-reviews]');
