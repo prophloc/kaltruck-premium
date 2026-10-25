@@ -15,7 +15,7 @@ test('responsive reference navigation still exposes contact',async({page})=>{
  await expect(page.locator('.sht-nav-phone')).toBeVisible();
 });
 test('realizations category links select matching filtered projects',async({page})=>{
- await page.goto('/realizacje/');
+ await page.goto('/realizacje/',{waitUntil:'domcontentloaded'});
  const btn=page.locator('[data-realization-category="Rolnictwo i rekreacja"]');
  await expect(btn).toHaveCount(1);
  await btn.click();
