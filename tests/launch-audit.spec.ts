@@ -18,31 +18,24 @@ for (const route of routes) {
   });
 }
 
-for (const width of [1920, 1440, 1366, 1024, 768, 390]) {
-  test(`homepage stays inside viewport at ${width}px`, async ({ page }) => {
+for (const width of [1920, 1440, 1366, 1024, 768, 390, 320]) {
+  test(`new homepage stays inside viewport at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-    const geometry = await page.evaluate(() => {
+    const geom = await page.evaluate(() => {
       const root = document.documentElement;
-      const container = document.querySelector('.hero .container') ?? document.querySelector('main .container');
-      const rect = container?.getBoundingClientRect();
+      const hero = document.querySelector('.hero');
+      const style = hero ? getComputedStyle(hero) : null;
       return {
         scrollWidth: root.scrollWidth,
         clientWidth: root.clientWidth,
-        leftGutter: rect?.left ?? 0,
-        rightGutter: rect ? root.clientWidth - rect.right : 0,
+        paddingLeft: style ? parseFloat(style.paddingLeft) : 0,
+        paddingRight: style ? parseFloat(style.paddingRight) : 0
       };
     });
-
-    expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth);
-    if (width >= 1024) {
-      expect(geometry.leftGutter).toBeGreaterThanOrEqual(28);
-      expect(geometry.rightGutter).toBeGreaterThanOrEqual(28);
-    } else {
-      expect(geometry.leftGutter).toBeGreaterThanOrEqual(18);
-      expect(geometry.rightGutter).toBeGreaterThanOrEqual(18);
-    }
+    expect(geom.scrollWidth).toBeLessThanOrEqual(geom.clientWidth);
+    expect(geom.paddingLeft).toBeGreaterThanOrEqual(width >= 1024 ? 24 : 18);
+    expect(geom.paddingRight).toBeGreaterThanOrEqual(width >= 1024 ? 24 : 18);
   });
 }
 
@@ -60,153 +53,42 @@ for (const route of supportingRoutes) {
   }
 }
 
-test('homepage hero uses the two-line cinematic sales slogan', async ({ page }) => {
+test('the homepage uses its full Die Glanzies reference composition', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  const lines = page.locator('.hero-title-line');
-  await expect(lines).toHaveCount(2);
-  await expect(lines.nth(0)).toHaveText('CIĘŻKI ŁADUNEK?');
-  await expect(lines.nth(1)).toHaveText('ZOSTAW TO NAM!');
-  await expect(page.locator('.hero-support')).toHaveCount(1);
+  await expect(page.locator('h1.main-title')).toHaveCount(1);
+  await expect(page.locator('.main-title .sticker')).toHaveCount(2);
+  await expect(page.locator('.topbar .brand-logo')).toHaveCount(1);
+  await expect(page.locator('.cards-stage .service-card')).toHaveCount(3);
+  await expect(page.locator('.features .feature-card')).toHaveCount(4);
+  await expect(page.locator('.offer-grid article')).toHaveCount(3);
+  await expect(page.locator('.contact-section')).toHaveCount(1);
 });
 
-test('homepage centers the cinematic hero group and uses the supplied KALTRUCK logo', async ({ page }) => {
+test('hero reference cards retain the same layered perspective', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  const logo = page.locator('.brand-logo');
-  await expect(logo).toHaveAttribute('src', '/brand/kaltruck-logo.svg');
-  await expect(logo).toBeVisible();
-
-  const geometry = await page.evaluate(() => {
-    const viewportWidth = document.documentElement.clientWidth;
-    const stage = document.querySelector('.hero-stage');
-    const stageRect = stage?.getBoundingClientRect();
-    const centerOffset = (rect?: DOMRect) => rect ? Math.abs((rect.left + rect.width / 2) - viewportWidth / 2) : 9999;
-    return { stageCenterOffset: centerOffset(stageRect) };
-  });
-
-  expect(geometry.stageCenterOffset).toBeLessThanOrEqual(12);
+  const attrs = await page.locator('.service-card').evaluateAll(nodes =>
+    nodes.map(node => ({ pos: node.getAttribute('data-pos'), z: getComputedStyle(node).zIndex })));
+  expect(attrs.map(x => x.pos)).toEqual(['0','1','2']);
+  expect(Number(attrs[0].z)).toBeGreaterThan(Number(attrs[1].z));
 });
 
-test('desktop header balances its edge gutters and keeps a tight premium rhythm', async ({ page }) => {
+test('reference full-width benefits bar sits after the service carousel', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  const metrics = await page.evaluate(() => {
-    const header = document.querySelector('.header-inner');
-    const brand = document.querySelector('.brand');
-    const actions = document.querySelector('.header-actions');
-    const nav = document.querySelector('.desktop-nav');
-    const navLinks = Array.from(document.querySelectorAll('.desktop-nav a'));
-    const brandRect = brand?.getBoundingClientRect();
-    const actionsRect = actions?.getBoundingClientRect();
-    const navRect = nav?.getBoundingClientRect();
-    const firstNav = navLinks[0]?.getBoundingClientRect();
-    const secondNav = navLinks[1]?.getBoundingClientRect();
-    const children = header ? Array.from(header.children) : [];
-    return {
-      leftGutter: brandRect?.left ?? 0,
-      rightGutter: navRect ? document.documentElement.clientWidth - navRect.right : 0,
-      actionsAfterBrand: children.indexOf(actions as Element) === children.indexOf(brand as Element) + 1,
-      navAfterActions: children.indexOf(nav as Element) > children.indexOf(actions as Element),
-      actionsGap: brandRect && actionsRect ? actionsRect.left - brandRect.right : 9999,
-      navGap: firstNav && secondNav ? secondNav.left - firstNav.right : 9999,
-      actionsHeight: actionsRect?.height ?? 9999,
-    };
-  });
-
-  expect(Math.abs(metrics.leftGutter - metrics.rightGutter)).toBeLessThanOrEqual(2);
-  expect(metrics.leftGutter).toBeGreaterThanOrEqual(40);
-  expect(metrics.actionsAfterBrand).toBeTruthy();
-  expect(metrics.navAfterActions).toBeTruthy();
-  expect(metrics.actionsGap).toBeLessThanOrEqual(20);
-  expect(metrics.navGap).toBeLessThanOrEqual(20);
-  expect(metrics.actionsHeight).toBeLessThanOrEqual(48);
-});
-
-test('homepage lead sits in a full-width bottom band instead of the title grid', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  await expect(page.locator('.hero-bottom-copy .hero-lead')).toHaveCount(1);
-  await expect(page.locator('.hero-support .hero-lead')).toHaveCount(0);
-  const band = await page.locator('.hero-bottom-copy').evaluate((node) => {
-    const rect = node.getBoundingClientRect();
-    return {
-      left: rect.left,
-      right: document.documentElement.clientWidth - rect.right,
-      top: rect.top,
-      heroBottom: document.querySelector('.hero')?.getBoundingClientRect().bottom ?? 0,
-    };
-  });
-  expect(Math.abs(band.left)).toBeLessThanOrEqual(1);
-  expect(Math.abs(band.right)).toBeLessThanOrEqual(1);
-  expect(band.heroBottom - band.top).toBeLessThanOrEqual(150);
-});
-
-test('homepage keeps the editorial service structure intact', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('h1')).toHaveCount(1);
-  await expect(page.locator('.intro-grid')).toHaveCount(1);
-  await expect(page.locator('.story')).toHaveCount(5);
-  await expect(page.locator('.story .story-media img')).toHaveCount(5);
-  const fits = await page.locator('.story-inner').evaluateAll((nodes) => nodes.every((node) => {
-    const rect = node.getBoundingClientRect();
-    return rect.left >= 0 && rect.right <= document.documentElement.clientWidth;
+  const positions = await page.evaluate(() => ({
+    cards: document.querySelector('.hero-cards')!.getBoundingClientRect().top,
+    features: document.querySelector('.features')!.getBoundingClientRect().top,
   }));
-  expect(fits).toBeTruthy();
+  expect(positions.features).toBeGreaterThan(positions.cards);
 });
 
-test('homepage service stories use balanced media proportions and optical alignment', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  const metrics = await page.locator('.story-inner').evaluateAll((nodes) => nodes.map((node) => {
-    const media = node.querySelector('.story-media')?.getBoundingClientRect();
-    const copy = node.querySelector('.story-copy')?.getBoundingClientRect();
-    const rect = node.getBoundingClientRect();
-    return {
-      sectionHeight: rect.height,
-      mediaRatio: media ? media.width / media.height : 0,
-      centerDelta: media && copy ? Math.abs((media.top + media.height / 2) - (copy.top + copy.height / 2)) : 9999,
-    };
-  }));
-
-  expect(metrics).toHaveLength(5);
-  expect(metrics.every((item) => item.sectionHeight <= 650)).toBeTruthy();
-  expect(metrics.every((item) => item.mediaRatio >= 1.35 && item.mediaRatio <= 1.75)).toBeTruthy();
-  expect(metrics.every((item) => item.centerDelta <= 90)).toBeTruthy();
-});
-
-test('homepage utility sections keep a compact premium rhythm', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  const metrics = await page.evaluate(() => {
-    const box = (selector: string) => document.querySelector(selector)?.getBoundingClientRect();
-    const equipment = box('.equipment');
-    const equipmentHeading = box('.equipment-heading');
-    const equipmentCopy = box('.equipment-copy');
-    const process = box('.process');
-    const cta = box('.cta');
-    const footer = box('.site-footer');
-    const centerY = (rect?: DOMRect) => rect ? rect.top + rect.height / 2 : 0;
-    return {
-      equipmentHeight: equipment?.height ?? 9999,
-      equipmentCenterDelta: Math.abs(centerY(equipmentHeading) - centerY(equipmentCopy)),
-      processHeight: process?.height ?? 9999,
-      ctaHeight: cta?.height ?? 9999,
-      footerHeight: footer?.height ?? 9999,
-    };
-  });
-
-  expect(metrics.equipmentHeight).toBeLessThanOrEqual(620);
-  expect(metrics.equipmentCenterDelta).toBeLessThanOrEqual(80);
-  expect(metrics.processHeight).toBeLessThanOrEqual(700);
-  expect(metrics.ctaHeight).toBeLessThanOrEqual(620);
-  expect(metrics.footerHeight).toBeLessThanOrEqual(560);
+test('existing high-intent service paths remain discoverable from the new offer section', async ({ page }) => {
+  await page.goto('/');
+  const hrefs = await page.locator('.offer-grid a').evaluateAll(nodes =>
+    nodes.map(node => (node as HTMLAnchorElement).getAttribute('href')));
+  expect(hrefs).toEqual(['/transport-kontenerow/', '/transport-prefabrykatow/', '/transport-maszyn/']);
 });
 
 test('realization gallery uses a controlled modular rhythm', async ({ page }) => {
