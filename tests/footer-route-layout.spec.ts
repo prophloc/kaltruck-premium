@@ -73,7 +73,7 @@ test('the existing footer route remains available on unchanged service pages', a
 
 test('new homepage has direct access to quote and local contact', async ({page})=>{
  await page.goto('/',{waitUntil:'domcontentloaded'});
- await expect(page.locator('.ht-contact a[href="/wycena/"]')).toBeVisible();
- await expect(page.locator('.ht-contact-details a[href="tel:+48784430022"]')).toBeVisible();
- await expect(page.locator('.ht-contact-details a[href^="mailto:"]')).toBeVisible();
+ await expect(page.locator('.sht-contact a[href="/wycena/"]')).toBeVisible();
+ await expect(page.locator('.sht-contact a[href="tel:+48784430022"]')).toBeVisible();
+ await expect(page.locator('.sht-contact a[href^="mailto:"]')).toBeVisible();
 });
