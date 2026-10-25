@@ -324,3 +324,14 @@ body:has(.sht){background:#fff;color:#34393b}
  .sht-route-details .google-route{grid-template-columns:1fr}
  .sht-catalog-area .service-catalog{max-width:100%}
 }
+
+/* Final shared state and keyboard accessibility */
+.sht-nav a[aria-current="page"]{color:#c64530}
+.sht-nav a[aria-current="page"]::after{right:0}
+.sht-skip-link:focus-visible{left:12px!important}
+.sht-inner .sht-banner-photo{background-repeat:no-repeat}
+.sht-inner a:focus-visible,.sht-inner button:focus-visible{outline-color:#e94f32}
+.sht-review-wrapper{border-top:1px solid rgba(255,255,255,.15)}
+.sht-review-wrapper .google-reviews{max-width:100%;background:#f6f6f4;color:#333;margin:0 0 25px}
+.sht-review-wrapper .google-reviews-kicker{color:#be4530}
+@media(max-width:540px){.sht-review-wrapper .google-reviews-head{grid-template-columns:1fr 1fr;gap:12px}.sht-review-wrapper .google-reviews-brand{display:none}.sht-review-wrapper .google-reviews-list{grid-template-columns:1fr}}
