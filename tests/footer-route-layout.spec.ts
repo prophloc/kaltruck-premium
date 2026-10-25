@@ -62,84 +62,18 @@ test('footer centers the larger brand block and balances the route section verti
   expect(geometry!.footerHeight).toBeLessThanOrEqual(590);
 });
 
-test('homepage route drawer uses the Google Maps pin as its handle and heading mark', async ({ page }) => {
+test('the existing footer route remains available on dedicated service pages', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 1000 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  const hero = page.locator('[data-commercial-hero]');
-  const drawer = page.locator('[data-hero-route-drawer]');
-  const toggle = page.locator('[data-hero-route-toggle]');
-  const panel = page.locator('[data-hero-route-panel]');
-
-  await expect(drawer).toHaveCount(1);
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  await expect(toggle.locator('[data-google-maps-pin]')).toHaveCount(1);
-  await expect(toggle.locator('.hero-route-toggle-text')).toHaveCount(0);
-  await expect(panel).toBeHidden();
-
-  const closedGeometry = await page.evaluate(() => {
-    const heroNode = document.querySelector('[data-commercial-hero]');
-    const toggleNode = document.querySelector('[data-hero-route-toggle]');
-    if (!heroNode || !toggleNode) return null;
-    const heroRect = heroNode.getBoundingClientRect();
-    const toggleRect = toggleNode.getBoundingClientRect();
-    return {
-      centerDelta: Math.abs((toggleRect.top + toggleRect.height / 2) - (heroRect.top + heroRect.height / 2)),
-      heightRatio: toggleRect.height / heroRect.height,
-      leftEdge: toggleRect.left - heroRect.left,
-    };
-  });
-
-  expect(closedGeometry).not.toBeNull();
-  expect(closedGeometry!.centerDelta).toBeLessThanOrEqual(4);
-  expect(closedGeometry!.heightRatio).toBeGreaterThanOrEqual(0.08);
-  expect(closedGeometry!.heightRatio).toBeLessThanOrEqual(0.12);
-  expect(closedGeometry!.leftEdge).toBeLessThanOrEqual(8);
-
-  await toggle.click();
-  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-  await expect(panel).toBeVisible();
-
-  const drawerRoute = drawer.locator('[data-google-route]');
-  await expect(drawerRoute.locator('[data-route-heading] h2')).toHaveText('Sprawdź trasę transportu');
-  await expect(drawerRoute.locator('[data-route-heading] [data-google-maps-pin]')).toHaveCount(1);
-  await expect(drawerRoute.locator('.google-route-copy')).toHaveCount(0);
-  await expect(drawerRoute.getByText('Google Maps', { exact: true })).toHaveCount(0);
-
-  await page.keyboard.press('Escape');
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  await expect(panel).toBeHidden();
+  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
+  const route = page.locator('.site-footer [data-google-route]');
+  await expect(route).toHaveCount(1);
+  await expect(route.locator('[data-google-route-origin]')).toHaveValue('Płock');
+  await expect(route.locator('[data-google-route-destination]')).toHaveCount(1);
 });
 
-test('route form defaults origin to Plock and supports custom destination with base fallback', async ({ page }) => {
-  await page.setViewportSize({ width: 1600, height: 1000 });
+test('Die Glanzies contact section links to preserved quote and map details', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  const drawer = page.locator('[data-hero-route-drawer]');
-  const toggle = drawer.locator('[data-hero-route-toggle]');
-  await toggle.click();
-
-  const route = drawer.locator('[data-google-route]');
-  const origin = route.locator('[data-google-route-origin]');
-  const destination = route.locator('[data-google-route-destination]');
-  const map = route.locator('[data-google-route-map]');
-  const form = route.locator('[data-google-route-form]');
-
-  await expect(origin).toHaveValue('Płock');
-  await expect(destination).toHaveCount(1);
-
-  await route.evaluate((node) => node.setAttribute('data-api-key', 'test-key'));
-  await destination.fill('Łódź');
-  await form.locator('button[type="submit"]').click();
-
-  const customSrc = await map.getAttribute('src');
-  expect(customSrc).toContain('/maps/embed/v1/directions?');
-  expect(new URL(customSrc!).searchParams.get('origin')).toBe('Płock');
-  expect(new URL(customSrc!).searchParams.get('destination')).toBe('Łódź');
-
-  await destination.fill('');
-  await form.locator('button[type="submit"]').click();
-
-  const fallbackSrc = await map.getAttribute('src');
-  expect(new URL(fallbackSrc!).searchParams.get('destination')).toBe('Tokarska 40, 09-401 Płock');
+  await expect(page.locator('.contact-card a[href="/wycena/"]')).toHaveCount(1);
+  await expect(page.locator('.contact-side a[href="/sprzet/"]')).toHaveCount(1);
+  await expect(page.locator('.contact-side')).toContainText('Płocka');
 });
