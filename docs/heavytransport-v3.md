@@ -44,3 +44,16 @@ Nie twórz nowego folderu ani brancha.
 ## Produkcja
 
 Zmiany są w **Draft PR #6** i nie zostały wdrożone na serwer. Nie scalać z `main` i nie deployować przed akceptacją użytkownika wyglądu na desktopie i telefonie oraz zakończeniem CI.
+
+## Dopieszczanie wyglądu — 25.10.2026
+
+- Górny nagłówek pokazuje **jedynie większe oryginalne logo** KALTRUCK, bez osobnego zduplikowanego napisu.
+- Wysuwane zakładki: **MAPA/TRASA po lewej** i **OPINIE GOOGLE po prawej**; osobne panele, klawiaturowy Escape, przywrócenie fokusu, zamknięcie tłem, nieaktywne panele są `inert`.
+- Mapa w stopce **domyślnie rozwinięta**, w szerszym układzie ze znacznie większym panelem mapy; na podstronie `/kontakt/` powiększona analogicznie.
+- Koralowo-grafitowy motyw w mapach, opiniach i przyciskach **tylko dla tej gałęzi wizualnej**.
+- Favicon `H` dopasowany do palety `#25292C`/`#E94F32`; wersja cache zmieniona na `kaltruck-heavy-v5`.
+- `/sprzet/`: zdjęcie z opisem jest pionowo wycentrowane względem całej lewej kolumny tekstu i akcji.
+- Spójny spacing na desktopie, tablecie i telefonie.
+- Dwa panele trasy/opinii w nagłówku i zachowane narzędzia w stopce. Konfiguracja produkcyjna Places API i Maps Embed API wymaga klucza domenowego; bez niego działają informacje kontaktowe i link Google, ale wytyczanie trasy na miejscu i pobieranie opinii wymagają poprawnej konfiguracji.
+- Wynik CI: **149/149 Playwright Chromium**, 4/4 zestawy testów jednostkowych, Astro build i PHP lint OK (commit `1289f604`).
+
