@@ -389,32 +389,6 @@ body:has(.sht){background:#fff;color:#34393b}
 .sht-drawer-panel .google-reviews-list{grid-template-columns:1fr}
 .sht-drawer-panel :focus-visible{outline:2px solid #e94f32;outline-offset:3px}
 
-/* Footer map open, spread across significantly larger width */
-.sht .sht-route-wrapper{width:calc(100% - 80px);max-width:1510px;margin-inline:auto}
-.sht .sht-route-details--wide{padding-block:25px 39px}
-.sht .sht-route-details--wide summary{font-size:14px;color:#f8f8f7;letter-spacing:.08em;padding:0 0 23px}
-.sht .sht-route-details--wide .google-route{display:grid;grid-template-columns:minmax(280px,.31fr) minmax(0,.69fr);gap:clamp(22px,3vw,55px);margin:0;border-top:1px solid #454a4c;border-bottom:0;padding:29px 0 0}
-.sht .sht-route-details--wide .google-route-panel{align-self:start;padding-top:20px}
-.sht .sht-route-details--wide .google-route-map-shell{min-height:385px;background:#e9eaeb;border:2px solid #666;border-radius:4px}
-.sht .sht-route-details--wide .google-route-map-shell iframe{min-height:385px}
-.sht .sht-route-details--wide .google-route-heading h2{color:#f1f1ef;font-size:clamp(23px,2.3vw,31px)}
-.sht .sht-route-details--wide .google-route-form{grid-template-columns:1fr}
-.sht .sht-route-details--wide .google-route-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
-.sht .sht-route-details--wide .google-route-form input{background:#f5f5f4;color:#323638;border:1px solid #85898b;border-radius:3px}
-.sht .sht-route-details--wide .google-route-form input::placeholder{color:#757c7e}
-.sht .sht-route-details--wide .google-route-form button{max-width:210px;border-radius:3px}
-
-/* Contact map: larger panel with a greater share devoted to the map */
-.sht .sht-contact-page .sht-route-page{width:min(1510px,calc(100vw - 64px));max-width:none;position:relative;left:50%;transform:translateX(-50%);margin-top:75px}
-.sht .sht-contact-page .sht-route-page .google-route{display:grid;grid-template-columns:minmax(250px,.3fr) minmax(0,.7fr);gap:clamp(20px,3vw,45px);padding:25px;background:#f6f6f5}
-.sht .sht-contact-page .sht-route-page .google-route-panel{align-self:start;padding-top:22px}
-.sht .sht-contact-page .sht-route-page .google-route-map-shell,
-.sht .sht-contact-page .sht-route-page .google-route-map-shell iframe{min-height:390px;border-radius:4px}
-.sht .sht-contact-page .sht-route-page .google-route-form{grid-template-columns:1fr}
-.sht .sht-contact-page .sht-route-page .google-route-fields{grid-template-columns:1fr}
-.sht .sht-contact-page .sht-route-page .google-route-form button{max-width:220px}
-.sht .sht-contact-page .sht-route-page .google-route-heading h2{color:#33393b!important}
-
 /* Vertical center of equipment's right image against the left text group */
 .sht .sht-equipment-page .sht-article-layout{align-items:center}
 .sht .sht-equipment-page .sht-article-aside{align-self:center}
@@ -427,32 +401,163 @@ body:has(.sht){background:#fff;color:#34393b}
  .sht .sht-nav{gap:12px}
  .sht .sht-nav-phone{font-size:11px}
 }
+@media(prefers-reduced-motion:reduce){.sht-drawer-panel,.sht-drawer-tab{transition:none!important}}
+
+/* Corrective pass — KEEP Premium footer/drawer proportions, recolor only. */
+.sht .sht-footer-map{
+  padding:10px 0 6px;
+  border-bottom:1px solid rgba(255,255,255,.13);
+}
+.sht .sht-footer-map .google-route{
+  display:grid;
+  grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);
+  align-items:center;
+  gap:clamp(20px,2.6vw,38px);
+  margin:0;
+  padding:22px 0;
+  border-bottom:0;
+}
+.sht .sht-footer-map .google-route-panel{min-width:0;max-width:none;padding:0;align-self:center}
+.sht .sht-footer-map .google-route-heading{gap:10px;margin-bottom:15px}
+.sht .sht-footer-map .google-route-heading h2{
+  font-size:clamp(23px,2vw,29px);color:#f3f3f2;line-height:1.12;
+}
+.sht .sht-footer-map .google-route-heading-pin{
+  display:block;width:29px!important;height:42px!important;max-width:29px;
+  flex:0 0 29px;object-fit:contain;
+}
+.sht .sht-footer-map .google-route-form{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:8px;
+}
+.sht .sht-footer-map .google-route-fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sht .sht-footer-map .google-route-form input{
+  height:44px;min-width:0;border-radius:9px;background:#303537;
+  border:1px solid #4c5153;color:#fff;
+}
+.sht .sht-footer-map .google-route-form button{
+  width:max-content;min-width:138px;height:43px;border:1px solid #e94f32;
+  border-radius:9px;padding:0 20px;background:#e94f32;color:#fff;
+}
+.sht .sht-footer-map .google-route-point{color:#e94f32;background:#3b302e}
+.sht .sht-footer-map .google-route-meta a{color:#fa806a}
+.sht .sht-footer-map .google-route-meta span{color:#a9aeb0}
+.sht .sht-footer-map .google-route-map-shell{
+  height:240px;min-height:240px;border-radius:9px;
+  border:1px solid #575d60;background:#dfe2e2;
+}
+.sht .sht-footer-map .google-route-map-shell iframe{height:240px;min-height:240px;filter:none}
+
+/* Footer columns copied in proportion from original Premium, not a separate stacked map and review section */
+.sht .sht-footer-top.sht-footer-grid{
+  display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
+  column-gap:clamp(16px,2vw,30px);
+  min-height:220px;align-items:center;padding:22px 0;
+}
+.sht .sht-footer-brand{grid-column:1 / span 5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.sht .sht-footer-logo{display:block;white-space:normal}
+.sht .sht-footer-logo img{
+  display:block;width:clamp(245px,19vw,320px);height:auto;max-height:165px;
+  filter:invert(1);object-fit:contain;
+}
+.sht .sht-footer-brand>p{font-size:clamp(10px,.8vw,12px);font-weight:750;letter-spacing:.07em;color:#bcbfc0;margin:10px 0 0}
+.sht .sht-footer-navigation{grid-column:6 / span 2;align-self:center}
+.sht .sht-footer-contact{grid-column:9 / -1;align-self:center;display:grid;gap:8px;min-width:0}
+.sht .sht-footer-navigation h2,.sht .sht-footer-contact h2{font-size:11px;letter-spacing:.13em;font-weight:800;color:#e94f32;margin:0 0 10px}
+.sht .sht-footer-navigation nav{display:grid;gap:7px}
+.sht .sht-footer-navigation nav a,
+.sht .sht-footer-contact>a{width:max-content;max-width:100%;font-size:13px;color:#dadee0;overflow-wrap:anywhere}
+.sht .sht-footer-contact>a.sht-footer-phone{font-size:18px;font-weight:800;color:#fff}
+.sht .sht-socials{display:flex;gap:10px;margin-top:13px;align-items:center;flex-wrap:wrap}
+.sht .sht-socials a{
+  display:inline-flex;align-items:center;gap:7px;padding:7px 10px;
+  border:1px solid #484c4e;border-radius:8px;color:#f3f3f2;
+  font-size:12px;
+}
+.sht .sht-socials img{display:block;width:21px;height:21px;object-fit:contain}
+.sht .sht-footer-bottom{min-height:51px;border-top:1px solid #484d50}
+
+/* Same Google map/reviews handles as original Premium: identical dimensions and icon slots. */
+.sht-drawer-tab,.sht-drawer-tab--right{
+  top:clamp(170px,22vh,235px);
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  width:62px;height:116px;min-height:116px;
+  padding:9px 7px;gap:8px;writing-mode:horizontal-tb;
+  transform:none!important;
+  border:1px solid #d85a44;background:rgba(249,249,248,.97);
+  color:#282e30;backdrop-filter:blur(12px);
+  box-shadow:0 12px 26px rgba(16,24,26,.18);
+  transition:background .2s,color .2s;
+}
+.sht-drawer-tab--left{border-left:0;border-radius:0 10px 10px 0}
+.sht-drawer-tab--right{border-right:0;border-radius:10px 0 0 10px}
+.sht-drawer-tab-pin{
+  display:block;width:25px!important;height:25px!important;
+  max-width:25px;flex:0 0 25px;object-fit:contain;
+  transform:rotate(-90deg);filter:drop-shadow(0 2px 3px rgba(0,0,0,.14));
+}
+.sht-drawer-tab-star{
+  display:grid;place-items:center;width:25px;height:25px;flex:0 0 25px;
+  color:#e94f32;font-size:25px;line-height:1;
+}
+.sht-drawer-tab-label{
+  display:block;white-space:nowrap;
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  line-height:1;font-size:11px;font-weight:900;letter-spacing:.16em;
+}
+.sht-drawer-tab:hover,.sht-drawer-tab[aria-expanded="true"]{background:#fff;color:#222a2c;border-color:#e94f32}
+.sht-drawer-tab[aria-expanded="true"] .sht-drawer-tab-star{color:#e94f32}
+.sht-drawer-panel .google-route-heading-pin{max-width:29px}
+.sht-drawer-panel .google-route-map-shell{box-shadow:none!important}
+
+/* Keep the contact map at its original two-column dimensions. Only adjust palette. */
+.sht .sht-contact-page .sht-route-page{position:static;left:auto;transform:none;width:auto;max-width:none;margin-top:65px}
+.sht .sht-contact-page .sht-route-page .google-route{
+  display:grid;grid-template-columns:minmax(270px,.72fr) minmax(0,1.28fr);
+  gap:clamp(20px,2.6vw,38px);align-items:stretch;
+  padding:22px 0;
+}
+.sht .sht-contact-page .sht-route-page .google-route-panel{padding:0;align-self:center}
+.sht .sht-contact-page .sht-route-page .google-route-map-shell,
+.sht .sht-contact-page .sht-route-page .google-route-map-shell iframe{min-height:240px;height:240px;border-radius:9px}
+.sht .sht-contact-page .sht-route-page .google-route-form{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;
+}
+.sht .sht-contact-page .sht-route-page .google-route-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sht .sht-contact-page .sht-route-page .google-route-form button{min-width:126px;max-width:none}
+
+@media(max-width:980px){
+  .sht .sht-footer-top.sht-footer-grid{gap:18px}
+  .sht .sht-footer-brand{grid-column:1 / span 5}
+  .sht .sht-footer-navigation{grid-column:7 / span 2}
+  .sht .sht-footer-contact{grid-column:9 / -1}
+  .sht .sht-footer-logo img{width:clamp(215px,30vw,290px)}
+}
 @media(max-width:790px){
- .sht .sht-navinner{min-height:0;padding-block:10px 0}
- .sht .sht-logo{width:185px}
- .sht .sht-logo img{height:80px}
- .sht .sht-route-details--wide .google-route,
- .sht .sht-contact-page .sht-route-page .google-route{grid-template-columns:1fr}
- .sht .sht-route-details--wide .google-route-panel{padding-top:0}
- .sht .sht-contact-page .sht-route-page{width:calc(100vw - 42px)}
- .sht .sht-contact-page .sht-route-page .google-route-panel{padding-top:0}
- .sht .sht-route-details--wide .google-route-map-shell,
- .sht .sht-route-details--wide .google-route-map-shell iframe{min-height:310px}
+  .sht .sht-footer-map .google-route,.sht .sht-contact-page .sht-route-page .google-route{grid-template-columns:1fr}
+  .sht .sht-footer-map .google-route-map-shell,
+  .sht .sht-footer-map .google-route-map-shell iframe,
+  .sht .sht-contact-page .sht-route-page .google-route-map-shell,
+  .sht .sht-contact-page .sht-route-page .google-route-map-shell iframe{height:270px;min-height:270px}
+  .sht .sht-footer-top.sht-footer-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 20px;padding:26px 0}
+  .sht .sht-footer-brand{grid-column:1/-1}
+  .sht .sht-footer-navigation{grid-column:1;align-self:start}
+  .sht .sht-footer-contact{grid-column:2;align-self:start}
+  .sht .sht-footer-map .google-route-panel{max-width:none}
+  .sht .sht-contact-page .sht-route-page .google-route-form{grid-template-columns:minmax(0,1fr) auto}
 }
 @media(max-width:540px){
- .sht .sht-logo{width:154px}
- .sht .sht-logo img{height:64px}
- .sht .sht-navinner{padding-top:6px}
- .sht-drawer-tab{top:195px;min-height:118px;width:35px;font-size:9px;padding:10px 6px;gap:8px}
- .sht-drawer-tab-symbol{font-size:16px}
- .sht-drawer-panel{width:calc(100vw - 10px);padding:18px 15px}
- .sht-drawer-panel .google-route-map-shell,.sht-drawer-panel .google-route-map-shell iframe{min-height:240px}
- .sht .sht-route-wrapper{width:calc(100% - 32px)}
- .sht .sht-route-details--wide .google-route-fields{grid-template-columns:1fr}
- .sht .sht-route-details--wide .google-route-map-shell,
- .sht .sht-route-details--wide .google-route-map-shell iframe{min-height:255px}
- .sht .sht-contact-page .sht-route-page{width:calc(100vw - 32px)}
- .sht .sht-contact-page .sht-route-page .google-route-map-shell,
- .sht .sht-contact-page .sht-route-page .google-route-map-shell iframe{min-height:275px}
+  .sht .sht-footer-map .google-route-fields{grid-template-columns:1fr}
+  .sht .sht-footer-map .google-route-map-shell,
+  .sht .sht-footer-map .google-route-map-shell iframe,
+  .sht .sht-contact-page .sht-route-page .google-route-map-shell,
+  .sht .sht-contact-page .sht-route-page .google-route-map-shell iframe{height:245px;min-height:245px}
+  .sht .sht-footer-logo img{width:min(285px,85vw)}
+  .sht-drawer-tab,.sht-drawer-tab--right{top:185px;width:47px;height:105px;min-height:105px;gap:6px;padding:7px 5px}
+  .sht-drawer-tab-pin,.sht-drawer-tab-star{width:22px!important;height:22px!important;max-width:22px;flex-basis:22px}
+  .sht-drawer-tab-star{font-size:22px}
+  .sht-drawer-tab-label{font-size:9px;letter-spacing:.12em}
+  .sht .sht-contact-page .sht-route-page .google-route-fields{grid-template-columns:1fr}
+  .sht .sht-contact-page .sht-route-page .google-route-form{grid-template-columns:1fr}
+  .sht .sht-footer-top.sht-footer-grid{gap:24px 12px}
+  .sht .sht-footer-contact>a.sht-footer-phone{font-size:15px}
 }
-@media(prefers-reduced-motion:reduce){.sht-drawer-panel,.sht-drawer-tab{transition:none!important}}
