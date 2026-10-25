@@ -1,13 +1,14 @@
 ---
 import DistanceEstimator from './DistanceEstimator.astro';
 import GoogleReviews from './GoogleReviews.astro';
+import GoogleMapsPin from './GoogleMapsPin.astro';
 ---
 <div class="sht-drawers" data-sht-drawers>
   <button type="button" class="sht-drawer-tab sht-drawer-tab--left" data-sht-drawer-toggle="route" aria-controls="sht-drawer-route" aria-expanded="false">
-    <span class="sht-drawer-tab-symbol" aria-hidden="true">⌖</span><span>MAPA / TRASA</span>
+    <GoogleMapsPin class="sht-drawer-tab-pin" /><span class="sht-drawer-tab-label">TRASA</span>
   </button>
   <button type="button" class="sht-drawer-tab sht-drawer-tab--right" data-sht-drawer-toggle="reviews" aria-controls="sht-drawer-reviews" aria-expanded="false">
-    <span class="sht-drawer-tab-symbol" aria-hidden="true">★</span><span>OPINIE GOOGLE</span>
+    <span class="sht-drawer-tab-star" aria-hidden="true">★</span><span class="sht-drawer-tab-label">OPINIE</span>
   </button>
   <div class="sht-drawer-backdrop" data-sht-drawer-backdrop hidden></div>
   <aside class="sht-drawer-panel sht-drawer-panel--left" id="sht-drawer-route" aria-label="Mapa i wyznaczanie trasy" data-sht-drawer="route" aria-hidden="true" inert>
