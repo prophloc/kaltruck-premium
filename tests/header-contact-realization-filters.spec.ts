@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('desktop header keeps the service rotator text-only and exposes the primary phone plus email', async ({ page }) => {
   await page.setViewportSize({ width: 1800, height: 900 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
 
   await expect(page.locator('[data-service-rotator]')).toBeVisible();
   await expect(page.locator('.service-rotator-mark')).toHaveCount(0);
@@ -14,7 +14,7 @@ test('desktop header keeps the service rotator text-only and exposes the primary
 
 test('mobile menu exposes the primary phone and email', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
   await page.locator('[data-menu-open]').click();
 
   const menu = page.locator('[data-mobile-menu]');
