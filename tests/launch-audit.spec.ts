@@ -18,24 +18,18 @@ for (const route of routes) {
   });
 }
 
-for (const width of [1920,1440,1366,1024,768,390,320]) {
-  test(`homepage stays inside viewport at ${width}px`, async ({ page }) => {
+for(const width of [1920,1440,1366,1024,768,390,320]){
+  test(`homepage stays inside viewport at ${width}px`,async({page})=>{
     await page.setViewportSize({width,height:900});
     await page.goto('/',{waitUntil:'domcontentloaded'});
-    const geometry = await page.evaluate(() => {
-      const root = document.documentElement;
-      const container = document.querySelector('.ht-hero .ht-container');
-      const rect = container?.getBoundingClientRect();
-      return {
-        scrollWidth: root.scrollWidth,
-        clientWidth: root.clientWidth,
-        left: rect?.left ?? 0,
-        right: rect ? root.clientWidth - rect.right : 0,
-      };
+    const geometry=await page.evaluate(()=>{
+      const root=document.documentElement;
+      const rect=document.querySelector('.sht-banner .sht-shell')?.getBoundingClientRect();
+      return {scroll:root.scrollWidth,viewport:root.clientWidth,left:rect?.left??0,right:rect?root.clientWidth-rect.right:0};
     });
-    expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth);
-    expect(geometry.left).toBeGreaterThanOrEqual(width>620 ? 30 : 18);
-    expect(geometry.right).toBeGreaterThanOrEqual(width>620 ? 30 : 18);
+    expect(geometry.scroll).toBeLessThanOrEqual(geometry.viewport);
+    expect(geometry.left).toBeGreaterThanOrEqual(width>540?20:15);
+    expect(geometry.right).toBeGreaterThanOrEqual(width>540?20:15);
   });
 }
 
@@ -53,34 +47,33 @@ for (const route of supportingRoutes) {
   }
 }
 
-test('homepage uses the panorama, four numbers and editorial HDS structure', async ({ page }) => {
-  await page.setViewportSize({width:1440,height:1000});
-  await page.goto('/');
-  await expect(page.locator('.ht-hero')).toBeVisible();
-  await expect(page.locator('.ht-fact')).toHaveCount(4);
-  await expect(page.locator('.ht-about-grid')).toHaveCount(1);
-  await expect(page.locator('.ht-service')).toHaveCount(3);
-  await expect(page.locator('.ht-reason')).toHaveCount(4);
-  await expect(page.locator('.ht-contact-details')).toHaveCount(1);
+test('homepage follows source visual order: header, image banner, four facts, article, contact',async({page})=>{
+ await page.setViewportSize({width:1440,height:1000});
+ await page.goto('/');
+ await expect(page.locator('.sht-topline')).toHaveCount(1);
+ await expect(page.locator('.sht-nav')).toHaveCount(1);
+ await expect(page.locator('.sht-banner')).toHaveCount(1);
+ await expect(page.locator('.sht-stat')).toHaveCount(4);
+ await expect(page.locator('.sht-article')).toHaveCount(1);
+ await expect(page.locator('.sht-contact-item')).toHaveCount(3);
+ await expect(page.locator('.sht-footer')).toHaveCount(1);
 });
 
-test('editorial text and imagery use business content', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('h1')).toContainText('PEWNY TRANSPORT');
-  await expect(page.locator('.ht-about h2')).toContainText('Z PŁOCKA');
-  await expect(page.locator('.ht-service img')).toHaveCount(3);
-  await expect(page.locator('.ht-statement h2')).toContainText('USTAWIAMY');
-  await expect(page.locator('.ht-contact')).toContainText('784 430 022');
+test('article-like interior has paragraphs and a short photographic gallery',async({page})=>{
+ await page.goto('/');
+ await expect(page.locator('h1')).toContainText('Transport HDS');
+ await expect(page.locator('.sht-article-text>p')).toHaveCount(4);
+ await expect(page.locator('.sht-photo-grid .sht-photo')).toHaveCount(3);
+ await expect(page.locator('.sht-article-cta a[href="/wycena/"]')).toHaveCount(1);
 });
 
-test('new sections maintain width, readable copy and prominent lead conversion', async ({ page }) => {
-  await page.setViewportSize({width:1440,height:1000});
-  await page.goto('/');
-  const action = page.locator('.ht-hero-actions .ht-action-primary');
-  await expect(action).toBeVisible();
-  const heroWidth = await page.locator('.ht-hero').evaluate(el=>el.getBoundingClientRect().width);
-  expect(heroWidth).toBe(1440);
-  await expect(page.locator('link[rel="preload"][as="image"]')).toHaveCount(2);
+test('hero is short photo header and page keeps accessible canonical metadata',async({page})=>{
+ await page.setViewportSize({width:1440,height:1000});
+ await page.goto('/');
+ const height=await page.locator('.sht-banner').evaluate(el=>el.getBoundingClientRect().height);
+ expect(height).toBeLessThanOrEqual(500);
+ await expect(page.locator('link[rel="preload"][as="image"]')).toHaveCount(2);
+ await expect(page.locator('meta[name="description"]')).toHaveCount(1);
 });
 
 test('realization gallery uses a controlled modular rhythm', async ({ page }) => {
