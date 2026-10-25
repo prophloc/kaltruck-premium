@@ -13,12 +13,10 @@ for(const width of [320,390,620]){
  });
 }
 
-test('existing mobile navigation on inner pages is preserved',async({page})=>{
+test('new responsive navigation works on service pages',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await page.goto('/transport-hds/',{waitUntil:'domcontentloaded'});
- await page.locator('[data-menu-open]').click();
- const menu=page.locator('[data-mobile-menu]');
- await expect(menu).toBeVisible();
- await expect(menu.locator('a.mobile-contact__phone[href="tel:+48784430022"]')).toBeVisible();
- await expect(menu.locator('a[href^="mailto:"]')).toBeVisible();
+ await expect(page.locator('.sht-nav a')).toHaveCount(5);
+ await expect(page.locator('.sht-nav-phone')).toBeVisible();
+ await expect(page.locator('.sht-nav a[href="/kontakt/"]')).toHaveCount(1);
 });
