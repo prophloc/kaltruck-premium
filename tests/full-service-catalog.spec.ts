@@ -9,7 +9,7 @@ test('all 31 HDS services and five categories remain on the primary service page
  await expect(page.locator('[data-service-catalog]')).toHaveCount(1);
 });
 test('realizations still expose all five project filters',async({page})=>{
- await page.goto('/realizacje/');
+ await page.goto('/realizacje/',{waitUntil:'domcontentloaded'});
  await expect(page.locator('[data-project-filter]')).toHaveCount(6);
  await expect(page.locator('[data-project-filter]')).toHaveText(['Wszystkie',...categories]);
 });
