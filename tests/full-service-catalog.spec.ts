@@ -39,7 +39,7 @@ test('realizations keep the complete five-category structure from the original s
 
 test('desktop contact order is primary phone, quote pill, then email', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1000 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/transport-hds/', { waitUntil: 'domcontentloaded' });
 
   const hrefs = await page.locator('.header-actions > a').evaluateAll((nodes) =>
     nodes.map((node) => (node as HTMLAnchorElement).getAttribute('href')),
