@@ -11,7 +11,7 @@ test('new shared footer has consistent brand, navigation, social links and copyr
 test('route tool remains present and accepts destination inside footer',async({page})=>{
  await page.goto('/transport-hds/');
  const details=page.locator('.sht-route-details').first();
- await details.locator('summary').click();
+ await expect(details).toHaveAttribute('open','');
  const route=details.locator('[data-google-route]');
  await expect(route).toHaveCount(1);
  await expect(route.locator('[data-google-route-origin]')).toHaveValue('Płock');
