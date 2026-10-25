@@ -1,17 +1,18 @@
 import { test, expect } from '@playwright/test';
 
-test('editorial reasons have four service-focused explanations', async ({page})=>{
-  await page.goto('/');
-  await expect(page.locator('.ht-reason')).toHaveCount(4);
-  await expect(page.locator('.ht-reason').first()).toContainText('Transport i dźwig w jednym');
-  await expect(page.locator('.ht-reason').last()).toContainText('Zlecenia w całej Polsce');
+test('contact cards mirror informational reference pattern, without fake staff',async({page})=>{
+ await page.goto('/');
+ await expect(page.locator('.sht-contact-item')).toHaveCount(3);
+ await expect(page.locator('.sht-contact-item').first()).toContainText('Telefon');
+ await expect(page.locator('.sht-contact-item').nth(1)).toContainText('Zapytania i wyceny');
+ await expect(page.locator('.sht-contact-item').nth(2)).toContainText('Baza transportowa');
 });
 
-test('homepage contact is aligned with real brand contacts and quote flow', async ({page})=>{
-  await page.goto('/');
-  await expect(page.locator('.ht-contact-primary a[href="/wycena/"]')).toBeVisible();
-  await expect(page.locator('.ht-contact-details a[href^="tel:"]')).toHaveCount(1);
-  await expect(page.locator('.ht-contact-details a[href^="mailto:"]')).toHaveCount(1);
+test('editorial article has compact heading and restrained conversion links',async({page})=>{
+ await page.goto('/');
+ await expect(page.locator('.sht-article-title h2')).toContainText('Transport z HDS');
+ await expect(page.locator('.sht-article-cta a')).toHaveCount(2);
+ await expect(page.locator('.sht-contact-bottom a[href="/wycena/"]')).toBeVisible();
 });
 
 test('footer brand is centered in the whole free row between route and copyright line', async ({ page }) => {
