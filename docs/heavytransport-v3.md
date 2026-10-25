@@ -1,37 +1,47 @@
-# KALTRUCK Premium V3 — editorial HeavyTransport
+# KALTRUCK Premium — struktura podstrony HeavyTransport
 
-Źródło inspiracji układu: https://www.heavytransport.pl/with-a-crane-across-poland/
+Wzorzec wskazany przez użytkownika: https://www.heavytransport.pl/with-a-crane-across-poland/
 
-## Założenia
+## Korekta po ocenie V3
 
-Kierunek wybrany przez właściciela KALTRUCK zamiast wcześniejszych wariantów Die Glanzies. Strona główna bazuje na kompozycji fotograficzno-redakcyjnej: duży banner, czteroelementowy pas parametrów, obszerna sekcja o firmie z fotografią, trzy duże usługi, sekcja pokazująca rozładunek, argumenty i kontakt.
+Pierwotna propozycja `HeavyTransportLanding.astro` okazała się zbyt podobna do starego layoutu Premium. Została wycofana **w ramach tego samego brancha**.
 
-Kolorystyka pozostaje firmowa, grafitowo-złota. Implementacja jest autorska w Astro/CSS, bez pobierania kodu, logo i zdjęć z HeavyTransport.
+W nowej wersji odtworzona została kolejność i hierarchia faktycznej podstrony referencyjnej:
 
-## Zakres
+1. Kompaktowa linia informacji i poziome menu.
+2. Stosunkowo niski baner zdjęciowy z tytułem i breadcrumb.
+3. Czterokolumnowy pas liczb/parametrów.
+4. Biała sekcja artykułowa z nagłówkiem, kilkuakapitowym opisem i zdjęciem.
+5. Krótka galeria zdjęć realizacji i linki do usług.
+6. Trzy informacyjne kontakty KALTRUCK zamiast fałszywych profili pracowników.
+7. Minimalistyczna stopka.
 
-- `src/components/HeavyTransportLanding.astro` — treść i struktura.
-- `public/heavytransport-layout.css` — wygląd i responsywność.
-- `src/pages/index.astro` — podłączenie nowej strony.
-- Wszystkie poprzednie podstrony SEO, formularz wyceny, galerie, logika map i opinii są zachowane na osobnych stronach.
-- Parametry KALTRUCK: 10+ lat, udźwig do 12 t, zasięg do 14 m, zasięg działalności Polska, zgodnie z istniejącymi komponentami.
-- Fotografie realizacji są na `hdsplock.pl`, tak jak poprzednio. Przed wdrożeniem warto lokalizować/konwertować zasoby i sprawdzić prawa użycia.
+Nie wykorzystano żadnych obrazów, logo ani kodu konkurencyjnej strony. Używamy własnych zdjęć i danych KALTRUCK. To adaptacja układu, nie kopia piksel w piksel.
 
-## Podgląd Windows / PowerShell
+## Pliki
+
+- `src/pages/index.astro` — oddzielny dokument strony głównej z canonical, OpenGraph, JSON-LD, lokalnym stylem.
+- `src/components/HeavyTransportReference.astro` — struktura strona główna.
+- `public/heavytransport-layout.css` — styling responsywny bez poprzedniego hero.
+- Pozostałe podstrony i formularz wyceny nie są naruszane.
+
+## Sprawdzanie lokalnie / jeden folder / jeden branch
 
 ```powershell
-cd "$HOME\Desktop"
-git clone -b feature/heavytransport-editorial-v3 https://github.com/prophloc/kaltruck-premium.git Kaltruck-Heavy-V3
-cd Kaltruck-Heavy-V3
-npm install
+cd "SCIEZKA_DO_TWOJEGO_JUZ_ISTNIEJACEGO_FOLDERU_KALTRUCK"
+git fetch origin
+git switch feature/heavytransport-editorial-v3
+git pull --ff-only
 npm run dev
 ```
 
-Otwórz http://localhost:4321.
+Po `npm run dev` podgląd: http://localhost:4321.
 
-## Przed wdrożeniem
+**Nie klonować ponownie repo i nie tworzyć nowego folderu.**
 
-1. Zatwierdzić desktop i mobile oraz zgodność ze wskazanym wzorcem.
-2. Sprawdzić obrazy w działającej przeglądarce; ewentualnie przechowywać lokalnie i zoptymalizować do WebP/AVIF.
-3. Rozważyć spójny styl nagłówka/stopki i podstron wewnętrznych z nowym landingiem.
-4. Scalać branch dopiero po akceptacji.
+## Przed produkcją
+
+- Ocena przez użytkownika wyglądu desktop/mobile.
+- Własna kopia zdjęć realizacji i ewentualna konwersja do WebP/AVIF zamiast odwołań do `hdsplock.pl`.
+- Ujednolicenie podstron wewnętrznych z nową stroną główną po akceptacji.
+- PR pozostaje Draft; produkcja pozostaje bez zmian.
