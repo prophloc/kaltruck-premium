@@ -22,6 +22,6 @@ test('existing mobile menu retains contact access on inner pages', async ({page}
   await page.locator('[data-menu-open]').click();
   const menu = page.locator('[data-mobile-menu]');
   await expect(menu).toBeVisible();
-  await expect(menu.locator('a[href="tel:+48784430022"]')).toBeVisible();
+  await expect(menu.locator('a.mobile-contact__phone[href="tel:+48784430022"]')).toBeVisible();
   await expect(menu.locator('a[href^="mailto:"]')).toBeVisible();
 });
