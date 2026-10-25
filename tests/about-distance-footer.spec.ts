@@ -7,11 +7,10 @@ test('about page uses shared reference banner and original company facts',async(
  await expect(page.locator('.sht-article-text')).toContainText('Od ponad 10 lat');
  await expect(page.locator('.sht-inner-facts>div')).toHaveCount(3);
 });
-test('footer keeps working route checking in collapsible panel',async({page})=>{
+test('footer map is expanded and accepts route destinations',async({page})=>{
  await page.goto('/o-nas/',{waitUntil:'domcontentloaded'});
  const details=page.locator('.sht-route-details').first();
  await expect(details).toHaveCount(1);
- await details.locator('summary').click();
  await expect(details).toHaveAttribute('open','');
  const route=details.locator('[data-google-route]');
  await expect(route).toHaveCount(1);
