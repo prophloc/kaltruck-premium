@@ -37,19 +37,34 @@ test('Google reviews slide-out opens on right, preserves Google link',async({pag
  await expect(toggle).toHaveAttribute('aria-expanded','false');
 });
 
-test('footer route map is expanded and wider than the form',async({page})=>{
+test('map and Google reviews handles have identical dimensions and original icon styles',async({page})=>{
  await page.setViewportSize({width:1440,height:900});
- await page.goto('/kontakt/',{waitUntil:'domcontentloaded'});
- const details=page.locator('.sht-footer .sht-route-details--wide');
- await expect(details).toHaveAttribute('open','');
- const form=details.locator('.google-route-panel');
- const map=details.locator('.google-route-map-shell');
- const [formBox,mapBox]=await Promise.all([form.boundingBox(),map.boundingBox()]);
- expect(mapBox!.width).toBeGreaterThan(formBox!.width);
- expect(mapBox!.height).toBeGreaterThanOrEqual(350);
+ await page.goto('/',{waitUntil:'domcontentloaded'});
+ const left=page.locator('[data-sht-drawer-toggle="route"]');
+ const right=page.locator('[data-sht-drawer-toggle="reviews"]');
+ const [a,b]=await Promise.all([left.boundingBox(),right.boundingBox()]);
+ expect(a).not.toBeNull();expect(b).not.toBeNull();
+ expect(Math.abs(a!.width-b!.width)).toBeLessThanOrEqual(1);
+ expect(Math.abs(a!.height-b!.height)).toBeLessThanOrEqual(1);
+ await expect(left.locator('.sht-drawer-tab-pin')).toHaveCount(1);
+ await expect(right.locator('.sht-drawer-tab-star')).toHaveText('★');
+ await expect(left.locator('.sht-drawer-tab-label')).toHaveText('TRASA');
+ await expect(right.locator('.sht-drawer-tab-label')).toHaveText('OPINIE');
 });
 
-test('contact map takes the larger column and gear image is vertically centered',async({page})=>{
+test('restored footer map is compact and comes before footer navigation',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('/kontakt/',{waitUntil:'domcontentloaded'});
+ const map=page.locator('.sht-footer-map .google-route-map-shell');
+ const info=page.locator('.sht-footer-grid');
+ const [mapBox,infoBox]=await Promise.all([map.boundingBox(),info.boundingBox()]);
+ expect(mapBox).not.toBeNull();
+ expect(infoBox).not.toBeNull();
+ expect(mapBox!.height).toBeLessThanOrEqual(285);
+ expect(infoBox!.y).toBeGreaterThan(mapBox!.y+mapBox!.height-1);
+});
+
+test('contact map retains familiar two-column layout and gear image is centered',async({page})=>{
  await page.setViewportSize({width:1440,height:900});
  await page.goto('/kontakt/',{waitUntil:'domcontentloaded'});
  const [formBox,mapBox]=await Promise.all([
