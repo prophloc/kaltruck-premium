@@ -19,7 +19,7 @@ if (import.meta.env.PROD && siteConfig.siteUrl === 'https://plockhds.pl' && !map
   <div class="google-reviews-head">
     <div class="google-reviews-heading">
       <p class="google-reviews-kicker">OPINIE KLIENTÓW</p>
-      <h2 class="sr-only">Co mówią o KALTRUCK</h2>
+      <h2 class="sr-only">Opinie klientów</h2>
     </div>
     <img class="google-reviews-brand" src="/brand/kaltruck-logo.svg" width="2548" height="1305" alt="KALTRUCK Transport HDS" decoding="async" />
     <a class="google-reviews-attribution" href={siteConfig.googleMapsUrl} target="_blank" rel="noreferrer" aria-label="Otwórz opinie KALTRUCK w Google Maps">
@@ -218,6 +218,7 @@ if (import.meta.env.PROD && siteConfig.siteUrl === 'https://plockhds.pl' && !map
 </script>
 
 <style>
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   .google-reviews{display:grid;gap:16px;padding:24px;color:#151514;background:#f7f4ee}
   /* Header copied from Studio: left kicker, centered Kaltruck logo, Google stars right. */
   .google-reviews-head{
