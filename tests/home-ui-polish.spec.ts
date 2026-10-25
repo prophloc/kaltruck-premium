@@ -1,66 +1,17 @@
 import { test, expect } from '@playwright/test';
 
-test('FAQ changes the active plus into a minus and restores it when closed', async ({ page }) => {
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  const firstDetails = page.locator('.faq-list details').first();
-  const firstSummary = firstDetails.locator('summary');
-  const icon = firstSummary.locator('[data-faq-icon]');
-
-  await expect(icon).toHaveText('+');
-  await firstSummary.click();
-  await expect(firstDetails).toHaveAttribute('open', '');
-  await expect(icon).toHaveText('−');
-
-  await firstSummary.click();
-  await expect(firstDetails).not.toHaveAttribute('open', '');
-  await expect(icon).toHaveText('+');
+test('editorial reasons have four service-focused explanations', async ({page})=>{
+  await page.goto('/');
+  await expect(page.locator('.ht-reason')).toHaveCount(4);
+  await expect(page.locator('.ht-reason').first()).toContainText('Transport i dźwig w jednym');
+  await expect(page.locator('.ht-reason').last()).toContainText('Zlecenia w całej Polsce');
 });
 
-test('process cards keep their numbers top-left and center titles Studio-style', async ({ page }) => {
-  await page.setViewportSize({ width: 1600, height: 1000 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  const cards = page.locator('[data-process-step]');
-  const numbers = page.locator('[data-step-number]');
-  const titles = page.locator('[data-step-title]');
-
-  await expect(cards).toHaveCount(4);
-  await expect(numbers).toHaveCount(4);
-  await expect(titles).toHaveCount(4);
-
-  const geometry = await page.evaluate(() => {
-    const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-process-step]'));
-    return cards.map((card) => {
-      const number = card.querySelector<HTMLElement>('[data-step-number]');
-      const title = card.querySelector<HTMLElement>('[data-step-title]');
-      if (!number || !title) return null;
-      const cardRect = card.getBoundingClientRect();
-      const numberRect = number.getBoundingClientRect();
-      const titleRect = title.getBoundingClientRect();
-      return {
-        height: cardRect.height,
-        numberLeft: numberRect.left - cardRect.left,
-        numberTop: numberRect.top - cardRect.top,
-        titleCenterX: titleRect.left + titleRect.width / 2 - (cardRect.left + cardRect.width / 2),
-        titleCenterY: titleRect.top + titleRect.height / 2 - (cardRect.top + cardRect.height / 2),
-      };
-    });
-  });
-
-  expect(geometry.every(Boolean)).toBe(true);
-  const rows = geometry.filter((row): row is NonNullable<typeof row> => Boolean(row));
-  const spread = (values: number[]) => Math.max(...values) - Math.min(...values);
-
-  expect(spread(rows.map((row) => row.height))).toBeLessThanOrEqual(1);
-  expect(spread(rows.map((row) => row.numberLeft))).toBeLessThanOrEqual(1);
-  expect(spread(rows.map((row) => row.numberTop))).toBeLessThanOrEqual(1);
-  expect(spread(rows.map((row) => row.titleCenterX))).toBeLessThanOrEqual(1);
-  expect(spread(rows.map((row) => row.titleCenterY))).toBeLessThanOrEqual(2);
-  for (const row of rows) {
-    expect(Math.abs(row.titleCenterX)).toBeLessThanOrEqual(2);
-    expect(Math.abs(row.titleCenterY)).toBeLessThanOrEqual(25);
-  }
+test('homepage contact is aligned with real brand contacts and quote flow', async ({page})=>{
+  await page.goto('/');
+  await expect(page.locator('.ht-contact-primary a[href="/wycena/"]')).toBeVisible();
+  await expect(page.locator('.ht-contact-details a[href^="tel:"]')).toHaveCount(1);
+  await expect(page.locator('.ht-contact-details a[href^="mailto:"]')).toHaveCount(1);
 });
 
 test('footer brand is centered in the whole free row between route and copyright line', async ({ page }) => {
