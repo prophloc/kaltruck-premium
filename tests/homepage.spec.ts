@@ -4,7 +4,8 @@ test('homepage communicates a grounded HDS offer without fictitious numbers', as
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('h1')).toContainText('CIĘŻKI ŁADUNEK.');
   await expect(page.locator('.ht-fact')).toHaveCount(4);
-  await expect(page.locator('.ht-fact')).toContainText(['10+LAT DOŚWIADCZENIA', '12 tUDŹWIG HDS DO', '14 mZASIĘG RAMIENIA DO','POLSKAOBSZAR DZIAŁANIA']);
+  await expect(page.locator('.ht-fact strong')).toHaveText(['10+', '12 t', '14 m', 'POLSKA']);
+  await expect(page.locator('.ht-fact-label')).toHaveText(['LAT DOŚWIADCZENIA', 'UDŹWIG HDS DO', 'ZASIĘG RAMIENIA DO', 'OBSZAR DZIAŁANIA']);
   await expect(page.locator('.ht-contact-details a[href^="tel:"]')).toHaveCount(1);
 });
 
