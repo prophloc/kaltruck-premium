@@ -1,53 +1,45 @@
 ---
 import { siteConfig } from '../config/site';
 import DistanceEstimator from './DistanceEstimator.astro';
-import GoogleReviews from './GoogleReviews.astro';
-const routeId = 'site-footer-route';
 ---
-  <footer class="sht-footer site-footer">
-    <div class="sht-shell sht-footer-top">
-      <a href="/" class="sht-footer-logo">KALTRUCK <span>TRANSPORT HDS</span></a>
+<footer class="sht-footer site-footer">
+  <div class="sht-shell sht-footer-map" aria-label="Mapa dojazdu i planowanie trasy">
+    <DistanceEstimator instanceId="site-footer-route" />
+  </div>
+  <div class="sht-shell sht-footer-top sht-footer-grid">
+    <div class="sht-footer-brand">
+      <a class="sht-footer-logo" href="/" aria-label="KALTRUCK — strona główna">
+        <img src="/brand/kaltruck-logo.svg" width="2548" height="1305" alt="KALTRUCK Transport HDS" loading="lazy" />
+      </a>
+      <p>CIĘŻKI ŁADUNEK... PRECYZYJNA ROBOTA.</p>
+    </div>
+    <div class="sht-footer-navigation">
+      <h2>NAWIGACJA</h2>
       <nav aria-label="Nawigacja w stopce">
         <a href="/transport-hds/">Usługi</a>
         <a href="/realizacje/">Realizacje</a>
+        <a href="/sprzet/">Sprzęt</a>
         <a href="/o-nas/">O nas</a>
         <a href="/kontakt/">Kontakt</a>
       </nav>
-      <div class="sht-socials">
-        <a href={siteConfig.facebook} target="_blank" rel="noopener noreferrer">Facebook</a>
-        <a href={siteConfig.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
+    </div>
+    <div class="sht-footer-contact">
+      <h2>KONTAKT</h2>
+      <a class="sht-footer-phone" href={`tel:${siteConfig.phone}`}>+48 784 430 022</a>
+      <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+      <a href={siteConfig.googleMapsUrl} target="_blank" rel="noopener noreferrer">{siteConfig.baseAddress}</a>
+      <div class="sht-socials" aria-label="Media społecznościowe">
+        <a href={siteConfig.facebook} target="_blank" rel="noopener noreferrer" aria-label="KALTRUCK Facebook">
+          <img src="/brand/facebook-icon.svg" width="21" height="21" alt="" loading="lazy" />Facebook
+        </a>
+        <a href={siteConfig.instagram} target="_blank" rel="noopener noreferrer" aria-label="KALTRUCK Instagram">
+          <img src="/brand/instagram-icon.svg" width="21" height="21" alt="" loading="lazy" />Instagram
+        </a>
       </div>
     </div>
-    <div class="sht-shell sht-route-wrapper">
-      <details class="sht-route-details sht-route-details--wide" open><summary>MAPA I PLANOWANIE TRASY <span aria-hidden="true">−</span></summary>
-        <DistanceEstimator instanceId={routeId} deferMap={false} />
-      </details>
-    </div>
-    <div class="sht-shell sht-review-wrapper">
-      <details class="sht-route-details sht-review-details" data-reference-reviews>
-        <summary>OPINIE KLIENTÓW GOOGLE <span aria-hidden="true">+</span></summary>
-        <GoogleReviews />
-      </details>
-    </div>
-    <script is:inline>
-      (() => {
-        document.querySelectorAll('.sht-route-details:not(.sht-review-details)').forEach((details) => {
-        details.addEventListener('toggle', () => {
-          if (!details.open) return;
-          details.querySelector('[data-google-route]')?.dispatchEvent(new CustomEvent('kaltruck:route-activate'));
-        });
-      });
-      document.querySelectorAll('[data-reference-reviews]').forEach((details) => {
-          details.addEventListener('toggle', () => {
-            if (!details.open) return;
-            const reviews = details.querySelector('[data-google-reviews]');
-            reviews?.dispatchEvent(new CustomEvent('kaltruck:reviews-activate'));
-          });
-        });
-      })();
-    </script>
-    <div class="sht-shell sht-footer-bottom">
-      <span>© {new Date().getFullYear()} {siteConfig.legalName} · NIP: {siteConfig.nip}</span>
-      <span>prophloc</span>
-    </div>
-  </footer>
+  </div>
+  <div class="sht-shell sht-footer-bottom">
+    <span>© {new Date().getFullYear()} {siteConfig.legalName} · NIP: {siteConfig.nip}</span>
+    <span>prophloc</span>
+  </div>
+</footer>
