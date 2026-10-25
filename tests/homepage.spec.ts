@@ -4,12 +4,12 @@ import { test, expect } from '@playwright/test';
 test('homepage communicates the premium HDS offer without invented data', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('CIĘŻKI ŁADUNEK?');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('ZOSTAW TO NAM!');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('MY GO RUSZYMY.');
   await expect(page.getByRole('link', { name: /Wyceń transport/i }).first()).toBeVisible();
   await expect(page.locator('a[href^="tel:"]').first()).toBeVisible();
 
-  for (const theme of ['Kontenery', 'Prefabrykaty', 'Maszyny', 'Precyzyjne ustawienie', 'Transport specjalistyczny']) {
-    await expect(page.getByText(theme, { exact: false }).first()).toBeVisible();
+  for (const href of ['/transport-kontenerow/', '/transport-prefabrykatow/', '/transport-maszyn/', '/rozladunek-hds/', '/transport-hds/']) {
+    await expect(page.locator('.premium-service a[href="' + href + '"]')).toBeVisible();
   }
 
   // Deliberately broken visual lines must retain accessible, natural heading text.
@@ -101,38 +101,16 @@ test('capability strip centers clean data without decorative indexes', async ({ 
   expect(metrics.backgroundImage).toContain('linear-gradient');
 });
 
-test('intro location lockup is smaller, clean, and vertically balanced', async ({ page }) => {
+test('redesigned services section has balanced heading and visible coverage copy', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  await expect(page.locator('.hero-kicker')).toHaveCount(0);
-
-  const intro = page.locator('.intro');
-  const title = intro.locator('.section-title');
-  await expect(title).not.toContainText('•');
-  await expect(title.locator('.intro-location-main')).toHaveText('Transport HDS');
-  await expect(title.locator('.intro-location-sub')).toHaveText('Płock Polska');
-
-  const titleFontSize = await title.evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
-  expect(titleFontSize).toBeGreaterThanOrEqual(50);
-  expect(titleFontSize).toBeLessThanOrEqual(52);
-
-  const subTransform = await title.locator('.intro-location-sub').evaluate((node) => getComputedStyle(node).transform);
-  const transformMatch = subTransform.match(/^matrix\([^,]+,[^,]+,[^,]+,[^,]+,\s*(-?[\d.]+),\s*(-?[\d.]+)\)$/);
-  expect(transformMatch).not.toBeNull();
-  expect(Number(transformMatch![2])).toBeCloseTo(5, 1);
-
-  const centers = await intro.evaluate(() => {
-    const left = document.querySelector('.intro-heading')!.getBoundingClientRect();
-    const right = document.querySelector('.intro-copy')!.getBoundingClientRect();
-    return {
-      left: left.top + left.height / 2,
-      right: right.top + right.height / 2,
-    };
-  });
-  expect(Math.abs(centers.left - centers.right)).toBeLessThanOrEqual(5);
-
-  const introBox = await intro.boundingBox();
-  expect(introBox).not.toBeNull();
-  expect(introBox!.height).toBeLessThanOrEqual(470);
+  const section = page.locator('.premium-services');
+  await expect(section.locator('h2')).toContainText('Przewozimy.');
+  await expect(section.locator('h2')).toContainText('Ustawiamy.');
+  await expect(section.locator('.premium-service')).toHaveCount(5);
+  const grid = await section.locator('.premium-services__grid').boundingBox();
+  expect(grid).not.toBeNull();
+  expect(grid!.width).toBeGreaterThan(900);
+  await expect(page.locator('.coverage')).toContainText('Płock');
+  await expect(page.locator('.coverage')).toContainText('Polsce');
 });
