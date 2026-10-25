@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import CapabilityStrip from '../components/CapabilityStrip.astro';
-import ServiceStory from '../components/ServiceStory.astro';
+import PremiumServices from '../components/PremiumServices.astro';
 import EquipmentSection from '../components/EquipmentSection.astro';
 import ProcessSteps from '../components/ProcessSteps.astro';
 import CTASection from '../components/CTASection.astro';
@@ -18,28 +18,7 @@ const faqItems=[
   <link slot="head" rel="preload" as="image" href="/images/home/hero-hds-mobile.webp" media="(max-width: 620px)" fetchpriority="high" />
   <Hero />
   <CapabilityStrip />
-  <section class="section intro">
-    <div class="container intro-grid">
-      <div class="intro-heading">
-        <p class="eyebrow">KALTRUCK / Kalwasińscy</p>
-        <h2 class="section-title intro-location">
-          <span class="intro-location-main">Transport HDS</span>
-          <span class="intro-location-sub">Płock Polska</span>
-        </h2>
-      </div>
-      <div class="intro-copy">
-        <p class="lead intro-lead">Łączymy transport i pracę żurawia HDS w jednej realizacji. Przyjeżdżamy, podnosimy, przewozimy i ustawiamy ładunek tam, gdzie ma finalnie stanąć.</p>
-        <div class="intro-flow" aria-label="Zakres realizacji">
-          <span>Transport</span><i></i><span>Podnoszenie</span><i></i><span>Ustawienie</span>
-        </div>
-      </div>
-    </div>
-  </section>
-  <ServiceStory eyebrow="01 / Kontenery" title="Kontenery. Od odbioru po precyzyjne ustawienie." text="Transport kontenerów mieszkalnych, biurowych i magazynowych z wykorzystaniem HDS — bez organizowania osobnego dźwigu na miejscu." href="/transport-kontenerow/" image="https://hdsplock.pl/zdj/realizacje/transport-kontenerow-07.jpg" alt="Transport kontenera samochodem z HDS" />
-  <ServiceStory reverse eyebrow="02 / Prefabrykaty" title="Prefabrykaty i konstrukcje bez zbędnych przeładunków." text="Elementy betonowe i stalowe przewozimy oraz rozładowujemy jednym zestawem, ograniczając liczbę operacji na placu." href="/transport-prefabrykatow/" image="https://hdsplock.pl/zdj/realizacje/prefabrykaty-betonowe-05.jpg" alt="Prefabrykat betonowy podnoszony przez HDS" width={486} height={1080} />
-  <ServiceStory eyebrow="03 / Maszyny" title="Maszyny i urządzenia — transport z kontrolą każdego ruchu." text="Obsługujemy maszyny, urządzenia techniczne i nietypowe ładunki wymagające podniesienia oraz ustawienia." href="/transport-maszyn/" image="https://hdsplock.pl/zdj/realizacje/suwnice-przemys-owe-04.jpg" alt="Realizacja HDS przy ciężkim urządzeniu" width={810} height={1080} />
-  <ServiceStory reverse eyebrow="04 / Precyzyjne ustawienie" title="Nie tylko dowozimy. Ustawiamy tam, gdzie trzeba." text="Rozładunek HDS sprawdza się tam, gdzie liczy się zasięg, precyzja i możliwość pracy bez dodatkowego sprzętu dźwigowego." href="/rozladunek-hds/" image="https://hdsplock.pl/zdj/realizacje/stacje-transformatorowe-07.jpg" alt="Precyzyjne ustawianie ciężkiego elementu za pomocą HDS" width={1435} height={1080} />
-  <ServiceStory eyebrow="05 / Transport specjalistyczny" title="Nietypowy ładunek nie oznacza przypadkowego planu." text="Realizujemy transport przemysłowy i specjalistyczny w Płocku, na Mazowszu i na terenie całej Polski." href="/transport-hds/" image="https://hdsplock.pl/zdj/realizacje/transport-przemys-owy-03.jpg" alt="Specjalistyczny transport przemysłowy KALTRUCK" width={1435} height={1080} />
+  <PremiumServices />
   <EquipmentSection />
   <ProcessSteps />
   <FAQ items={faqItems} title="Zanim zamówisz HDS" />
@@ -67,77 +46,6 @@ const faqItems=[
   <CTASection />
 </BaseLayout>
 <style>
-  .intro{
-    position:relative;
-    overflow:hidden;
-    background:linear-gradient(180deg,#0b0d0e 0%,#090a0b 100%);
-    border-bottom:1px solid var(--line);
-    padding-block:clamp(54px,5vw,76px);
-  }
-  .intro::after{
-    content:"";
-    position:absolute;
-    width:520px;
-    height:520px;
-    border-radius:50%;
-    left:-280px;
-    bottom:-360px;
-    background:radial-gradient(circle,rgba(215,180,106,.07),transparent 68%);
-    pointer-events:none;
-  }
-  .intro-grid{
-    position:relative;
-    z-index:1;
-    display:grid;
-    grid-template-columns:repeat(12,minmax(0,1fr));
-    gap:var(--grid-gap);
-    align-items:center;
-  }
-  .intro-heading{
-    grid-column:1 / span 6;
-    align-self:center;
-  }
-  .intro-heading .eyebrow{margin:0 0 16px}
-  .intro .section-title{
-    margin:0;
-    max-width:none;
-    font-size:clamp(2.35rem,calc(3.8vw - 10px),3.75rem);
-    line-height:.94;
-    letter-spacing:-.045em;
-  }
-  .intro-location{
-    display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-  }
-  .intro-location-main,
-  .intro-location-sub{
-    display:block;
-    white-space:nowrap;
-  }
-  .intro-location-sub{transform:translateY(5px)}
-  .intro-copy{
-    grid-column:8 / -1;
-    max-width:34rem;
-    align-self:center;
-  }
-  .intro-lead{margin:0;max-width:31rem;color:#d0ccc4;font-size:clamp(1.08rem,1.35vw,1.3rem);line-height:1.68}
-  .intro-flow{display:flex;align-items:center;gap:12px;margin-top:26px;color:#96928b;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
-  .intro-flow i{display:block;width:26px;height:1px;background:rgba(215,180,106,.48)}
-  @media(max-width:980px){
-    .intro-heading{grid-column:1 / span 7}
-    .intro-copy{grid-column:8 / -1}
-    .intro .section-title{font-size:clamp(2.3rem,calc(5vw - 10px),3.55rem)}
-  }
-  @media(max-width:780px){
-    .intro{padding-block:50px}
-    .intro-grid{grid-template-columns:1fr;gap:28px}
-    .intro-heading,.intro-copy{grid-column:auto}
-    .intro .section-title{font-size:clamp(2.15rem,calc(10vw - 10px),3.35rem)}
-    .intro-location-main,.intro-location-sub{white-space:normal}
-    .intro-lead{max-width:42rem}
-    .intro-flow{gap:9px;overflow:hidden;font-size:.7rem}.intro-flow i{width:18px}
-  }
   .coverage{background:#0a0c0e;border-top:1px solid var(--line)}
   .coverage-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:start}
   .coverage-grid>div:first-child{grid-column:1/span 6}
