@@ -3,11 +3,11 @@
   "short_name": "KALTRUCK",
   "start_url": "/",
   "display": "browser",
-  "background_color": "#090b0c",
-  "theme_color": "#090b0c",
+  "background_color": "#25292c",
+  "theme_color": "#25292c",
   "icons": [
     {
-      "src": "/favicon.svg?v=kaltruck-h-4",
+      "src": "/favicon.svg?v=kaltruck-heavy-v5",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"

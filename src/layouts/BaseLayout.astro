@@ -1,8 +1,8 @@
 ---
 import '../styles/global.css';
 import { siteConfig } from '../config/site';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import ReferenceHeader from '../components/ReferenceHeader.astro';
+import ReferenceFooter from '../components/ReferenceFooter.astro';
 import { organizationSchema } from '../lib/seo';
 
 interface Props {
@@ -24,8 +24,8 @@ const socialImage = new URL(image, siteConfig.siteUrl).toString();
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0a0b0c" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=kaltruck-h-4" />
+    <meta name="theme-color" content="#25292c" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=kaltruck-heavy-v5" />
     <link rel="manifest" href="/site.webmanifest" />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -50,12 +50,15 @@ const socialImage = new URL(image, siteConfig.siteUrl).toString();
     <meta name="twitter:image:alt" content="KALTRUCK – Transport HDS" />
     {schemas.map((schema) => <script type="application/ld+json" set:html={JSON.stringify(schema)} />)}
     <slot name="head" />
+    <link rel="stylesheet" href="/heavytransport-layout.css" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Przejdź do treści</a>
-    <Header />
-    <main id="main-content"><slot /></main>
-    <Footer />
+    <div class="sht sht-inner">
+      <ReferenceHeader />
+      <main id="main-content"><slot /></main>
+      <ReferenceFooter />
+    </div>
 
     <script is:inline>
       (() => {

@@ -1,0 +1,45 @@
+---
+import { siteConfig } from '../config/site';
+import DistanceEstimator from './DistanceEstimator.astro';
+---
+<footer class="sht-footer site-footer">
+  <div class="sht-shell sht-footer-map" aria-label="Mapa dojazdu i planowanie trasy">
+    <DistanceEstimator instanceId="site-footer-route" />
+  </div>
+  <div class="sht-shell sht-footer-top sht-footer-grid">
+    <div class="sht-footer-brand">
+      <a class="sht-footer-logo" href="/" aria-label="KALTRUCK — strona główna">
+        <img src="/brand/kaltruck-logo.svg" width="2548" height="1305" alt="KALTRUCK Transport HDS" loading="lazy" />
+      </a>
+      <p>CIĘŻKI ŁADUNEK... PRECYZYJNA ROBOTA.</p>
+    </div>
+    <div class="sht-footer-navigation">
+      <h2>NAWIGACJA</h2>
+      <nav aria-label="Nawigacja w stopce">
+        <a href="/transport-hds/">Usługi</a>
+        <a href="/realizacje/">Realizacje</a>
+        <a href="/sprzet/">Sprzęt</a>
+        <a href="/o-nas/">O nas</a>
+        <a href="/kontakt/">Kontakt</a>
+      </nav>
+    </div>
+    <div class="sht-footer-contact">
+      <h2>KONTAKT</h2>
+      <a class="sht-footer-phone" href={`tel:${siteConfig.phone}`}>+48 784 430 022</a>
+      <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+      <a href={siteConfig.googleMapsUrl} target="_blank" rel="noopener noreferrer">{siteConfig.baseAddress}</a>
+      <div class="sht-socials" aria-label="Media społecznościowe">
+        <a href={siteConfig.facebook} target="_blank" rel="noopener noreferrer" aria-label="KALTRUCK Facebook">
+          <img src="/brand/facebook-icon.svg" width="21" height="21" alt="" loading="lazy" />Facebook
+        </a>
+        <a href={siteConfig.instagram} target="_blank" rel="noopener noreferrer" aria-label="KALTRUCK Instagram">
+          <img src="/brand/instagram-icon.svg" width="21" height="21" alt="" loading="lazy" />Instagram
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="sht-shell sht-footer-bottom">
+    <span>© {new Date().getFullYear()} {siteConfig.legalName} · NIP: {siteConfig.nip}</span>
+    <span>prophloc</span>
+  </div>
+</footer>

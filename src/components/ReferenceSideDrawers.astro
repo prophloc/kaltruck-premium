@@ -1,0 +1,82 @@
+---
+import DistanceEstimator from './DistanceEstimator.astro';
+import GoogleReviews from './GoogleReviews.astro';
+import GoogleMapsPin from './GoogleMapsPin.astro';
+---
+<div class="sht-drawers" data-sht-drawers>
+  <div class="sht-drawer-stack sht-drawer-stack--left" data-sht-drawer-stack="route">
+    <aside class="sht-drawer-panel sht-drawer-panel--left" id="sht-drawer-route" aria-label="Mapa i wyznaczanie trasy" data-sht-drawer="route" aria-hidden="true" inert>
+      <div class="sht-drawer-head">
+        <div><small>KALTRUCK / DOJAZD</small><h2>Sprawdź trasę</h2></div>
+        <button type="button" class="sht-drawer-close" data-sht-drawer-close aria-label="Zamknij mapę">×</button>
+      </div>
+      <DistanceEstimator instanceId="side-route" variant="drawer" deferMap={true} />
+    </aside>
+    <button type="button" class="sht-drawer-tab sht-drawer-tab--left" data-sht-drawer-toggle="route" aria-controls="sht-drawer-route" aria-expanded="false" aria-label="Sprawdź trasę">
+      <GoogleMapsPin class="sht-drawer-tab-pin" /><span class="sht-drawer-tab-label">TRASA</span>
+    </button>
+  </div>
+  <div class="sht-drawer-stack sht-drawer-stack--right" data-sht-drawer-stack="reviews">
+    <button type="button" class="sht-drawer-tab sht-drawer-tab--right" data-sht-drawer-toggle="reviews" aria-controls="sht-drawer-reviews" aria-expanded="false" aria-label="Opinie klientów Google">
+      <span class="sht-drawer-tab-star" aria-hidden="true">★</span><span class="sht-drawer-tab-label">OPINIE</span>
+    </button>
+    <aside class="sht-drawer-panel sht-drawer-panel--right" id="sht-drawer-reviews" aria-label="Opinie klientów Google" data-sht-drawer="reviews" aria-hidden="true" inert>
+      <div class="sht-drawer-head">
+        <h2>Opinie klientów</h2>
+        <button type="button" class="sht-drawer-close" data-sht-drawer-close aria-label="Zamknij opinie">×</button>
+      </div>
+      <GoogleReviews />
+    </aside>
+  </div>
+</div>
+<script is:inline>
+  (() => {
+    const root = document.querySelector('[data-sht-drawers]');
+    if (!(root instanceof HTMLElement)) return;
+    const panels = Array.from(root.querySelectorAll('[data-sht-drawer]'));
+    const toggles = Array.from(root.querySelectorAll('[data-sht-drawer-toggle]'));
+    const stacks = Array.from(root.querySelectorAll('[data-sht-drawer-stack]'));
+    let active = '';
+    let previousFocus = null;
+
+    const setOpen = (name) => {
+      const next = active === name ? '' : name;
+      root.dataset.activeDrawer = next;
+      stacks.forEach(stack => {
+        stack.classList.toggle('is-open', stack.getAttribute('data-sht-drawer-stack') === next);
+      });
+      panels.forEach(panel => {
+        const isActive = panel.getAttribute('data-sht-drawer') === next;
+        panel.setAttribute('aria-hidden', String(!isActive));
+        panel.inert = !isActive;
+        if (isActive) {
+          if (next === 'route') panel.querySelector('[data-google-route]')?.dispatchEvent(new CustomEvent('kaltruck:route-activate'));
+          if (next === 'reviews') panel.querySelector('[data-google-reviews]')?.dispatchEvent(new CustomEvent('kaltruck:reviews-activate'));
+        }
+      });
+      toggles.forEach(toggle => toggle.setAttribute('aria-expanded',
+        String(toggle.getAttribute('data-sht-drawer-toggle') === next)));
+      active = next;
+      if (next) {
+        const panel = panels.find(item => item.getAttribute('data-sht-drawer') === next);
+        panel?.querySelector('[data-sht-drawer-close]')?.focus({ preventScroll: true });
+      } else if (previousFocus instanceof HTMLElement && previousFocus.isConnected) {
+        previousFocus.focus({ preventScroll: true });
+      }
+    };
+
+    toggles.forEach(toggle => toggle.addEventListener('click', () => {
+      previousFocus = toggle;
+      setOpen(toggle.getAttribute('data-sht-drawer-toggle') || '');
+    }));
+    root.querySelectorAll('[data-sht-drawer-close]').forEach(button => button.addEventListener('click', () => setOpen('')));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && active) setOpen('');
+    });
+    document.addEventListener('pointerdown', event => {
+      if (!(event.target instanceof Node) || !active) return;
+      const openedStack = stacks.find(stack => stack.getAttribute('data-sht-drawer-stack') === active);
+      if (openedStack && !openedStack.contains(event.target)) setOpen('');
+    });
+  })();
+</script>

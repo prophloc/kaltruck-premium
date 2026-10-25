@@ -1,0 +1,108 @@
+---
+import { siteConfig } from '../config/site';
+import ReferenceHeader from './ReferenceHeader.astro';
+import ReferenceSideDrawers from './ReferenceSideDrawers.astro';
+import ReferenceFooter from './ReferenceFooter.astro';
+
+const stats = [
+  { value: '10+', label: 'LAT\nDOŚWIADCZENIA' },
+  { value: '12 t', label: 'MAKSYMALNY\nUDŹWIG HDS' },
+  { value: '14 m', label: 'ZASIĘG\nRAMIENIA' },
+  { value: 'POLSKA', label: 'OBSZAR\nDZIAŁANIA' },
+];
+
+const gallery = [
+  { src: 'https://hdsplock.pl/zdj/realizacje/transport-kontenerow-07.jpg', alt: 'Transport i ustawianie kontenera żurawiem HDS', href: '/transport-kontenerow/', name: 'Kontenery' },
+  { src: 'https://hdsplock.pl/zdj/realizacje/prefabrykaty-betonowe-05.jpg', alt: 'Transport prefabrykatów i elementów betonowych HDS', href: '/transport-prefabrykatow/', name: 'Prefabrykaty' },
+  { src: 'https://hdsplock.pl/zdj/realizacje/suwnice-przemys-owe-04.jpg', alt: 'Transport maszyn i urządzeń przemysłowych HDS', href: '/transport-maszyn/', name: 'Maszyny' },
+];
+---
+<div class="sht">
+  <ReferenceHeader />
+
+  <main id="main-content">
+    <section class="sht-banner" aria-labelledby="sht-hero-title">
+      <ReferenceSideDrawers />
+      <div class="sht-banner-photo" aria-hidden="true"></div>
+      <div class="sht-shell sht-banner-content">
+        <p class="sht-breadcrumb">STRONA GŁÓWNA <span>/</span> TRANSPORT HDS</p>
+        <h1 id="sht-hero-title">Transport HDS<br />w całej Polsce</h1>
+        <p class="sht-banner-summary">Załadunek, przewóz i rozładunek ciężkich ładunków.</p>
+      </div>
+    </section>
+
+    <section class="sht-stats" aria-label="Dane o firmie KALTRUCK">
+      <div class="sht-shell sht-stats-grid">
+        {stats.map((item) => <div class="sht-stat">
+          <strong>{item.value}</strong>
+          <span>{item.label.split('\n').map((part) => <span>{part}</span>)}</span>
+        </div>)}
+      </div>
+    </section>
+
+    <section class="sht-article" aria-labelledby="sht-article-title">
+      <div class="sht-shell sht-article-shell">
+        <div class="sht-article-title">
+          <span class="sht-small-accent" aria-hidden="true"></span>
+          <h2 id="sht-article-title">Transport z HDS — Płock i cała Polska</h2>
+        </div>
+        <div class="sht-article-layout">
+          <div class="sht-article-text">
+            <p class="sht-article-lead">Przewóz ciężkich ładunków wymaga odpowiedniego sprzętu i przygotowania. W KALTRUCK łączymy transport samochodowy z pracą żurawia HDS, dzięki czemu możemy odebrać, przewieźć i ustawić ładunek w docelowym miejscu.</p>
+            <p>Transportujemy między innymi kontenery magazynowe, biurowe i mieszkalne, prefabrykaty budowlane oraz maszyny i urządzenia przemysłowe. W zależności od charakteru zlecenia organizujemy załadunek, transport oraz rozładunek, bez konieczności angażowania osobnego dźwigu, jeśli pozwalają na to warunki techniczne.</p>
+            <p>Realizacje rozpoczynamy od ustalenia masy i wymiarów ładunku, miejsca odbioru, drogi dojazdowej oraz dostępnej przestrzeni do bezpiecznej pracy HDS. Nasza baza znajduje się w Płocku, a zlecenia realizujemy również w innych częściach Polski.</p>
+            <p>Posiadamy sprzęt o maksymalnym udźwigu do 12 ton i zasięgu ramienia do 14 metrów. Rzeczywista możliwość podniesienia ładunku zależy także od odległości, masy, warunków podłoża i ustawienia pojazdu.</p>
+            <div class="sht-article-cta">
+              <a href="/wycena/">ZAPYTAJ O WYCENĘ <span aria-hidden="true">›</span></a>
+              <a href="/transport-hds/">ZOBACZ PEŁNĄ OFERTĘ <span aria-hidden="true">›</span></a>
+            </div>
+          </div>
+          <aside class="sht-article-aside" aria-label="Szczegóły transportu">
+            <img src="https://hdsplock.pl/zdj/realizacje/transport-przemys-owy-03.jpg" alt="Specjalistyczny transport HDS KALTRUCK" width="1435" height="1080" loading="lazy" decoding="async" />
+            <div class="sht-article-aside-note">
+              <span>TRANSPORT HDS</span>
+              <p>Kontenery. Prefabrykaty. Maszyny. Rozładunek.</p>
+            </div>
+          </aside>
+        </div>
+
+        <div class="sht-gallery-intro" id="realizacje">
+          <h3>Wybrane rodzaje realizacji</h3>
+          <a href="/realizacje/">WSZYSTKIE REALIZACJE <span aria-hidden="true">›</span></a>
+        </div>
+        <div class="sht-photo-grid">
+          {gallery.map((item) => <a class="sht-photo" href={item.href} aria-label={`Więcej: ${item.name}`}>
+            <img src={item.src} alt={item.alt} width="1435" height="1080" loading="lazy" decoding="async" />
+            <span>{item.name}<b aria-hidden="true">›</b></span>
+          </a>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="sht-contact" aria-labelledby="sht-contact-title">
+      <div class="sht-shell">
+        <h2 id="sht-contact-title">SKONTAKTUJ SIĘ Z NAMI</h2>
+        <div class="sht-contact-grid">
+          <div class="sht-contact-item">
+            <span class="sht-contact-icon" aria-hidden="true">☎</span>
+            <div><h3>Telefon</h3><p>Porozmawiajmy o Twoim transporcie</p><a href={`tel:${siteConfig.phone}`}>+48 784 430 022</a></div>
+          </div>
+          <div class="sht-contact-item">
+            <span class="sht-contact-icon" aria-hidden="true">✉</span>
+            <div><h3>Zapytania i wyceny</h3><p>Prześlij dane ładunku i trasy</p><a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a></div>
+          </div>
+          <div class="sht-contact-item">
+            <span class="sht-contact-icon" aria-hidden="true">⌖</span>
+            <div><h3>Baza transportowa</h3><p>Płock, Polska</p><a href={siteConfig.googleMapsUrl} target="_blank" rel="noopener noreferrer">{siteConfig.baseAddress}</a></div>
+          </div>
+        </div>
+        <div class="sht-contact-bottom">
+          <span>Potrzebujesz transportu HDS?</span>
+          <a href="/wycena/">PRZEJDŹ DO FORMULARZA WYCENY <span aria-hidden="true">›</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <ReferenceFooter />
+</div>

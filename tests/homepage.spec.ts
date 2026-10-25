@@ -1,138 +1,34 @@
-import { createHash } from 'node:crypto';
 import { test, expect } from '@playwright/test';
 
-test('homepage communicates the premium HDS offer without invented data', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('CIĘŻKI ŁADUNEK?');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('ZOSTAW TO NAM!');
-  await expect(page.getByRole('link', { name: /Wyceń transport/i }).first()).toBeVisible();
-  await expect(page.locator('a[href^="tel:"]').first()).toBeVisible();
-
-  for (const theme of ['Kontenery', 'Prefabrykaty', 'Maszyny', 'Precyzyjne ustawienie', 'Transport specjalistyczny']) {
-    await expect(page.getByText(theme, { exact: false }).first()).toBeVisible();
-  }
-
-  // Deliberately broken visual lines must retain accessible, natural heading text.
-  const processHeadings = page.locator('[data-process-step] h3');
-  await expect(processHeadings).toHaveCount(4);
-  for (const [index, [first, second]] of [
-    ['Kontakt /', 'zapytanie'],
-    ['Ocena ładunku', 'i warunków'],
-    ['Wycena', 'i termin'],
-    ['Transport', 'i ustawienie'],
-  ].entries()) {
-    await expect(processHeadings.nth(index).locator('span')).toHaveText([first, second]);
-  }
-
-  // Studio-style card copy is horizontally centered, not bottom-left.
-  for (const heading of await processHeadings.all()) {
-    const centerDelta = await heading.evaluate((node) => {
-      const card = node.closest('[data-process-step]')?.getBoundingClientRect();
-      const title = node.getBoundingClientRect();
-      return card ? Math.abs(title.left + title.width / 2 - (card.left + card.width / 2)) : 1000;
-    });
-    expect(centerDelta).toBeLessThanOrEqual(3);
-  }
+test('homepage has four verified business statistics rather than animated fake client counts', async ({page})=>{
+ await page.goto('/',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('h1')).toContainText('Transport HDS');
+ await expect(page.locator('.sht-stat strong')).toHaveText(['10+','12 t','14 m','POLSKA']);
+ await expect(page.locator('.sht-stat')).toHaveCount(4);
+ await expect(page.locator('.sht-contact-item')).toHaveCount(3);
 });
 
-test('homepage preserves original PNG but serves lightweight responsive WebP', async ({ page }) => {
-  await page.setViewportSize({ width: 1600, height: 900 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-  const png = await page.request.get('/images/home/hero-hds-original.png');
-  expect(png.ok()).toBeTruthy();
-  const bytes = await png.body();
-  expect(bytes.byteLength).toBe(3_113_888);
-  expect(createHash('sha256').update(bytes).digest('hex')).toBe('e50fe7b925406797a309348ccbcd463598e0b4e3514c131641c6db78e7a74f2b');
-  const hero = page.locator('.hero-bg');
-  await expect(hero).toHaveAttribute('src', '/images/home/hero-hds-desktop.webp');
-  await expect(hero).toHaveAttribute('fetchpriority', 'high');
-  await expect(hero).toHaveAttribute('loading', 'eager');
-  await expect(page.locator('link[rel="preload"][as="image"]')).toHaveCount(2);
-  for (const file of ['hero-hds-desktop.webp', 'hero-hds-mobile.webp']) {
-    const response = await page.request.get(`/images/home/${file}`);
-    expect(response.ok(), file).toBeTruthy();
-    expect(response.headers()['content-type']).toContain('image/webp');
-    expect((await response.body()).byteLength).toBeLessThan(bytes.byteLength);
-  }
-  const dimensions = await hero.evaluate((img: HTMLImageElement) => ({ width: img.naturalWidth, height: img.naturalHeight }));
-  expect(dimensions).toEqual({ width: 1672, height: 941 });
-  await page.setViewportSize({ width: 390, height: 844 });
-  await expect(hero).toHaveJSProperty('currentSrc', 'http://127.0.0.1:4321/images/home/hero-hds-mobile.webp');
+test('homepage keeps optimized desktop and mobile hero backgrounds', async ({page})=>{
+ await page.goto('/');
+ await expect(page.locator('link[rel="preload"][media="(min-width: 541px)"]')).toHaveAttribute('href','/images/home/hero-hds-desktop.webp');
+ await expect(page.locator('link[rel="preload"][media="(max-width: 540px)"]')).toHaveAttribute('href','/images/home/hero-hds-mobile.webp');
+ await page.setViewportSize({width:390,height:844});
+ const image=await page.locator('.sht-banner-photo').evaluate(node=>getComputedStyle(node).backgroundImage);
+ expect(image).toContain('hero-hds-mobile.webp');
 });
 
-test('capability strip centers clean data without decorative indexes', async ({ page }) => {
-  await page.setViewportSize({ width: 1600, height: 900 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  const strip = page.locator('.cap-strip');
-  await expect(strip).toBeVisible();
-  await expect(strip.locator('.cap-intro')).toContainText('KALTRUCK / MOŻLIWOŚCI');
-
-  const items = strip.locator('.cap-item');
-  await expect(items).toHaveCount(4);
-  await expect(strip.locator('.cap-index')).toHaveCount(0);
-  await expect(strip.locator('.cap-value')).toHaveText(['10+', '12 t', '14 m', 'CAŁA POLSKA']);
-
-  const alignment = await items.evaluateAll((nodes) => nodes.map((node) => {
-    const item = node.getBoundingClientRect();
-    const value = node.querySelector('.cap-value')!.getBoundingClientRect();
-    const label = node.querySelector('.cap-label')!.getBoundingClientRect();
-    return {
-      itemCenter: item.x + item.width / 2,
-      valueCenter: value.x + value.width / 2,
-      labelCenter: label.x + label.width / 2,
-      textAlign: getComputedStyle(node).textAlign,
-    };
-  }));
-
-  for (const metric of alignment) {
-    expect(Math.abs(metric.itemCenter - metric.valueCenter)).toBeLessThanOrEqual(3);
-    expect(Math.abs(metric.itemCenter - metric.labelCenter)).toBeLessThanOrEqual(3);
-    expect(metric.textAlign).toBe('center');
-  }
-
-  const metrics = await strip.evaluate((node) => {
-    const rect = node.getBoundingClientRect();
-    const style = getComputedStyle(node);
-    return { height: rect.height, backgroundImage: style.backgroundImage };
-  });
-  expect(metrics.height).toBeGreaterThanOrEqual(130);
-  expect(metrics.height).toBeLessThanOrEqual(190);
-  expect(metrics.backgroundImage).toContain('linear-gradient');
+test('article copy introduces KALTRUCK and shows the three services', async ({page})=>{
+ await page.goto('/');
+ await expect(page.locator('.sht-article h2')).toContainText('Transport z HDS');
+ await expect(page.locator('.sht-article-text p')).toHaveCount(4);
+ await expect(page.locator('.sht-photo')).toHaveCount(3);
+ const urls=await page.locator('.sht-photo').evaluateAll(nodes=>nodes.map(node=>(node as HTMLAnchorElement).getAttribute('href')));
+ expect(urls).toEqual(['/transport-kontenerow/','/transport-prefabrykatow/','/transport-maszyn/']);
 });
 
-test('intro location lockup is smaller, clean, and vertically balanced', async ({ page }) => {
-  await page.setViewportSize({ width: 1600, height: 900 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  await expect(page.locator('.hero-kicker')).toHaveCount(0);
-
-  const intro = page.locator('.intro');
-  const title = intro.locator('.section-title');
-  await expect(title).not.toContainText('•');
-  await expect(title.locator('.intro-location-main')).toHaveText('Transport HDS');
-  await expect(title.locator('.intro-location-sub')).toHaveText('Płock Polska');
-
-  const titleFontSize = await title.evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
-  expect(titleFontSize).toBeGreaterThanOrEqual(50);
-  expect(titleFontSize).toBeLessThanOrEqual(52);
-
-  const subTransform = await title.locator('.intro-location-sub').evaluate((node) => getComputedStyle(node).transform);
-  const transformMatch = subTransform.match(/^matrix\([^,]+,[^,]+,[^,]+,[^,]+,\s*(-?[\d.]+),\s*(-?[\d.]+)\)$/);
-  expect(transformMatch).not.toBeNull();
-  expect(Number(transformMatch![2])).toBeCloseTo(5, 1);
-
-  const centers = await intro.evaluate(() => {
-    const left = document.querySelector('.intro-heading')!.getBoundingClientRect();
-    const right = document.querySelector('.intro-copy')!.getBoundingClientRect();
-    return {
-      left: left.top + left.height / 2,
-      right: right.top + right.height / 2,
-    };
-  });
-  expect(Math.abs(centers.left - centers.right)).toBeLessThanOrEqual(5);
-
-  const introBox = await intro.boundingBox();
-  expect(introBox).not.toBeNull();
-  expect(introBox!.height).toBeLessThanOrEqual(470);
+test('contact section uses real phone email location and leads to quote', async ({page})=>{
+ await page.goto('/');
+ await expect(page.locator('.sht-contact a[href="tel:+48784430022"]')).toBeVisible();
+ await expect(page.locator('.sht-contact a[href="mailto:hds.plock@gmail.com"]')).toBeVisible();
+ await expect(page.locator('.sht-contact-bottom a[href="/wycena/"]')).toBeVisible();
 });

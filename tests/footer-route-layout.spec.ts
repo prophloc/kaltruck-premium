@@ -1,145 +1,42 @@
-import { test, expect } from '@playwright/test';
-
-test('footer centers the larger brand block and balances the route section vertically', async ({ page }) => {
-  await page.setViewportSize({ width: 1600, height: 1000 });
-  await page.goto('/o-nas/', { waitUntil: 'domcontentloaded' });
-
-  const route = page.locator('[data-google-route]');
-  const footerGrid = page.locator('.footer-grid');
-  const tagline = page.locator('.footer-brand p');
-
-  await expect(route).toHaveCount(1);
-  await expect(footerGrid).toHaveCount(1);
-  await expect(tagline).toHaveText('CIĘŻKI ŁADUNEK... PRECYZYJNA ROBOTA.');
-
-  const geometry = await page.evaluate(() => {
-    const footer = document.querySelector('.site-footer');
-    const routeNode = document.querySelector('[data-google-route]');
-    const panel = document.querySelector('.google-route-panel');
-    const map = document.querySelector('.google-route-map-shell');
-    const footerGridNode = document.querySelector('.footer-grid');
-    const brand = document.querySelector('.footer-brand');
-    const logo = document.querySelector('.footer-brand img');
-    const taglineNode = document.querySelector('.footer-brand p');
-    if (!footer || !routeNode || !panel || !map || !footerGridNode || !brand || !logo || !taglineNode) return null;
-
-    const footerRect = footer.getBoundingClientRect();
-    const routeRect = routeNode.getBoundingClientRect();
-    const panelRect = panel.getBoundingClientRect();
-    const mapRect = map.getBoundingClientRect();
-    const gridRect = footerGridNode.getBoundingClientRect();
-    const logoRect = logo.getBoundingClientRect();
-    const taglineRect = taglineNode.getBoundingClientRect();
-
-    const routeContentTop = Math.min(panelRect.top, mapRect.top);
-    const routeContentBottom = Math.max(panelRect.bottom, mapRect.bottom);
-    const routeTopGap = routeContentTop - footerRect.top;
-    const routeBottomGap = routeRect.bottom - routeContentBottom;
-
-    const brandContentTop = Math.min(logoRect.top, taglineRect.top);
-    const brandContentBottom = Math.max(logoRect.bottom, taglineRect.bottom);
-    const brandContentCenterY = (brandContentTop + brandContentBottom) / 2;
-
-    return {
-      routeGapDelta: Math.abs(routeTopGap - routeBottomGap),
-      routeTopGap,
-      routeBottomGap,
-      logoWidth: logoRect.width,
-      brandVerticalCenterDelta: Math.abs(brandContentCenterY - (gridRect.top + gridRect.height / 2)),
-      brandTopSpace: brandContentTop - gridRect.top,
-      brandBottomSpace: gridRect.bottom - brandContentBottom,
-      footerHeight: footerRect.height,
-    };
-  });
-
-  expect(geometry).not.toBeNull();
-  expect(geometry!.routeTopGap).toBeGreaterThanOrEqual(18);
-  expect(geometry!.routeBottomGap).toBeGreaterThanOrEqual(18);
-  expect(geometry!.routeGapDelta).toBeLessThanOrEqual(4);
-  expect(geometry!.logoWidth).toBeGreaterThanOrEqual(280);
-  expect(geometry!.brandVerticalCenterDelta).toBeLessThanOrEqual(4);
-  expect(Math.abs(geometry!.brandTopSpace - geometry!.brandBottomSpace)).toBeLessThanOrEqual(8);
-  expect(geometry!.footerHeight).toBeLessThanOrEqual(590);
+import {test,expect} from '@playwright/test';
+test('original Premium footer order and columns are restored with new palette',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('/o-nas/',{waitUntil:'domcontentloaded'});
+ const footer=page.locator('.sht-footer');
+ await expect(footer).toHaveCount(1);
+ await expect(footer.locator('.sht-footer-logo img')).toHaveAttribute('src','/brand/kaltruck-logo.svg');
+ await expect(footer.locator('.sht-footer-navigation nav a')).toHaveCount(5);
+ await expect(footer.locator('.sht-socials a')).toHaveCount(2);
+ await expect(footer.locator('.sht-footer-bottom')).toContainText('NIP:');
+ const coords=await page.evaluate(()=>{
+   const el=s=>(document.querySelector(s) as HTMLElement).getBoundingClientRect();
+   return {map:el('.sht-footer-map'),info:el('.sht-footer-grid')};
+ });
+ expect(coords.map.top).toBeLessThan(coords.info.top);
 });
 
-test('homepage route drawer uses the Google Maps pin as its handle and heading mark', async ({ page }) => {
-  await page.setViewportSize({ width: 1600, height: 1000 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  const hero = page.locator('[data-commercial-hero]');
-  const drawer = page.locator('[data-hero-route-drawer]');
-  const toggle = page.locator('[data-hero-route-toggle]');
-  const panel = page.locator('[data-hero-route-panel]');
-
-  await expect(drawer).toHaveCount(1);
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  await expect(toggle.locator('[data-google-maps-pin]')).toHaveCount(1);
-  await expect(toggle.locator('.hero-route-toggle-text')).toHaveCount(0);
-  await expect(panel).toBeHidden();
-
-  const closedGeometry = await page.evaluate(() => {
-    const heroNode = document.querySelector('[data-commercial-hero]');
-    const toggleNode = document.querySelector('[data-hero-route-toggle]');
-    if (!heroNode || !toggleNode) return null;
-    const heroRect = heroNode.getBoundingClientRect();
-    const toggleRect = toggleNode.getBoundingClientRect();
-    return {
-      centerDelta: Math.abs((toggleRect.top + toggleRect.height / 2) - (heroRect.top + heroRect.height / 2)),
-      heightRatio: toggleRect.height / heroRect.height,
-      leftEdge: toggleRect.left - heroRect.left,
-    };
-  });
-
-  expect(closedGeometry).not.toBeNull();
-  expect(closedGeometry!.centerDelta).toBeLessThanOrEqual(4);
-  expect(closedGeometry!.heightRatio).toBeGreaterThanOrEqual(0.08);
-  expect(closedGeometry!.heightRatio).toBeLessThanOrEqual(0.12);
-  expect(closedGeometry!.leftEdge).toBeLessThanOrEqual(8);
-
-  await toggle.click();
-  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-  await expect(panel).toBeVisible();
-
-  const drawerRoute = drawer.locator('[data-google-route]');
-  await expect(drawerRoute.locator('[data-route-heading] h2')).toHaveText('Sprawdź trasę transportu');
-  await expect(drawerRoute.locator('[data-route-heading] [data-google-maps-pin]')).toHaveCount(1);
-  await expect(drawerRoute.locator('.google-route-copy')).toHaveCount(0);
-  await expect(drawerRoute.getByText('Google Maps', { exact: true })).toHaveCount(0);
-
-  await page.keyboard.press('Escape');
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  await expect(panel).toBeHidden();
+test('footer map retains source proportions and accepts destination',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('/transport-hds/',{waitUntil:'domcontentloaded'});
+ const route=page.locator('.sht-footer-map [data-google-route]');
+ await expect(route).toHaveCount(1);
+ await expect(route.locator('[data-google-route-origin]')).toHaveValue('Płock');
+ await route.locator('[data-google-route-destination]').fill('Łódź');
+ await expect(route.locator('[data-google-route-destination]')).toHaveValue('Łódź');
+ const [map,form]=await Promise.all([
+   route.locator('.google-route-map-shell').boundingBox(),
+   route.locator('.google-route-panel').boundingBox()
+ ]);
+ expect(map).not.toBeNull();
+ expect(form).not.toBeNull();
+ expect(map!.width).toBeGreaterThan(form!.width);
+ expect(map!.height).toBeLessThanOrEqual(285);
 });
 
-test('route form defaults origin to Plock and supports custom destination with base fallback', async ({ page }) => {
-  await page.setViewportSize({ width: 1600, height: 1000 });
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-  const drawer = page.locator('[data-hero-route-drawer]');
-  const toggle = drawer.locator('[data-hero-route-toggle]');
-  await toggle.click();
-
-  const route = drawer.locator('[data-google-route]');
-  const origin = route.locator('[data-google-route-origin]');
-  const destination = route.locator('[data-google-route-destination]');
-  const map = route.locator('[data-google-route-map]');
-  const form = route.locator('[data-google-route-form]');
-
-  await expect(origin).toHaveValue('Płock');
-  await expect(destination).toHaveCount(1);
-
-  await route.evaluate((node) => node.setAttribute('data-api-key', 'test-key'));
-  await destination.fill('Łódź');
-  await form.locator('button[type="submit"]').click();
-
-  const customSrc = await map.getAttribute('src');
-  expect(customSrc).toContain('/maps/embed/v1/directions?');
-  expect(new URL(customSrc!).searchParams.get('origin')).toBe('Płock');
-  expect(new URL(customSrc!).searchParams.get('destination')).toBe('Łódź');
-
-  await destination.fill('');
-  await form.locator('button[type="submit"]').click();
-
-  const fallbackSrc = await map.getAttribute('src');
-  expect(new URL(fallbackSrc!).searchParams.get('destination')).toBe('Tokarska 40, 09-401 Płock');
+test('reviews remain in matching side tab rather than an extra footer accordion',async({page})=>{
+ await page.goto('/',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('.sht-footer [data-google-route]')).toHaveCount(1);
+ await expect(page.locator('.sht-footer [data-google-reviews]')).toHaveCount(0);
+ await expect(page.locator('#sht-drawer-reviews [data-google-reviews]')).toHaveCount(1);
+ await expect(page.locator('.sht-contact a[href="/wycena/"]')).toHaveCount(1);
 });

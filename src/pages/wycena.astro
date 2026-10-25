@@ -1,109 +1,35 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ReferenceBanner from '../components/ReferenceBanner.astro';
 import QuoteForm from '../components/QuoteForm.astro';
+import { siteConfig } from '../config/site';
 ---
 <BaseLayout title="Wycena transportu HDS | KALTRUCK" description="Wyślij dane ładunku i trasy, aby otrzymać wycenę transportu, załadunku, rozładunku lub montażu HDS." canonicalPath="/wycena/">
-  <section class="quote-page section">
-    <div class="container">
-      <div class="quote-layout">
-        <div class="quote-intro">
-          <p class="eyebrow">Szybka wycena</p>
-          <h1>Co przewozimy<br />i gdzie ma <span class="quote-accent">stanąć?</span></h1>
-          <p class="lead">Podaj podstawowe informacje. Im dokładniej znamy ładunek i warunki na miejscu, tym szybciej możemy ocenić realizację.</p>
-          <div class="quote-intro-rule" aria-hidden="true"></div>
-          <p class="quote-intro-note">Transport HDS <span aria-hidden="true">/</span> Płock i cała Polska</p>
-        </div>
-        <div class="quote-card">
-          <p class="eyebrow">Zapytanie o transport</p>
-          <h2>Opowiedz nam o ładunku.</h2>
+  <ReferenceBanner heading="Wycena transportu HDS" breadcrumb="WYCENA" description="Opisz ładunek i trasę. Skontaktujemy się w sprawie możliwości realizacji." />
+  <section class="sht-article sht-quote-page">
+    <div class="sht-shell">
+      <div class="sht-article-title"><span class="sht-small-accent"></span><h2>Zapytanie o transport i rozładunek</h2></div>
+      <div class="sht-quote-grid">
+        <div class="sht-quote-primary">
+          <p class="sht-quote-lead">Podaj rodzaj ładunku, szacowaną masę i wymiary oraz miejsca odbioru i dostawy. Im dokładniej opiszesz warunki, tym łatwiej dobrać odpowiedni HDS.</p>
           <QuoteForm layout="stacked" />
         </div>
+        <aside class="sht-quote-info">
+          <h3>Co warto przygotować?</h3>
+          <ul>
+            <li>Rodzaj ładunku i jego gabaryty</li>
+            <li>Szacowaną masę</li>
+            <li>Adres odbioru i miejsce ustawienia</li>
+            <li>Termin oraz warunki dojazdu</li>
+            <li>Zdjęcia miejsca pracy, jeśli są dostępne</li>
+          </ul>
+          <div class="sht-quote-help">
+            <strong>Wolisz zadzwonić?</strong>
+            <a href={`tel:${siteConfig.phone}`}>+48 784 430 022</a>
+            <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+          </div>
+        </aside>
       </div>
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  .quote-page{
-    padding-top:calc(var(--header-height) + clamp(46px,5vw,78px));
-    padding-bottom:clamp(84px,9vw,144px);
-  }
-  .quote-layout{
-    display:grid;
-    grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);
-    align-items:start;
-    gap:clamp(40px,5.5vw,94px);
-  }
-  .quote-intro{
-    padding-top:clamp(22px,3.4vw,58px);
-    min-width:0;
-  }
-  .quote-intro h1{
-    max-width:11ch;
-    margin:24px 0 0;
-    font-size:clamp(3.35rem,5.35vw,6.05rem);
-    line-height:.98;
-    letter-spacing:-.055em;
-    text-wrap:balance;
-  }
-  .quote-accent{color:var(--accent)}
-  .quote-intro .lead{
-    max-width:34ch;
-    margin-top:clamp(26px,3.1vw,46px);
-    color:#c5c2ba;
-    font-size:clamp(1.06rem,1.3vw,1.22rem);
-    line-height:1.7;
-  }
-  .quote-intro-rule{
-    width:56px;
-    height:1px;
-    margin-top:clamp(32px,4vw,58px);
-    background:var(--accent);
-    opacity:.72;
-  }
-  .quote-intro-note{
-    margin:16px 0 0;
-    color:#aaa69e;
-    font-size:.76rem;
-    font-weight:740;
-    text-transform:uppercase;
-    letter-spacing:.11em;
-  }
-  .quote-intro-note span{color:var(--accent);padding-inline:6px}
-  .quote-card{
-    min-width:0;
-    padding:clamp(22px,3vw,44px);
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:24px;
-    background:linear-gradient(150deg,#141618 0%,#0d0f11 100%);
-    box-shadow:0 30px 72px rgba(0,0,0,.2);
-  }
-  .quote-card h2{
-    margin:10px 0 30px;
-    font-size:clamp(1.45rem,2vw,2.05rem);
-    line-height:1.12;
-    letter-spacing:-.035em;
-  }
-  @media(max-width:1100px){
-    .quote-layout{gap:clamp(24px,3vw,44px)}
-    .quote-intro h1{font-size:clamp(3rem,5.35vw,4.5rem)}
-    .quote-card{padding:clamp(20px,2.6vw,32px)}
-  }
-  @media(max-width:980px){
-    .quote-page{padding-top:calc(var(--header-height) + 46px)}
-    .quote-layout{grid-template-columns:minmax(0,1fr);gap:42px}
-    .quote-intro{padding-top:0}
-    .quote-intro h1{max-width:13ch;font-size:clamp(3rem,8.3vw,5.2rem)}
-    .quote-intro .lead{max-width:52ch;margin-top:24px}
-    .quote-intro-rule,.quote-intro-note{display:none}
-    .quote-card{max-width:760px;width:100%;margin-inline:auto}
-  }
-  @media(max-width:620px){
-    .quote-page{padding-top:calc(var(--header-height) + 30px)}
-    .quote-layout{gap:30px}
-    .quote-intro h1{font-size:clamp(2.6rem,10.5vw,4rem);margin-top:18px}
-    .quote-intro .lead{font-size:1rem;line-height:1.6}
-    .quote-card{padding:24px 18px;border-radius:18px}
-    .quote-card h2{margin-bottom:24px}
-  }
-</style>

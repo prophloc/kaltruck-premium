@@ -1,7 +1,27 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro'; import { siteConfig } from '../config/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ReferenceBanner from '../components/ReferenceBanner.astro';
+import { siteConfig } from '../config/site';
+import DistanceEstimator from '../components/DistanceEstimator.astro';
 ---
 <BaseLayout title="Kontakt KALTRUCK | Transport HDS" description="Skontaktuj się z KALTRUCK w sprawie transportu HDS, rozładunku lub montażu. Telefon, e-mail i szybkie przejście do wyceny." canonicalPath="/kontakt/">
-<section class="contact section"><div class="container"><p class="eyebrow">Kontakt</p><h1><span class="contact-title-line">Powiedz, co trzeba</span><span class="contact-title-line"><span class="contact-title-accent">podnieść</span> i przewieźć.</span></h1><div class="contact-grid"><div class="contact-card"><span>Telefon</span><a href={`tel:${siteConfig.phone}`}>+48 784 430 022</a></div><div class="contact-card"><span>E-mail</span><a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a></div><div class="contact-card contact-card--cta"><span>Wycena</span><a class="btn btn-primary" href="/wycena/">Przejdź do formularza wyceny</a></div></div></div></section>
+  <ReferenceBanner heading="Kontakt z KALTRUCK" breadcrumb="KONTAKT" description="Zadzwoń lub opisz ładunek i trasę. Pomożemy ustalić możliwości transportu HDS." />
+  <section class="sht-article sht-contact-page">
+    <div class="sht-shell">
+      <div class="sht-article-title"><span class="sht-small-accent"></span><h2>Skontaktuj się z nami</h2></div>
+      <div class="sht-contact-grid">
+        <div class="sht-contact-item"><span class="sht-contact-icon">☎</span><div><h3>Telefon</h3><p>Bezpośredni kontakt w sprawie transportu</p><a href={`tel:${siteConfig.phone}`}>+48 784 430 022</a></div></div>
+        <div class="sht-contact-item"><span class="sht-contact-icon">✉</span><div><h3>E-mail</h3><p>Prześlij zapytanie z danymi ładunku</p><a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a></div></div>
+        <div class="sht-contact-item"><span class="sht-contact-icon">⌖</span><div><h3>Adres</h3><p>Baza transportowa KALTRUCK</p><a href={siteConfig.googleMapsUrl} target="_blank" rel="noopener noreferrer">{siteConfig.baseAddress}</a></div></div>
+      </div>
+      <div class="sht-contact-page-cta">
+        <div><h2>Potrzebujesz wyceny?</h2><p>Podaj skąd i dokąd jedzie ładunek, jego masę i wymiary oraz warunki na miejscu.</p></div>
+        <a href="/wycena/">PRZEJDŹ DO FORMULARZA <span aria-hidden="true">›</span></a>
+      </div>
+      <div class="sht-route-page">
+        <div class="sht-article-title"><span class="sht-small-accent"></span><h2>Sprawdź trasę transportu</h2></div>
+        <DistanceEstimator instanceId="contact-route" />
+      </div>
+    </div>
+  </section>
 </BaseLayout>
-<style>.contact{padding-top:calc(var(--header-height) + clamp(82px,9vw,128px));min-height:78svh}.contact h1{font-size:clamp(2.7rem,5vw,6rem);line-height:.96;letter-spacing:-.055em;margin:18px 0 clamp(54px,7vw,86px);max-width:none}.contact-title-line{display:block;white-space:nowrap}.contact-title-accent{color:var(--accent)}.contact-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);border-top:1px solid var(--line);padding-top:30px}.contact-card{display:grid;align-content:start;gap:8px;grid-column:span 4;min-width:0}.contact-card span{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;margin-bottom:6px}.contact-card a:not(.btn){font-size:clamp(1.15rem,2vw,1.8rem);line-height:1.25;overflow-wrap:anywhere}.contact-card--cta{justify-items:start}@media(max-width:900px){.contact-card{grid-column:span 6}.contact-card--cta{grid-column:1/-1;margin-top:20px}}@media(max-width:620px){.contact-grid{grid-template-columns:1fr;gap:36px}.contact-card,.contact-card--cta{grid-column:1;margin-top:0}.contact h1{font-size:clamp(1.6rem,7vw,2.6rem)}}</style>

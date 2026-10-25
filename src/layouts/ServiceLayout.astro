@@ -1,229 +1,69 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import CTASection from '../components/CTASection.astro';
+import ReferenceBanner from '../components/ReferenceBanner.astro';
+import ReferenceContactStrip from '../components/ReferenceContactStrip.astro';
 import ServiceCatalogRotator from '../components/ServiceCatalogRotator.astro';
 import { breadcrumbSchema, serviceSchema } from '../lib/seo';
 interface Props { title:string; metaDescription:string; h1:string; heroLineOne:string; heroLineTwo:string; heroAccent:string; intro:string; canonicalPath:string; serviceType:string; heroImage?:string; }
-const { title,metaDescription,h1,heroLineOne,heroLineTwo,heroAccent,intro,canonicalPath,serviceType,heroImage='/images/home/hero-hds-original.png' }=Astro.props;
-const highlightedLineTwo = heroLineTwo.lastIndexOf(heroAccent);
-const titlePrefix = highlightedLineTwo >= 0 ? heroLineTwo.slice(0, highlightedLineTwo) : heroLineTwo;
-const titleSuffix = highlightedLineTwo >= 0 ? heroLineTwo.slice(highlightedLineTwo + heroAccent.length) : '';
-const showServiceCatalog = canonicalPath === '/transport-hds/';
-const relatedLinks = [
-  { label: 'Transport HDS', href: '/transport-hds/' },
-  { label: 'Wynajem HDS z operatorem', href: '/wynajem-hds/' },
-  { label: 'Transport kontenerów', href: '/transport-kontenerow/' },
-  { label: 'Transport prefabrykatów', href: '/transport-prefabrykatow/' },
-  { label: 'Transport maszyn', href: '/transport-maszyn/' },
-  { label: 'Rozładunek HDS', href: '/rozladunek-hds/' },
-].filter((link) => link.href !== canonicalPath);
-const jsonLd=[serviceSchema({ name:serviceType, description:metaDescription, path:canonicalPath }), breadcrumbSchema([{name:'Start',path:'/'},{name:serviceType,path:canonicalPath}])];
+const { title,metaDescription,h1,intro,canonicalPath,serviceType,heroImage='/images/home/hero-hds-original.png' }=Astro.props;
+const showServiceCatalog=canonicalPath==='/transport-hds/';
+const relatedLinks=[
+  {label:'Transport HDS',href:'/transport-hds/'},
+  {label:'Wynajem HDS z operatorem',href:'/wynajem-hds/'},
+  {label:'Transport kontenerów',href:'/transport-kontenerow/'},
+  {label:'Transport prefabrykatów',href:'/transport-prefabrykatow/'},
+  {label:'Transport maszyn',href:'/transport-maszyn/'},
+  {label:'Rozładunek HDS',href:'/rozladunek-hds/'}
+].filter(link=>link.href!==canonicalPath);
+const jsonLd=[
+  serviceSchema({name:serviceType,description:metaDescription,path:canonicalPath}),
+  breadcrumbSchema([{name:'Start',path:'/'},{name:serviceType,path:canonicalPath}])
+];
 ---
 <BaseLayout title={title} description={metaDescription} canonicalPath={canonicalPath} jsonLd={jsonLd}>
-  <section class:list={['service-hero', showServiceCatalog && 'service-hero--catalog']}>
-    <img class="service-hero-image" src={heroImage} alt="" width="1440" height="1080" fetchpriority="high" />
-    <div class="shade"></div>
-    <div class="container service-copy">
-      <p class="eyebrow">{serviceType}</p>
-      <h1 aria-label={h1}>
-        <span class="service-headline-line">{heroLineOne}</span>
-        <span class="service-headline-line">{titlePrefix}{highlightedLineTwo >= 0 ? <span class="service-headline-accent">{heroAccent}</span> : null}{titleSuffix}</span>
-      </h1>
-      <p>{intro}</p>
-      <a class="btn btn-primary" href="/wycena/">Zapytaj o realizację</a>
+  <ReferenceBanner heading={h1} eyebrow={serviceType} description={intro} image={heroImage} breadcrumb={serviceType} />
+
+  <section class="sht-article sht-service-article" aria-label={serviceType}>
+    <div class="sht-shell">
+      <div class="sht-article-title">
+        <span class="sht-small-accent" aria-hidden="true"></span>
+        <h2>{serviceType} — zakres prac i przygotowanie</h2>
+      </div>
+      <div class="sht-article-layout">
+        <article class="sht-article-text">
+          <p class="sht-article-lead">{intro}</p>
+          <div class="sht-prose" data-service-guide><slot /></div>
+          <nav class="sht-related" aria-label="Powiązane usługi KALTRUCK">
+            <h3>Sprawdź pozostałe usługi HDS</h3>
+            <div>{relatedLinks.map(link=><a href={link.href}>{link.label} <span aria-hidden="true">›</span></a>)}</div>
+          </nav>
+        </article>
+        <aside class="sht-service-side" aria-label="Informacje o realizacji">
+          <div class="sht-article-aside">
+            <img src={heroImage} alt={`Realizacja KALTRUCK — ${serviceType}`} width="1440" height="1080" loading="lazy" decoding="async" />
+            <div class="sht-article-aside-note">
+              <span>TRANSPORT / PODNOSZENIE / USTAWIENIE</span>
+              <p>Usługi HDS dopasowane do parametrów ładunku i warunków miejsca dostawy.</p>
+            </div>
+          </div>
+          <div class="sht-side-facts">
+            <h3>Możliwości KALTRUCK</h3>
+            <div><strong>12 t</strong><span>udźwig HDS do</span></div>
+            <div><strong>14 m</strong><span>zasięg ramienia do</span></div>
+            <a href="/wycena/">ZAPYTAJ O REALIZACJĘ <span aria-hidden="true">›</span></a>
+            <a href="/realizacje/">ZOBACZ REALIZACJE <span aria-hidden="true">›</span></a>
+          </div>
+        </aside>
+      </div>
     </div>
-    {showServiceCatalog && (
-      <div class="service-catalog-slot">
+  </section>
+  {showServiceCatalog && (
+    <section class="sht-catalog-area" aria-label="Pełna lista usług KALTRUCK">
+      <div class="sht-shell">
+        <div class="sht-article-title"><span class="sht-small-accent" aria-hidden="true"></span><h2>Pełny zakres obsługiwanych ładunków</h2></div>
         <ServiceCatalogRotator />
       </div>
-    )}
-  </section>
-  <section class="service-body section">
-    <div class="container body-grid">
-      <aside>
-        <span>Usługa</span><strong>{serviceType}</strong>
-        <a href="/realizacje/">Zobacz realizacje ↗</a>
-      </aside>
-      <article>
-        <!-- Native details keeps the complete service guide and internal links in the
-             server-rendered HTML, while showing customers a compact preview first. -->
-        <div class="service-overview">
-          <p class="service-overview-label">Informacje o usłudze</p>
-          <p class="service-overview-lead">{intro}</p>
-        </div>
-        <details class="service-details" data-service-details>
-          <summary class="service-details-toggle" data-service-details-toggle>
-            <span class="service-details-copy">
-              <strong class="service-details-title">
-                <span class="service-details-closed">Rozwiń pełny opis usługi</span>
-                <span class="service-details-opened">Zwiń pełny opis usługi</span>
-              </strong>
-              <span class="service-details-caption">Zakres prac, przygotowanie i najczęstsze pytania</span>
-            </span>
-            <span class="service-details-icon" aria-hidden="true"></span>
-          </summary>
-          <div class="service-details-content" data-service-details-content>
-            <slot />
-            <nav class="related-services" aria-label="Powiązane usługi KALTRUCK">
-              <strong class="related-title">Sprawdź także inne usługi HDS</strong>
-              <div class="related-links">
-                {relatedLinks.map((link) => <a href={link.href}>{link.label} <span aria-hidden="true">↗</span></a>)}
-              </div>
-            </nav>
-          </div>
-        </details>
-      </article>
-    </div>
-  </section>
-  <CTASection />
+    </section>
+  )}
+  <ReferenceContactStrip />
 </BaseLayout>
-<style>
-/* Cinematic, centered service opening — one layout shared by all service routes. */
-.service-hero{
-  min-height:88svh;
-  position:relative;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  isolation:isolate;
-  overflow:hidden;
-}
-.service-hero>img{
-  position:absolute;
-  inset:0;
-  z-index:-2;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center center;
-  filter:saturate(.92) contrast(1.07);
-}
-.shade{
-  position:absolute;
-  z-index:-1;
-  inset:0;
-  background:
-    linear-gradient(180deg,rgba(4,6,9,.52) 0%,rgba(4,6,9,.16) 32%,rgba(4,6,9,.25) 65%,rgba(4,6,9,.82) 100%),
-    radial-gradient(ellipse at 50% 43%,rgba(5,7,10,.38) 0%,rgba(5,7,10,.15) 64%,rgba(5,7,10,.40) 100%);
-  pointer-events:none;
-}
-.service-copy{
-  position:relative;
-  z-index:2;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  width:min(100% - (2 * var(--page-gutter)),1380px);
-  min-height:88svh;
-  padding-top:calc(var(--header-height) + 50px);
-  padding-bottom:clamp(65px,9svh,110px);
-  text-align:center;
-}
-.service-copy .eyebrow{font-size:clamp(.67rem,.8vw,.85rem);letter-spacing:.23em;}
-.service-copy h1{
-  max-width:none;
-  width:100%;
-  margin:clamp(24px,3.5vh,42px) 0 clamp(22px,3.2vh,36px);
-  font-size:clamp(2.8rem,5.7vw,6.1rem);
-  font-weight:850;
-  line-height:1.02;
-  letter-spacing:-.052em;
-  text-wrap:initial;
-  text-shadow:0 16px 44px rgba(0,0,0,.52);
-}
-.service-headline-line{display:block;white-space:nowrap}
-.service-headline-accent{color:var(--accent);text-shadow:0 5px 36px rgba(0,0,0,.37)}
-.service-copy>p:not(.eyebrow){
-  width:min(100%,64ch);
-  max-width:64ch;
-  margin:0 auto 20px;
-  font-size:clamp(1rem,1.25vw,1.18rem);
-  line-height:1.6;
-  color:#eeeae2;
-  text-wrap:balance;
-  text-shadow:0 3px 15px rgba(0,0,0,.72);
-}
-.service-copy .btn{margin-top:8px;min-height:54px;padding-inline:28px;}
-.service-hero--catalog{min-height:0;}
-.service-hero--catalog .service-copy{min-height:79svh;padding-bottom:clamp(52px,7svh,86px);}
-.service-catalog-slot{
-  position:relative;
-  z-index:3;
-  left:auto;right:auto;top:auto;bottom:auto;
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-  width:min(calc(100% - 2 * var(--page-gutter)),var(--container));
-  margin:0 auto;
-  padding:0 0 clamp(54px,6vw,90px);
-  transform:none;
-  pointer-events:none;
-}
-.service-catalog-slot :global(.service-catalog){pointer-events:auto;width:min(100%,850px);}
-.body-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap)}.body-grid aside{grid-column:1/span 3;display:flex;flex-direction:column;gap:8px;position:sticky;top:120px;height:max-content}.body-grid article{grid-column:5/span 7;min-width:0}.body-grid aside span{font-size:.72rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted)}.body-grid aside a{color:var(--accent);margin-top:20px}.body-grid article :global(h2){font-size:clamp(2rem,3.6vw,3.35rem);line-height:1;letter-spacing:-.035em;margin:0 0 24px;max-width:16ch}.body-grid article :global(p){color:var(--muted);font-size:1.08rem;line-height:1.72;margin:0 0 28px;max-width:68ch}.body-grid article :global(h2:not(:first-child)){margin-top:64px}.body-grid article :global(h3){font-size:clamp(1.2rem,1.75vw,1.6rem);line-height:1.15;letter-spacing:-.02em;margin:44px 0 14px;color:#f4f1ea}.body-grid article :global(ul){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px;list-style:none;margin:0;padding:0;border-top:1px solid rgba(255,255,255,.09)}.body-grid article :global(li){position:relative;padding:13px 0 13px 18px;border-bottom:1px solid rgba(255,255,255,.08);color:rgba(244,241,234,.76);font-size:.96rem;line-height:1.45}.body-grid article :global(li::before){content:'—';position:absolute;left:0;top:13px;color:var(--accent)}
-/* Compact service guide: accessible native disclosure, no client JavaScript needed. */
-.service-body{padding-block:clamp(56px,6vw,92px)}
-.service-overview{margin:0 0 28px}
-.service-overview-label{margin:0 0 14px!important;font-size:.71rem!important;line-height:1.4!important;letter-spacing:.15em;text-transform:uppercase;font-weight:800;color:var(--accent)!important}
-.service-overview-lead{max-width:54ch!important;margin:0!important;color:var(--text)!important;font-size:clamp(1.13rem,1.65vw,1.55rem)!important;line-height:1.5!important;letter-spacing:-.02em}
-.service-details{border:1px solid rgba(215,180,106,.3);border-radius:14px;background:linear-gradient(125deg,rgba(215,180,106,.065),rgba(255,255,255,.012));overflow:hidden}
-.service-details-toggle{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:25px 28px;min-height:100px;cursor:pointer;list-style:none;transition:background .2s ease}
-.service-details-toggle::-webkit-details-marker{display:none}
-.service-details-toggle::marker{content:""}
-.service-details-toggle:hover{background:rgba(215,180,106,.06)}
-.service-details-toggle:focus-visible{outline:3px solid var(--accent-strong);outline-offset:-4px}
-.service-details-copy{display:grid;gap:7px;min-width:0}
-.service-details-title{font-size:clamp(1.03rem,1.4vw,1.25rem);line-height:1.25;letter-spacing:-.015em;color:var(--text);font-weight:800}
-.service-details-opened{display:none}
-.service-details[open] .service-details-closed{display:none}
-.service-details[open] .service-details-opened{display:inline}
-.service-details-caption{font-size:.83rem;line-height:1.5;color:var(--muted)}
-.service-details-icon{position:relative;display:block;flex:none;width:42px;height:42px;border:1px solid rgba(215,180,106,.38);border-radius:50%;color:var(--accent)}
-.service-details-icon::before,.service-details-icon::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:2px;background:currentColor;border-radius:2px;transform:translate(-50%,-50%);transition:transform .2s ease}
-.service-details-icon::after{transform:translate(-50%,-50%) rotate(90deg)}
-.service-details[open] .service-details-icon::after{transform:translate(-50%,-50%) rotate(0)}
-.service-details[open] .service-details-toggle{border-bottom:1px solid rgba(255,255,255,.09)}
-.service-details-content{padding:clamp(28px,4vw,54px) clamp(20px,3vw,38px) clamp(26px,4vw,46px)}
-.service-details-content :global(h2:first-child){margin-top:0}
-.related-services{margin-top:clamp(52px,6vw,88px);padding-top:30px;border-top:1px solid var(--line)}
-.related-title{display:block;color:var(--text);font-size:1rem;font-weight:750;letter-spacing:-.015em;margin:0 0 18px}
-.related-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.related-links a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;border:1px solid rgba(255,255,255,.11);border-radius:9px;color:#e5e1d9;font-size:.88rem;line-height:1.35;transition:border-color .2s ease,color .2s ease}
-.related-links a:hover{border-color:var(--accent);color:var(--accent)}
-.related-links a span{color:var(--accent);flex:none}
-@media(max-width:520px){.related-links{grid-template-columns:1fr}.service-details-toggle{min-height:94px;padding:19px 18px;gap:12px}.service-details-icon{width:36px;height:36px}.service-details-caption{font-size:.78rem}.service-details-content{padding:27px 18px 31px}}
-@media(max-width:1180px){
-  .service-copy h1{font-size:clamp(2.7rem,5.7vw,5.2rem)}
-  .service-catalog-slot :global(.service-catalog){width:min(100%,760px)}
-}
-@media(max-width:900px){.body-grid aside{grid-column:1/span 4}.body-grid article{grid-column:5/span 8}.body-grid article :global(ul){grid-template-columns:1fr}}
-@media(max-width:900px){
-  .service-copy{min-height:75svh;padding-top:calc(var(--header-height) + 54px);padding-bottom:60px}
-  .service-hero{min-height:75svh}
-  .service-copy h1{font-size:clamp(2.1rem,5.8vw,3.5rem);letter-spacing:-.043em}
-  .service-catalog-slot{padding-bottom:58px}
-}
-@media(max-width:760px){
-  .service-hero{min-height:72svh}
-  .service-copy{min-height:72svh}
-  .service-hero--catalog{min-height:auto}
-  .service-hero--catalog .service-copy{min-height:72svh}
-  .service-copy h1{font-size:clamp(1.85rem,6.35vw,3.25rem)}
-  .service-copy>p:not(.eyebrow){max-width:48ch;font-size:.96rem}
-  .service-catalog-slot{justify-content:center;padding-bottom:48px}
-  .service-catalog-slot :global(.service-catalog){width:100%}
-  .body-grid{grid-template-columns:1fr;gap:32px}
-  .body-grid aside,.body-grid article{grid-column:1}
-  .body-grid aside{position:static;border-bottom:1px solid var(--line);padding-bottom:24px}
-  .body-grid article :global(h2:not(:first-child)){margin-top:48px}
-  .body-grid article :global(h3){margin-top:36px}
-}
-@media(max-width:420px){
-  .service-copy{padding-top:calc(var(--header-height) + 32px)}
-  .service-copy h1{font-size:clamp(1.65rem,6.9vw,1.95rem)}
-  .service-headline-line{white-space:normal}
-  .service-copy .eyebrow{font-size:.6rem;letter-spacing:.14em}
-  .service-copy .btn{min-height:48px}
-}
-</style>
