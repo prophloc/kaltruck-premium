@@ -18,9 +18,9 @@ const current = Astro.url.pathname;
         <nav class="sht-nav" aria-label="Nawigacja główna">
           <a href="/transport-hds/" aria-current={current.startsWith("/transport-") || current.startsWith("/rozladunek-") || current.startsWith("/wynajem-") ? "page" : undefined}>USŁUGI</a>
           <a href="/realizacje/" aria-current={current==="/realizacje/"?"page":undefined}>REALIZACJE</a>
-          <a href="/sprzet/">SPRZĘT</a>
-          <a href="/o-nas/">O FIRMIE</a>
-          <a href="/kontakt/">KONTAKT</a>
+          <a href="/sprzet/" aria-current={current==="/sprzet/"?"page":undefined}>SPRZĘT</a>
+          <a href="/o-nas/" aria-current={current==="/o-nas/"?"page":undefined}>O FIRMIE</a>
+          <a href="/kontakt/" aria-current={current==="/kontakt/"?"page":undefined}>KONTAKT</a>
         </nav>
         <a class="sht-nav-phone" href={`tel:${siteConfig.phone}`} aria-label="Zadzwoń do KALTRUCK">+48 784 430 022</a>
       </div>
