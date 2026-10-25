@@ -1,6 +1,7 @@
 ---
 import { siteConfig } from '../config/site';
 import DistanceEstimator from './DistanceEstimator.astro';
+import GoogleReviews from './GoogleReviews.astro';
 const routeId = 'site-footer-route';
 ---
   <footer class="sht-footer site-footer">
@@ -22,6 +23,23 @@ const routeId = 'site-footer-route';
         <DistanceEstimator instanceId={routeId} deferMap={true} />
       </details>
     </div>
+    <div class="sht-shell sht-review-wrapper">
+      <details class="sht-route-details sht-review-details" data-reference-reviews>
+        <summary>OPINIE KLIENTÓW GOOGLE <span aria-hidden="true">+</span></summary>
+        <GoogleReviews />
+      </details>
+    </div>
+    <script is:inline>
+      (() => {
+        document.querySelectorAll('[data-reference-reviews]').forEach((details) => {
+          details.addEventListener('toggle', () => {
+            if (!details.open) return;
+            const reviews = details.querySelector('[data-google-reviews]');
+            reviews?.dispatchEvent(new CustomEvent('kaltruck:reviews-activate'));
+          });
+        });
+      })();
+    </script>
     <div class="sht-shell sht-footer-bottom">
       <span>© {new Date().getFullYear()} {siteConfig.legalName} · NIP: {siteConfig.nip}</span>
       <span>prophloc</span>
