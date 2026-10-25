@@ -1,8 +1,35 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro'; import CTASection from '../components/CTASection.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ReferenceBanner from '../components/ReferenceBanner.astro';
+import ReferenceContactStrip from '../components/ReferenceContactStrip.astro';
 ---
 <BaseLayout title="O KALTRUCK | Transport HDS Kalwasińscy" description="Transport HDS Kalwasińscy – ponad 10 lat doświadczenia w transporcie specjalistycznym, załadunku, rozładunku i montażu HDS." canonicalPath="/o-nas/">
-<section class="page-head section"><div class="container page-head-grid"><div><p class="eyebrow">KALTRUCK / Kalwasińscy</p><h1 data-about-title><span data-about-title-line>Sprzęt jest ważny.</span><span data-about-title-line><span class="about-title-accent" data-about-title-accent>Doświadczenie</span> ważniejsze.</span></h1></div></div></section>
-<section class="section"><div class="container about"><p class="lead big">Od ponad 10 lat realizujemy zlecenia wymagające połączenia transportu z pracą hydraulicznego dźwigu samochodowego.</p><div class="about-copy"><p>Obsługujemy firmy i klientów indywidualnych. Pracujemy przy kontenerach, prefabrykatach, maszynach, konstrukcjach, urządzeniach technicznych i wielu nietypowych ładunkach.</p><p>Główna baza działania to rejon Płocka, ale realizujemy zlecenia na terenie całej Polski.</p></div></div></section><CTASection />
+  <ReferenceBanner heading="O firmie KALTRUCK" eyebrow="O NAS" breadcrumb="O FIRMIE" description="Doświadczenie w transporcie specjalistycznym i pracy żurawiem HDS." />
+  <section class="sht-article">
+    <div class="sht-shell">
+      <div class="sht-article-title"><span class="sht-small-accent"></span><h2>Transport HDS Kalwasińscy</h2></div>
+      <div class="sht-article-layout">
+        <div class="sht-article-text">
+          <p class="sht-article-lead">Od ponad 10 lat realizujemy zlecenia wymagające połączenia transportu samochodowego z pracą hydraulicznego dźwigu samochodowego.</p>
+          <p>Obsługujemy firmy i klientów indywidualnych. Przewozimy kontenery, prefabrykaty, maszyny, konstrukcje, urządzenia techniczne i wiele nietypowych ładunków. Każdy transport zaczyna się od sprawdzenia masy, wymiarów, miejsca załadunku i warunków rozładunku.</p>
+          <p>Nasza baza mieści się w Płocku. Obsługujemy Mazowsze oraz transporty na terenie całej Polski. Łącząc samochód i żuraw, w wielu przypadkach eliminujemy potrzebę zamawiania osobnego dźwigu.</p>
+          <p>Najważniejsze są dla nas bezpieczeństwo, przygotowanie i precyzyjne ustawienie ładunku. Możliwości urządzenia zawsze weryfikujemy w odniesieniu do realnych warunków pracy.</p>
+          <div class="sht-article-cta">
+            <a href="/realizacje/">ZOBACZ NASZE REALIZACJE <span aria-hidden="true">›</span></a>
+            <a href="/sprzet/">POZNAJ NASZ SPRZĘT <span aria-hidden="true">›</span></a>
+          </div>
+        </div>
+        <aside class="sht-article-aside">
+          <img src="https://hdsplock.pl/zdj/realizacje/transport-przemys-owy-03.jpg" alt="Realizacja transportu przemysłowego z HDS" width="1435" height="1080" loading="lazy" decoding="async"/>
+          <div class="sht-article-aside-note"><span>10+ LAT DOŚWIADCZENIA</span><p>Transport. Podnoszenie. Ustawienie.</p></div>
+        </aside>
+      </div>
+      <div class="sht-inner-facts">
+        <div><strong>10+</strong><span>lat doświadczenia</span></div>
+        <div><strong>12 t</strong><span>udźwig HDS do</span></div>
+        <div><strong>14 m</strong><span>zasięg ramienia do</span></div>
+      </div>
+    </div>
+  </section>
+  <ReferenceContactStrip/>
 </BaseLayout>
-<style>.page-head{padding-top:calc(var(--header-height) + clamp(78px,8vw,122px));padding-bottom:clamp(46px,5vw,70px)}.page-head-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap)}.page-head-grid>div{grid-column:1/-1}.page-head h1{font-size:clamp(3.2rem,6.15vw,6.65rem);line-height:.91;letter-spacing:-.058em;margin:20px 0 0;max-width:none}.page-head h1>[data-about-title-line]{display:block;white-space:nowrap}.about-title-accent{color:var(--accent)}.about{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--grid-gap);align-items:start}.big{grid-column:1/span 7;font-size:clamp(1.55rem,2.7vw,2.65rem);line-height:1.3;color:var(--text);max-width:25ch}.about-copy{grid-column:9/span 4;color:var(--muted);font-size:1.1rem;line-height:1.75}.about-copy p{margin:0 0 22px}@media(max-width:800px){.page-head-grid,.about{grid-template-columns:1fr;gap:32px}.page-head-grid>div,.big,.about-copy{grid-column:1}.page-head h1{font-size:clamp(3rem,11.8vw,5rem)}.page-head h1>[data-about-title-line]{white-space:normal}.big{max-width:none}}</style>
