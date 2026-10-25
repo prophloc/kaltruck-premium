@@ -1,9 +1,11 @@
 ---
+import ReferenceSideDrawers from './ReferenceSideDrawers.astro';
 interface Props { heading:string; eyebrow?:string; description?:string; image?:string; breadcrumb?:string; }
 const { heading, eyebrow='KALTRUCK / TRANSPORT HDS', description='', image='/images/home/hero-hds-desktop.webp', breadcrumb='STRONA GŁÓWNA' }=Astro.props;
 const bg = `linear-gradient(90deg,rgba(17,25,31,.83),rgba(17,25,31,.48) 52%,rgba(17,25,31,.15)),url("${image.replaceAll('"','')}")`;
 ---
 <section class="sht-banner sht-sub-banner" aria-label={heading}>
+  <ReferenceSideDrawers />
   <div class="sht-banner-photo" style={`background-image:${bg}`} aria-hidden="true"></div>
   <div class="sht-shell sht-banner-content">
     <p class="sht-breadcrumb"><a href="/">STRONA GŁÓWNA</a> <span>/</span> {breadcrumb === 'STRONA GŁÓWNA' ? eyebrow : breadcrumb}</p>
